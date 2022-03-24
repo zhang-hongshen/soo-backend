@@ -2,8 +2,10 @@ package com.hanson.soo.common.handler;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import org.apache.ibatis.reflection.MetaObject;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
@@ -17,14 +19,16 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
 
     @Override
     public void insertFill(MetaObject metaObject) {
+        System.out.println("插入注入");
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        this.strictInsertFill(metaObject, "createTime", Timestamp.class, timestamp);
-        this.strictInsertFill(metaObject, "updateTime", Timestamp.class, timestamp);
+        strictInsertFill(metaObject, "createTime", Timestamp.class, timestamp);
+        strictInsertFill(metaObject, "updateTime", Timestamp.class, timestamp);
     }
 
     @Override
     public void updateFill(MetaObject metaObject) {
+        System.out.println("更新注入");
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        this.strictUpdateFill(metaObject, "updateTime", Timestamp.class, timestamp);
+        strictUpdateFill(metaObject, "updateTime", Timestamp.class, timestamp);
     }
 }

@@ -1,13 +1,13 @@
 package com.hanson.soo.common.pojo.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.sql.Timestamp;
+import java.util.Date;
 
-@Getter
-@Setter
+
+@Data
 @TableName("soo_product_image")
 public class ProductImageDO {
     @TableId(type = IdType.AUTO)
@@ -20,26 +20,6 @@ public class ProductImageDO {
     Timestamp createTime;
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
     Timestamp updateTime;
-    @TableField("is_deleted")
-    Boolean deleted;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        ProductImageDO that = (ProductImageDO) o;
-
-        if (!id.equals(that.id)) return false;
-        if (!productId.equals(that.productId)) return false;
-        return url.equals(that.url);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = id.hashCode();
-        result = 31 * result + productId.hashCode();
-        result = 31 * result + url.hashCode();
-        return result;
-    }
+    @TableField("status")
+    Boolean status;
 }

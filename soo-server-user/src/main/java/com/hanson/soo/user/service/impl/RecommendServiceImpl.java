@@ -1,43 +1,40 @@
 package com.hanson.soo.user.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.hanson.soo.common.dao.ProductInfoDao;
-import com.hanson.soo.common.pojo.dto.PageListDTO;
-import com.hanson.soo.common.pojo.entity.ProductInfoDO;
-import com.hanson.soo.user.pojo.dto.ProductInfoDTO;
 import com.hanson.soo.user.service.RecommendService;
-import com.hanson.soo.user.utils.ConverterUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class RecommendServiceImpl implements RecommendService {
     @Autowired
-    private ProductInfoDao productInfoDao;
-    @Autowired
     private RestTemplate restTemplate;
 
-    @Override
-    public PageListDTO<List<ProductInfoDTO>> query(int current, int pageSize, String userId, ProductInfoDTO productInfoDTO) {
-        LambdaQueryWrapper<ProductInfoDO> wrapper = new LambdaQueryWrapper<>();
-        wrapper.like(StringUtils.isNotBlank(productInfoDTO.getDeparture()),
-                ProductInfoDO::getDeparture, productInfoDTO.getDeparture());
-        wrapper.like(StringUtils.isNotBlank(productInfoDTO.getDestination()),
-                ProductInfoDO::getDestination, productInfoDTO.getDestination());
-        wrapper.eq(ProductInfoDO::getStatus, Boolean.TRUE);
-        IPage<ProductInfoDO> page = productInfoDao.selectPage(new Page<>(current, pageSize), wrapper);
-        List<ProductInfoDO> productInfoDOS = page.getRecords();
-        List<ProductInfoDTO> productInfoDTOS = new ArrayList<>();
-        for (ProductInfoDO productInfoDO : productInfoDOS) {
-            productInfoDTOS.add(ConverterUtils.productInfoDO2DTO(productInfoDO));
-        }
-        return new PageListDTO<>(productInfoDTOS, (int) page.getTotal());
+    public List<String> predict(String userId){
+        String url = "http://127.0.0.1:5000/predict";
+        MultiValueMap<String, Object> paramMap = new LinkedMultiValueMap<>();
+        paramMap.add("user_id",userId);
+        System.out.println(userId);
+        System.out.println("接口调用中...");
+        HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(paramMap);
+        ResponseEntity<List<String>> result  = restTemplate.exchange(
+                url,
+                HttpMethod.POST,
+                httpEntity,
+                new ParameterizedTypeReference<>() {
+                }
+        );
+        System.out.println("接口调用成功..");
+        System.out.println(result);
+        System.out.println(result.getBody());
+        return result.getBody();
     }
 }

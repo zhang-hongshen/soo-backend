@@ -29,39 +29,44 @@ public class ProductDetailServiceImpl implements ProductDetailService {
             ProductImageDO productImageDO = new ProductImageDO();
             productImageDO.setProductId(productId);
             productImageDO.setUrl(url);
-            productImageDO.setDeleted(Boolean.FALSE);
+            productImageDO.setStatus(Boolean.FALSE);
             productImageDao.insert(productImageDO);
             redisService.sAdd(productId, productImageDO.getUrl());
         }
         return 0;
     }
 
-    public int update(ProductDetailDTO productDetailDTO){
+    public int updateByProductId(ProductDetailDTO productDetailDTO){
+        List<ProductImageDO> newProductImageDOs = ConverterUtils.productDetailDTO2imageDOList(productDetailDTO);
         LambdaQueryWrapper<ProductImageDO> queryWrapper = new LambdaQueryWrapper<>();
         LambdaUpdateWrapper<ProductImageDO> updateWrapper = new LambdaUpdateWrapper<>();
         queryWrapper.eq(ProductImageDO::getProductId, productDetailDTO.getProductId());
-        queryWrapper.eq(ProductImageDO::getDeleted, Boolean.FALSE);
+        queryWrapper.eq(ProductImageDO::getStatus, Boolean.FALSE);
         updateWrapper.eq(ProductImageDO::getProductId, productDetailDTO.getProductId());
-        List<ProductImageDO> newProductImageDOs = ConverterUtils.productDetailDTO2imageDOList(productDetailDTO);
         List<ProductImageDO> oldProductImageDOs = productImageDao.selectList(queryWrapper);
+        //取出旧照片
+        //判断新传过来的照片是否在照片已经存在
+        //如果存在，则在新照片中移除该照片
+        //如果不存在，则设置未历史图片，true
+        //
         /**
          * 旧图片设置逻辑删除
          */
-        oldProductImageDOs.forEach((productImageDO) ->{
+        for(ProductImageDO productImageDO : oldProductImageDOs){
             if(newProductImageDOs.contains(productImageDO)){
                 newProductImageDOs.remove(productImageDO);
             }else{
-                productImageDO.setDeleted(Boolean.TRUE);//设置为历史图片
+                productImageDO.setStatus(Boolean.TRUE);//设置为历史图片
                 productImageDao.update(productImageDO, updateWrapper);
             }
-        });
+        }
         /**
          * 插入新图片
          */
-        newProductImageDOs.forEach((productImageDO) -> {
-            productImageDO.setDeleted(Boolean.FALSE);
+        for (ProductImageDO productImageDO : newProductImageDOs) {
+            productImageDO.setStatus(Boolean.FALSE);
             productImageDao.insert(productImageDO);
-        });
+        }
         return 0;
     }
 
@@ -69,7 +74,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
     public ProductDetailDTO getProductDetailByProductId(String productId){
         LambdaQueryWrapper<ProductImageDO> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(ProductImageDO::getProductId, productId);
-        queryWrapper.eq(ProductImageDO::getDeleted, Boolean.FALSE);
+        queryWrapper.eq(ProductImageDO::getStatus, Boolean.FALSE);
         List<ProductImageDO> productImageDOs = productImageDao.selectList(queryWrapper);
         List<String> imageUrls = new ArrayList<>();
         productImageDOs.forEach((productImageDO) -> imageUrls.add(productImageDO.getUrl()));

@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface ProductDetailService {
     int insert(ProductDetailDTO productDetailDTO);
-    int update(ProductDetailDTO productDetailDTO);
+    int updateByProductId(ProductDetailDTO productDetailDTO);
     ProductDetailDTO getProductDetailByProductId(String productId);
     int deleteByProductId(List<String> productIds);
 }

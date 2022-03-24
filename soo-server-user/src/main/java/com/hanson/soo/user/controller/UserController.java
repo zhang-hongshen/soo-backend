@@ -1,67 +1,73 @@
 package com.hanson.soo.user.controller;
 
 
-import com.hanson.soo.user.pojo.dto.ProductInfoDTO;
-import com.hanson.soo.user.pojo.dto.UserDTO;
-import com.hanson.soo.user.service.RecommendService;
-import com.hanson.soo.user.service.UserService;
+import com.hanson.soo.user.pojo.dto.UserInfoDTO;
+import com.hanson.soo.user.pojo.vo.UserBasicInfoVO;
+import com.hanson.soo.user.pojo.vo.UserRegisterVO;
+import com.hanson.soo.user.service.UserInfoService;
+import com.hanson.soo.user.utils.ConverterUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
+
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
     @Autowired
-    private RestTemplate restTemplate;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private RecommendService recommendService;
+    private UserInfoService userInfoService;
 
-    @GetMapping("/search")
-    public String search(@RequestParam("current") int current,
-                         @RequestParam("pageSize") int pageSize,
-                         @RequestParam("userId") String userId,
-                         @ModelAttribute ProductInfoDTO productInfoDTO){
-        System.out.println("UserController.search()");
-        return "UserController.search()";
-    }
 
     @PostMapping("/login")
-    public String login(@RequestParam("phone") String phone, @RequestParam("password") String password){
-        System.out.println("UserController.login()");
-        System.out.println("{phone:"+phone+",password:"+password+"}");
-        return "UserController.login()";
+    public String login(@RequestBody UserInfoDTO userInfoDTO){
+        return userInfoService.getToken(userInfoDTO);
+    }
+
+    @GetMapping("/info")
+    public UserInfoDTO login(@RequestParam("token") String token){
+        System.out.println(token);
+        return userInfoService.getUserInfoByToken(token);
     }
 
     @PostMapping("/register")
-    public int register(UserDTO userDTO){
+    public String register(@RequestBody UserRegisterVO userRegisterVO){
         System.out.println("UserController.register()");
-        System.out.println(userDTO);
-        return userService.insertUser(userDTO);
+        System.out.println(userRegisterVO);
+        return userInfoService.insertUser(ConverterUtils.userRegisterVO2InfoDTO(userRegisterVO));
     }
 
-    //备用代码
-    @PostMapping
-    public String query(@RequestParam("userId") String userId){
-        String url = "http://127.0.0.1:5000/predict";
-        System.out.println(userId);
-        MultiValueMap<String, Object> paramMap = new LinkedMultiValueMap<>();
-        paramMap.add("user_id",userId);
-        System.out.println("接口调用中...");
-        HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(paramMap);
-        ResponseEntity<String> result  = restTemplate.exchange(
-                url, HttpMethod.POST,
-                httpEntity,String.class
-        );
-        System.out.println("接口调用成功..");
-        System.out.println(result);
-        return result.getBody();
+
+    @PostMapping("/phone/validate")
+    public boolean checkPhone(@RequestBody String phone){
+        System.out.println(phone);
+        return userInfoService.checkPhone(phone);
     }
+
+    @GetMapping("/logout")
+    public boolean logout(){
+        System.out.println("UserController.logout()");
+        return true;
+    }
+
+
+    @GetMapping("/location")
+    public String getLocation(HttpServletRequest request){
+        String ip = request.getRemoteAddr();
+        System.out.println(ip);
+        return "北京";
+    }
+
+    @GetMapping("/basicinfo")
+    public UserBasicInfoVO query(@RequestParam("userId")String userId){
+        UserInfoDTO userInfoDTO = userInfoService.getUserInfoByUserId(userId);
+        return ConverterUtils.userInfoDTO2BasicInfoVO(userInfoDTO);
+    }
+
+    @GetMapping("/password/validate")
+    public boolean checkPasswordByUserId(@RequestParam("userId")String userId,
+                                         @RequestParam("password")String password){
+        String realPassword = userInfoService.getPasswordByUserId(userId);
+        return realPassword.equals(password);
+    }
+
 }

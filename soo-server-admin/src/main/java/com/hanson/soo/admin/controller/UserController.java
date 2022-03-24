@@ -15,7 +15,7 @@ public class UserController {
     @Autowired
     public UserService userService;
 
-    @GetMapping
+    @GetMapping("/info")
     public PageListDTO<List<UserDTO>> query(@RequestParam("current") int current,
                                             @RequestParam("pageSize")int pageSize,
                                             @ModelAttribute UserDTO userDTO){

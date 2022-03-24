@@ -6,7 +6,8 @@ import lombok.Data;
 public class ProductInfoDTO {
     String productId;
     String productName;
-    String departure;
     String destination;
+    String departure;
+    String imageUrl;
     Float price;
 }

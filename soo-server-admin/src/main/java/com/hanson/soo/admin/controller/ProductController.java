@@ -22,7 +22,7 @@ public class ProductController {
 
 
     @PostMapping("/detail")
-    public ProductDetailDTO query(@RequestParam String productId){
+    public ProductDetailDTO query(@RequestBody String productId){
         System.out.println(productId);
         ProductDetailDTO productDetailDTO = productDetailService.getProductDetailByProductId(productId);
         return productDetailDTO;
@@ -36,30 +36,33 @@ public class ProductController {
         System.out.println(current + " " + pageSize);
         System.out.println(productInfoDTO);
         PageListDTO<List<ProductInfoDTO>> res = productInfoService.listProductInfos(current,pageSize, productInfoDTO);
-        System.out.println(res);
         return res;
     }
 
     @PostMapping("/update")
-    public void update(@ModelAttribute ProductVO productVO){
+    public boolean update(@RequestBody ProductVO productVO){
         System.out.println(productVO);
         ProductInfoDTO productInfoDTO = new ProductInfoDTO();
         BeanUtils.copyProperties(productVO, productInfoDTO);
         ProductDetailDTO productDetailDTO = new ProductDetailDTO();
         BeanUtils.copyProperties(productVO, productDetailDTO);
+        System.out.println(productInfoDTO);
         productInfoService.updateByProductId(productInfoDTO);
-        productDetailService.update(productDetailDTO);
+        System.out.println(productDetailDTO);
+        productDetailService.updateByProductId(productDetailDTO);
+        return true;
     }
 
     @PostMapping("/delete")
-    public void delete(@RequestParam("productId") List<String> productIds){
+    public boolean delete(@RequestBody List<String> productIds){
         System.out.println(productIds);
         productInfoService.deleteByProductId(productIds);
         productDetailService.deleteByProductId(productIds);
+        return true;
     }
 
     @PostMapping("/add")
-    public void insert(@RequestBody ProductVO productVO){
+    public boolean insert(@RequestBody ProductVO productVO){
         System.out.println(productVO);
         ProductInfoDTO productInfoDTO = new ProductInfoDTO();
         BeanUtils.copyProperties(productVO, productInfoDTO);
@@ -67,5 +70,6 @@ public class ProductController {
         BeanUtils.copyProperties(productVO, productDetailDTO);
         productInfoService.insert(productInfoDTO);
         productDetailService.insert(productDetailDTO);
+        return true;
     }
 }

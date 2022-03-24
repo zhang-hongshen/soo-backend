@@ -11,5 +11,6 @@ public class ProductVO {
     String departure;
     String destination;
     Float price;
-    List<String> imageUrl;
+    Boolean status;
+    List<String> imageUrls;
 }

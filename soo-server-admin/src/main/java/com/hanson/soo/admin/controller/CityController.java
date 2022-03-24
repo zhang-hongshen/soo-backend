@@ -20,7 +20,7 @@ public class CityController {
 
     @GetMapping
     public List<Object> query(){
-        Set<Object> res = redisService.sMembers("city");
+        Set<Object> res = redisService.sMembers("city:name");
         List<Object> cities = new ArrayList<>(res);
         return cities;
     }
