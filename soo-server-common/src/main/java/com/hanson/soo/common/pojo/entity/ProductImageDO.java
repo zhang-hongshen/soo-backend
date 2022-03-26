@@ -16,10 +16,11 @@ public class ProductImageDO {
     String productId;
     @TableField("image_url")
     String url;
-    @TableField(value = "create_time", fill = FieldFill.INSERT)
-    Timestamp createTime;
-    @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
-    Timestamp updateTime;
     @TableField("status")
     Boolean status;
+    @TableField("create_time")
+    Date createTime;
+    @TableField("update_time")
+    Date updateTime;
+
 }

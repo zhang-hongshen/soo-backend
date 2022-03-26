@@ -46,7 +46,8 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<OrderDTO> queryByUserId(String userId) {
         List<OrderInfoDO> orderInfoDOs = orderInfoDao.selectList(new LambdaQueryWrapper<OrderInfoDO>()
-                .eq(OrderInfoDO::getUserId, userId));
+                .eq(OrderInfoDO::getUserId, userId)
+                .orderByDesc(OrderInfoDO::getCreateTime));
         List<OrderDTO> orderDTOs = new ArrayList<>();
         for(OrderInfoDO orderInfoDO : orderInfoDOs){
             String orderId = orderInfoDO.getOrderId();

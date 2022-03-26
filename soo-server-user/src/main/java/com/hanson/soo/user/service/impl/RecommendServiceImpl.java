@@ -22,7 +22,6 @@ public class RecommendServiceImpl implements RecommendService {
         String url = "http://127.0.0.1:5000/predict";
         MultiValueMap<String, Object> paramMap = new LinkedMultiValueMap<>();
         paramMap.add("user_id",userId);
-        System.out.println(userId);
         System.out.println("接口调用中...");
         HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(paramMap);
         ResponseEntity<List<String>> result  = restTemplate.exchange(
@@ -33,8 +32,6 @@ public class RecommendServiceImpl implements RecommendService {
                 }
         );
         System.out.println("接口调用成功..");
-        System.out.println(result);
-        System.out.println(result.getBody());
         return result.getBody();
     }
 }

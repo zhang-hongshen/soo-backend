@@ -1,7 +1,9 @@
 package com.hanson.soo.user.controller;
 
+import com.hanson.soo.common.pojo.entity.ProductInfoDO;
 import com.hanson.soo.user.pojo.dto.ProductDetailDTO;
 import com.hanson.soo.user.pojo.dto.ProductInfoDTO;
+import com.hanson.soo.user.pojo.vo.ProductVO;
 import com.hanson.soo.user.service.ProductDetailService;
 import com.hanson.soo.common.pojo.dto.PageListDTO;
 import com.hanson.soo.user.service.ProductInfoService;
@@ -25,7 +27,6 @@ public class ProductController {
     public PageListDTO<List<ProductInfoDTO>> query(@RequestParam("current") int current,
                                                     @RequestParam("pageSize") int pageSize,
                                                     @ModelAttribute ProductInfoDTO productInfoDTO){
-        System.out.println(productInfoDTO);
         PageListDTO<List<ProductInfoDTO>> pageListDTO = productInfoService.listInfo(current, pageSize, productInfoDTO);
         return pageListDTO;
     }
@@ -38,9 +39,13 @@ public class ProductController {
     }
 
     @GetMapping("/detail")
-    public ProductDetailDTO query(@RequestParam("productId") String productId){
+    public ProductVO query(@RequestParam("productId") String productId){
         System.out.println(productId);
         ProductDetailDTO productDetailDTO = productDetailService.getProductDetailByProductId(productId);
-        return productDetailDTO;
+        ProductInfoDTO productInfoDTO = productInfoService.getByProductId(productId);
+        ProductVO productVO = new ProductVO();
+        BeanUtils.copyProperties(productDetailDTO, productVO);
+        BeanUtils.copyProperties(productInfoDTO, productVO);
+        return productVO;
     }
 }

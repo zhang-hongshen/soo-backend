@@ -1,9 +1,12 @@
 package com.hanson.soo.common.pojo.entity;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
 @Data
 @TableName("soo_order_info")
@@ -16,8 +19,8 @@ public class OrderInfoDO {
     String userId;
     @TableField("total_amount")
     Float totalAmount;
-    @TableField(value = "create_time", fill = FieldFill.INSERT)
-    Timestamp createTime;
-    @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
-    Timestamp updateTime;
+    @TableField("create_time")
+    Date createTime;
+    @TableField("update_time")
+    Date updateTime;
 }

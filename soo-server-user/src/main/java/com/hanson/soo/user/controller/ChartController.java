@@ -34,7 +34,7 @@ public class ChartController {
         return chartVOs;
     }
 
-    @PutMapping("/add")
+    @PostMapping("/add")
     public boolean add(@RequestParam("userId") String userId,
                        @RequestBody ChartVO chartVO){
         ChartDTO chartDTO = ConverterUtils.chartVO2DTO(chartVO);
@@ -46,5 +46,18 @@ public class ChartController {
     public boolean delete(@RequestParam("userId") String userId,
                           @RequestBody  List<String> productIds){
         return chartService.deleteByUserIdAndProductId(userId, productIds) == productIds.size();
+    }
+
+    @PutMapping("/update")
+    public boolean update(@RequestParam("userId") String userId,
+                          @RequestBody  List<ChartVO> chartVOs){
+        List<ChartDTO> chartDTOs = new ArrayList<>();
+        chartVOs.forEach(chartVO -> {
+            ChartDTO chartDTO = ConverterUtils.chartVO2DTO(chartVO);
+            chartDTO.setUserId(userId);
+            chartDTOs.add(chartDTO);
+        });
+        chartService.updateByUserId(userId, chartDTOs);
+        return true;
     }
 }

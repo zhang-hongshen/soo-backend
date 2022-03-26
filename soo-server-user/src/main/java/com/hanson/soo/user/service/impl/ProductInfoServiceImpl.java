@@ -44,6 +44,9 @@ public class ProductInfoServiceImpl implements ProductInfoService {
         productDepartureDOs.forEach((productDepartureDO) -> productIdsByDeparture.add(productDepartureDO.getProductId()));
         //取交集
         productIds.retainAll(productIdsByDeparture);
+        if(productIds.isEmpty()){
+            return new PageListDTO<>(new ArrayList<>(), 0);
+        }
         //分页查询
         IPage<ProductInfoDO> page = productInfoDao.selectPage(new Page<>(current, pageSize), new LambdaQueryWrapper<ProductInfoDO>()
                 .in(ProductInfoDO::getProductId, productIds));

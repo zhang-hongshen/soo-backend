@@ -90,9 +90,16 @@ public class UserInfoServiceImpl implements UserInfoService {
     }
 
     @Override
+    public int updateBasicInfoByUserId(String userId, UserInfoDTO userInfoDTO){
+       return userInfoDao.update(ConverterUtils.userInfoDTO2DO(userInfoDTO), new LambdaUpdateWrapper<UserInfoDO>()
+                .eq(UserInfoDO::getUserId, userId));
+    }
+
+    @Override
     public String getPasswordByUserId(String userId) {
         UserInfoDO userInfoDO = userInfoDao.selectOne(new LambdaQueryWrapper<UserInfoDO>()
                 .eq(UserInfoDO::getUserId, userId));
         return userInfoDO.getPassword();
     }
+
 }

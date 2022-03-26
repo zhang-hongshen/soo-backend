@@ -25,21 +25,17 @@ public class UserController {
 
     @GetMapping("/info")
     public UserInfoDTO login(@RequestParam("token") String token){
-        System.out.println(token);
         return userInfoService.getUserInfoByToken(token);
     }
 
     @PostMapping("/register")
     public String register(@RequestBody UserRegisterVO userRegisterVO){
-        System.out.println("UserController.register()");
-        System.out.println(userRegisterVO);
         return userInfoService.insertUser(ConverterUtils.userRegisterVO2InfoDTO(userRegisterVO));
     }
 
 
     @PostMapping("/phone/validate")
     public boolean checkPhone(@RequestBody String phone){
-        System.out.println(phone);
         return userInfoService.checkPhone(phone);
     }
 
@@ -58,9 +54,16 @@ public class UserController {
     }
 
     @GetMapping("/basicinfo")
-    public UserBasicInfoVO query(@RequestParam("userId")String userId){
+    public UserBasicInfoVO queryBasicInfo(@RequestParam("userId")String userId){
         UserInfoDTO userInfoDTO = userInfoService.getUserInfoByUserId(userId);
         return ConverterUtils.userInfoDTO2BasicInfoVO(userInfoDTO);
+    }
+
+    @PostMapping("/basicinfo/update")
+    public boolean updateByUserId(@RequestParam("userId")String userId,
+                                  @RequestBody UserBasicInfoVO userBasicInfoVO){
+        userInfoService.updateBasicInfoByUserId(userId, ConverterUtils.userBasicInfoVO2InfoDTO(userBasicInfoVO));
+        return true;
     }
 
     @GetMapping("/password/validate")

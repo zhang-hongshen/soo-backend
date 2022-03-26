@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
 import java.sql.Timestamp;
+import java.util.Date;
 
 @Data
 @TableName("soo_product")
@@ -22,8 +23,8 @@ public class ProductInfoDO {
     Float price;
     @TableField("status")
     Boolean status;
-    @TableField(value = "create_time", fill = FieldFill.INSERT)
-    Timestamp createTime;
-    @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
-    Timestamp updateTime;
+    @TableField("create_time")
+    Date createTime;
+    @TableField("update_time")
+    Date updateTime;
 }

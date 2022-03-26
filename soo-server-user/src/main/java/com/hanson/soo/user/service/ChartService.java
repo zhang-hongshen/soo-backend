@@ -9,4 +9,5 @@ public interface ChartService {
     int insert(ChartDTO chartDTO);
     List<ChartDTO> listChart(String userId);
     int deleteByUserIdAndProductId(String userId, List<String> productIds);
+    int updateByUserId(String userId, List<ChartDTO> chartDTOs);
 }

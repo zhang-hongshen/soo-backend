@@ -1,6 +1,7 @@
 package com.hanson.soo.user.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.hanson.soo.common.dao.ChartDao;
 import com.hanson.soo.common.pojo.entity.ChartDO;
 import com.hanson.soo.user.pojo.dto.ChartDTO;
@@ -47,6 +48,16 @@ public class ChartServiceImpl implements ChartService {
             count += chartDao.delete(new LambdaQueryWrapper<ChartDO>()
                     .eq(ChartDO::getUserId, userId)
                     .eq(ChartDO::getProductId, productId));
+        }
+        return count;
+    }
+
+    public int updateByUserId(String userId, List<ChartDTO> chartDTOs){
+        int count = 0;
+        for(ChartDTO chartDTO : chartDTOs){
+            count += chartDao.update(ConverterUtils.chartDTO2DO(chartDTO),new LambdaUpdateWrapper<ChartDO>()
+                    .eq(ChartDO::getUserId, userId)
+                    .eq(ChartDO::getProductId, chartDTO.getProductId()));
         }
         return count;
     }
