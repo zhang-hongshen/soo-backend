@@ -1,4 +1,4 @@
-package com.hanson.soo.common.handler;
+package com.hanson.soo.user.handler;
 
 import com.hanson.soo.common.api.ResponseCode;
 import com.hanson.soo.common.api.ResponseData;

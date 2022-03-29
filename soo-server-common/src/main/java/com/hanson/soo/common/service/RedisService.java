@@ -1,4 +1,4 @@
-package com.hanson.soo.admin.service;
+package com.hanson.soo.common.service;
 
 import java.util.Set;
 

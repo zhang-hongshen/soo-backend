@@ -2,6 +2,8 @@ package com.hanson.soo.user.pojo.dto;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Data
 public class ProductInfoDTO {
     String productId;
@@ -9,5 +11,5 @@ public class ProductInfoDTO {
     String destination;
     String departure;
     String imageUrl;
-    Float price;
+    BigDecimal price;
 }

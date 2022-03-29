@@ -6,12 +6,13 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hanson.soo.common.dao.UserInfoDao;
 import com.hanson.soo.common.pojo.dto.PageListDTO;
-import com.hanson.soo.admin.pojo.dto.UserDTO;
+import com.hanson.soo.admin.pojo.dto.UserInfoDTO;
 import com.hanson.soo.admin.service.UserService;
 import com.hanson.soo.admin.utils.ConverterUtils;
 import com.hanson.soo.common.pojo.entity.UserInfoDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,16 +23,15 @@ public class UserServiceImpl implements UserService {
     public UserInfoDao userInfoDao;
 
     @Override
-    public PageListDTO<List<UserDTO>> listUsers(int current, int pageSize, UserDTO userDTO) {
-        LambdaQueryWrapper<UserInfoDO> wrapper = new LambdaQueryWrapper<>();
-        wrapper.like(StringUtils.isNotBlank(userDTO.getUsername()), UserInfoDO::getUsername, userDTO.getUsername());
-        Page<UserInfoDO> page = new Page<>(current, pageSize);
-        IPage<UserInfoDO> userPage = userInfoDao.selectPage(page, wrapper);
-        List<UserInfoDO> userInfoDOS = userPage.getRecords();
-        List<UserDTO> userDTOs = new ArrayList<>();
-        for (UserInfoDO userInfoDO : userInfoDOS) {
-            userDTOs.add(ConverterUtils.userDO2DTO(userInfoDO));
+    @Transactional(readOnly = true)
+    public PageListDTO<List<UserInfoDTO>> listUser(int current, int pageSize, UserInfoDTO query) {
+        IPage<UserInfoDO> userPage = userInfoDao.selectPage(new Page<>(current, pageSize), new LambdaQueryWrapper<UserInfoDO>()
+                .like(StringUtils.isNotBlank(query.getUsername()), UserInfoDO::getUsername, query.getUsername()));
+        List<UserInfoDO> userInfoDOs = userPage.getRecords();
+        List<UserInfoDTO> userInfoDTOs = new ArrayList<>();
+        for (UserInfoDO userInfoDO : userInfoDOs) {
+            userInfoDTOs.add(ConverterUtils.userDO2DTO(userInfoDO));
         }
-        return new PageListDTO<>(userDTOs, (int) userPage.getTotal());
+        return new PageListDTO<>(userInfoDTOs, (int) userPage.getTotal());
     }
 }

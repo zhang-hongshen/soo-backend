@@ -2,10 +2,7 @@ package com.hanson.soo.user.utils;
 
 import com.hanson.soo.common.pojo.entity.*;
 import com.hanson.soo.user.pojo.dto.*;
-import com.hanson.soo.user.pojo.vo.ChartVO;
-import com.hanson.soo.user.pojo.vo.ConsigneeVO;
-import com.hanson.soo.user.pojo.vo.UserBasicInfoVO;
-import com.hanson.soo.user.pojo.vo.UserRegisterVO;
+import com.hanson.soo.user.pojo.vo.*;
 import org.springframework.beans.BeanUtils;
 
 
@@ -20,12 +17,6 @@ public class ConverterUtils {
         UserInfoDO userInfoDO = new UserInfoDO();
         BeanUtils.copyProperties(userInfoDTO, userInfoDO);
         return userInfoDO;
-    }
-
-    public static UserInfoDTO userRegisterVO2InfoDTO(UserRegisterVO userRegisterVO){
-        UserInfoDTO userInfoDTO = new UserInfoDTO();
-        BeanUtils.copyProperties(userRegisterVO, userInfoDTO);
-        return userInfoDTO;
     }
 
     public static UserBasicInfoVO userInfoDTO2BasicInfoVO(UserInfoDTO userInfoDTO){
@@ -111,9 +102,27 @@ public class ConverterUtils {
         return orderDetailDTO;
     }
 
-    public static CityDTO cityDO2DTO(CityDO cityDO){
-        CityDTO cityDTO = new CityDTO();
-        BeanUtils.copyProperties(cityDO, cityDTO);
-        return cityDTO;
+    public static CommentDO commentDTO2DO(CommentDTO commentDTO){
+        CommentDO commentDO = new CommentDO();
+        BeanUtils.copyProperties(commentDTO, commentDO);
+        return commentDO;
+    }
+
+    public static CommentDTO commentDO2DTO(CommentDO commentDO){
+        CommentDTO commentDTO = new CommentDTO();
+        BeanUtils.copyProperties(commentDO, commentDTO);
+        return commentDTO;
+    }
+
+    public static CommentDTO commentVO2DTO(CommentVO commentVO){
+        CommentDTO commentDTO = new CommentDTO();
+        BeanUtils.copyProperties(commentVO, commentDTO);
+        return commentDTO;
+    }
+
+    public static CommentVO commentDTO2VO(CommentDTO commentDTO){
+        CommentVO commentVO = new CommentVO();
+        BeanUtils.copyProperties(commentDTO, commentVO);
+        return commentVO;
     }
 }

@@ -6,20 +6,17 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
-import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
-@TableName("soo_order_info")
-public class OrderInfoDO {
+@TableName("soo_admin_token")
+public class AdminTokenDO {
     @TableId(type = IdType.AUTO)
     Long id;
-    @TableField("order_id")
-    String orderId;
-    @TableField("user_id")
-    String userId;
-    @TableField("total_amount")
-    BigDecimal totalAmount;
+    @TableField("admin_id")
+    String adminId;
+    @TableField("token")
+    String token;
     @TableField("create_time")
     Date createTime;
     @TableField("update_time")

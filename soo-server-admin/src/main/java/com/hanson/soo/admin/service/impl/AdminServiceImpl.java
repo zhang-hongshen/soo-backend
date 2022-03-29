@@ -7,6 +7,7 @@ import com.hanson.soo.admin.service.AdminService;
 import com.hanson.soo.common.pojo.entity.AdminDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -14,6 +15,7 @@ public class AdminServiceImpl implements AdminService {
     private AdminDao adminDao;
 
     @Override
+    @Transactional(readOnly = true)
     public AdminDO getByPhone(String phone) {
         LambdaQueryWrapper<AdminDO> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(AdminDO::getPhone,phone);
@@ -21,6 +23,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    @Transactional
     public int updateByAdminId(AdminDO adminDO) {
         LambdaUpdateWrapper<AdminDO> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.eq(AdminDO::getAdminId, adminDO.getAdminId());

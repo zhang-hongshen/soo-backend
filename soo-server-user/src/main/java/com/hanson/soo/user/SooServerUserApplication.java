@@ -1,11 +1,11 @@
 package com.hanson.soo.user;
 
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@MapperScan("com.hanson.soo.common.dao")
+@ComponentScan({"com.hanson.soo.user", "com.hanson.soo.common"})
 public class SooServerUserApplication {
 
     public static void main(String[] args) {

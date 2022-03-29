@@ -2,6 +2,7 @@ package com.hanson.soo.user.pojo.dto;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
@@ -11,7 +12,7 @@ public class OrderDetailDTO {
     String productName;
     String departure;
     Date date;
-    Float price;
+    BigDecimal price;
     Integer num;
-    Float amount;
+    BigDecimal amount;
 }

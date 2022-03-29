@@ -1,7 +1,7 @@
 package com.hanson.soo.admin.controller;
 
 
-import com.hanson.soo.admin.service.RedisService;
+import com.hanson.soo.common.service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +21,6 @@ public class CityController {
     @GetMapping
     public List<Object> query(){
         Set<Object> res = redisService.sMembers("city:name");
-        List<Object> cities = new ArrayList<>(res);
-        return cities;
+        return new ArrayList<>(res);
     }
 }

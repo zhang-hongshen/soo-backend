@@ -11,11 +11,10 @@ import com.hanson.soo.user.pojo.dto.UserInfoDTO;
 import com.hanson.soo.user.service.UserInfoService;
 import com.hanson.soo.user.utils.ConverterUtils;
 import com.hanson.soo.user.utils.TokenUtils;
-import com.hanson.soo.user.utils.UUIDUtils;
+import com.hanson.soo.common.utils.UUIDUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.UUID;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserInfoServiceImpl implements UserInfoService {
@@ -39,12 +38,14 @@ public class UserInfoServiceImpl implements UserInfoService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public boolean checkPhone(String phone) {
         long count = userInfoDao.selectCount(new LambdaQueryWrapper<UserInfoDO>().eq(UserInfoDO::getPhone, phone));
         return count > 0;
     }
 
     @Override
+    @Transactional
     public String getToken(UserInfoDTO userInfoDTO) {
         UserInfoDO userInfoDO = userInfoDao.selectOne(new LambdaQueryWrapper<UserInfoDO>()
                 .eq(StringUtils.isNotBlank(userInfoDTO.getUsername()), UserInfoDO::getUsername, userInfoDTO.getUsername())
@@ -61,18 +62,18 @@ public class UserInfoServiceImpl implements UserInfoService {
             newUserTokenDO.setUserId(userId);
             userTokenDao.insert(newUserTokenDO);
             return token;
-        }else{
-            String token = userTokenDO.getToken();
-            if(StringUtils.isBlank(token)){
-                token = TokenUtils.createToken();
-                userTokenDO.setToken(token);
-                userTokenDao.updateById(userTokenDO);
-                return token;
-            }
         }
-        return userTokenDO.getToken();
-    }
+        String token = userTokenDO.getToken();
+        if(StringUtils.isBlank(token)){
+            token = TokenUtils.createToken();
+            userTokenDO.setToken(token);
+            userTokenDao.updateById(userTokenDO);
+        }
+        return token;
+}
 
+    @Override
+    @Transactional(readOnly = true)
     public UserInfoDTO getUserInfoByToken(String token){
         UserTokenDO userTokenDO = userTokenDao.selectOne(new LambdaUpdateWrapper<UserTokenDO>()
                 .eq(UserTokenDO::getToken, token));
@@ -83,10 +84,19 @@ public class UserInfoServiceImpl implements UserInfoService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserInfoDTO getUserInfoByUserId(String userId) {
         UserInfoDO userInfoDO = userInfoDao.selectOne(new LambdaQueryWrapper<UserInfoDO>()
                 .eq(UserInfoDO::getUserId, userId));
         return ConverterUtils.userInfoDO2DTO(userInfoDO);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public String getPasswordByUserId(String userId) {
+        UserInfoDO userInfoDO = userInfoDao.selectOne(new LambdaQueryWrapper<UserInfoDO>()
+                .eq(UserInfoDO::getUserId, userId));
+        return userInfoDO.getPassword();
     }
 
     @Override
@@ -95,11 +105,5 @@ public class UserInfoServiceImpl implements UserInfoService {
                 .eq(UserInfoDO::getUserId, userId));
     }
 
-    @Override
-    public String getPasswordByUserId(String userId) {
-        UserInfoDO userInfoDO = userInfoDao.selectOne(new LambdaQueryWrapper<UserInfoDO>()
-                .eq(UserInfoDO::getUserId, userId));
-        return userInfoDO.getPassword();
-    }
 
 }

@@ -8,5 +8,6 @@ import java.util.List;
 @Data
 public class ProductDetailDTO {
     String productId;
+    List<String> departures;
     List<String> imageUrls;
 }

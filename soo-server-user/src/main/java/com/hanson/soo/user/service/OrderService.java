@@ -9,5 +9,5 @@ import java.util.List;
 
 public interface OrderService {
     int insert(String userId, List<OrderDetailDTO> orderDetailDTOs);
-    List<OrderDTO> queryByUserId(@RequestParam("userId")String userId);
+    List<OrderDTO> listByUserId(String userId);
 }

@@ -10,11 +10,13 @@ import com.hanson.soo.user.pojo.dto.OrderDTO;
 import com.hanson.soo.user.pojo.dto.OrderDetailDTO;
 import com.hanson.soo.user.service.OrderService;
 import com.hanson.soo.user.utils.ConverterUtils;
-import com.hanson.soo.user.utils.UUIDUtils;
+import com.hanson.soo.common.utils.UUIDUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,12 +27,14 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private OrderDetailDao orderDetailDao;
 
+    @Override
+    @Transactional
     public int insert(String userId, List<OrderDetailDTO> orderDetailDTOs){
         String orderId = UUIDUtils.getId();
-        float totalAmount = 0.0f;
+        BigDecimal totalAmount = new BigDecimal(0);
         for(OrderDetailDTO orderDetailDTO : orderDetailDTOs){
-            float amount = orderDetailDTO.getPrice() * orderDetailDTO.getNum();
-            totalAmount += amount;
+            BigDecimal amount = orderDetailDTO.getPrice().multiply(new BigDecimal(orderDetailDTO.getNum()));
+            totalAmount = totalAmount.add(amount);
             OrderDetailDO orderDetailDO = ConverterUtils.orderDetailDTO2DO(orderDetailDTO);
             orderDetailDO.setAmount(amount);
             orderDetailDO.setOrderId(orderId);
@@ -44,7 +48,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderDTO> queryByUserId(String userId) {
+    @Transactional(readOnly = true)
+    public List<OrderDTO> listByUserId(String userId) {
         List<OrderInfoDO> orderInfoDOs = orderInfoDao.selectList(new LambdaQueryWrapper<OrderInfoDO>()
                 .eq(OrderInfoDO::getUserId, userId)
                 .orderByDesc(OrderInfoDO::getCreateTime));

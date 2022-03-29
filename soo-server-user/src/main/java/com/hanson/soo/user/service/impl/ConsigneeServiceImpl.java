@@ -9,6 +9,7 @@ import com.hanson.soo.user.utils.ConverterUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,8 @@ public class ConsigneeServiceImpl implements ConsigneeService {
     @Autowired
     private ConsigneeDao consigneeDao;
 
+    @Override
+    @Transactional(readOnly = true)
     public List<ConsigneeDTO> listConsigneeByUserId(String userId){
         List<ConsigneeDO> consigneeDOs = consigneeDao.selectList(new LambdaQueryWrapper<ConsigneeDO>()
                 .eq(ConsigneeDO::getUserId, userId));
@@ -27,8 +30,8 @@ public class ConsigneeServiceImpl implements ConsigneeService {
     }
 
     @Override
+    @Transactional
     public int saveConsignee(String userId, ConsigneeDTO consigneeDTO) {
-        System.out.println(consigneeDTO.getId());
         ConsigneeDO consigneeDO =  consigneeDao.selectById(consigneeDTO.getId());
         if(consigneeDO == null){
             return consigneeDao.insert(ConverterUtils.consigneeDTO2DO(consigneeDTO));
@@ -38,6 +41,7 @@ public class ConsigneeServiceImpl implements ConsigneeService {
     }
 
     @Override
+    @Transactional
     public int deleteConsigneeById(Long id){
         return consigneeDao.deleteById(id);
     }

@@ -1,17 +1,15 @@
-package com.hanson.soo.user.pojo.vo;
+package com.hanson.soo.admin.pojo.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.hanson.soo.user.pojo.dto.OrderDetailDTO;
 import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 
 @Data
-public class OrderVO {
+public class OrderInfoVO {
     String orderId;
-    List<OrderDetailDTO> orderDetails;
+    String userId;
     BigDecimal totalAmount;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     Date createTime;

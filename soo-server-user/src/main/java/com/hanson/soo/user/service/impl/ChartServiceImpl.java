@@ -9,6 +9,7 @@ import com.hanson.soo.user.service.ChartService;
 import com.hanson.soo.user.utils.ConverterUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,7 @@ public class ChartServiceImpl implements ChartService {
     private ChartDao chartDao;
 
     @Override
+    @Transactional
     public int insert(ChartDTO chartDTO) {
         ChartDO chartDO = chartDao.selectOne(new LambdaQueryWrapper<ChartDO>()
                 .eq(ChartDO::getProductId, chartDTO.getProductId())
@@ -33,6 +35,8 @@ public class ChartServiceImpl implements ChartService {
         return chartDao.insert(ConverterUtils.chartDTO2DO(chartDTO));
     }
 
+    @Override
+    @Transactional(readOnly = true)
     public List<ChartDTO> listChart(String userId){
         List<ChartDO> chartDOs = chartDao.selectList(new LambdaQueryWrapper<ChartDO>()
                 .eq(ChartDO::getUserId, userId)
@@ -42,6 +46,7 @@ public class ChartServiceImpl implements ChartService {
         return chartDTOs;
     }
 
+    @Override
     public int deleteByUserIdAndProductId(String userId, List<String> productIds){
         int count = 0;
         for(String productId : productIds){
@@ -52,6 +57,7 @@ public class ChartServiceImpl implements ChartService {
         return count;
     }
 
+    @Override
     public int updateByUserId(String userId, List<ChartDTO> chartDTOs){
         int count = 0;
         for(ChartDTO chartDTO : chartDTOs){

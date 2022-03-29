@@ -9,6 +9,7 @@ import com.hanson.soo.user.pojo.dto.ProductDetailDTO;
 import com.hanson.soo.user.service.ProductDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,9 +21,12 @@ public class ProductDetailServiceImpl implements ProductDetailService {
     @Autowired
     private ProductDepartureDao productDepartureDao;
 
+    @Override
+    @Transactional(readOnly = true)
     public ProductDetailDTO getProductDetailByProductId(String productId){
         List<ProductImageDO> productImageDOs = productImageDao.selectList(new LambdaQueryWrapper<ProductImageDO>()
-                .eq(ProductImageDO::getProductId, productId));
+                .eq(ProductImageDO::getProductId, productId)
+                .eq(ProductImageDO::getStatus, Boolean.TRUE));
         List<ProductDepartureDO> productDepartureDOs = productDepartureDao.selectList(new LambdaQueryWrapper<ProductDepartureDO>()
                 .eq(ProductDepartureDO::getProductId, productId));
         List<String> imageUrls = new ArrayList<>();

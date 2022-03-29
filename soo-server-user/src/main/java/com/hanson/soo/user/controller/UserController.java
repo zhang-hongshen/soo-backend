@@ -3,7 +3,6 @@ package com.hanson.soo.user.controller;
 
 import com.hanson.soo.user.pojo.dto.UserInfoDTO;
 import com.hanson.soo.user.pojo.vo.UserBasicInfoVO;
-import com.hanson.soo.user.pojo.vo.UserRegisterVO;
 import com.hanson.soo.user.service.UserInfoService;
 import com.hanson.soo.user.utils.ConverterUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,10 +28,9 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public String register(@RequestBody UserRegisterVO userRegisterVO){
-        return userInfoService.insertUser(ConverterUtils.userRegisterVO2InfoDTO(userRegisterVO));
+    public String register(@RequestBody UserInfoDTO userInfoDTO){
+        return userInfoService.insertUser(userInfoDTO);
     }
-
 
     @PostMapping("/phone/validate")
     public boolean checkPhone(@RequestBody String phone){

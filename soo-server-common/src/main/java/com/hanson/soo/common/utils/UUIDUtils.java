@@ -1,4 +1,4 @@
-package com.hanson.soo.user.utils;
+package com.hanson.soo.common.utils;
 
 import java.util.UUID;
 

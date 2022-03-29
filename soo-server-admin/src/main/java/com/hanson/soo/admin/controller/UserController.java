@@ -1,11 +1,14 @@
 package com.hanson.soo.admin.controller;
 
+import com.hanson.soo.admin.pojo.vo.UserInfoVO;
+import com.hanson.soo.admin.utils.ConverterUtils;
 import com.hanson.soo.common.pojo.dto.PageListDTO;
-import com.hanson.soo.admin.pojo.dto.UserDTO;
+import com.hanson.soo.admin.pojo.dto.UserInfoDTO;
 import com.hanson.soo.admin.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -15,14 +18,15 @@ public class UserController {
     @Autowired
     public UserService userService;
 
-    @GetMapping("/info")
-    public PageListDTO<List<UserDTO>> query(@RequestParam("current") int current,
-                                            @RequestParam("pageSize")int pageSize,
-                                            @ModelAttribute UserDTO userDTO){
-        System.out.println("UserController.listUsers()");
-        System.out.println("{current:"+current+",pageSize:"+pageSize+"}");
-        System.out.println(userDTO);
-        PageListDTO<List<UserDTO>> res = userService.listUsers(current, pageSize, userDTO);
-        return res;
+    @PostMapping("/info")
+    public PageListDTO<List<UserInfoVO>> query(@RequestParam("current") int current,
+                                               @RequestParam("pageSize")int pageSize,
+                                               @RequestBody UserInfoDTO query){
+        PageListDTO<List<UserInfoDTO>> pageListDTO = userService.listUser(current, pageSize, query);
+        List<UserInfoVO> userInfoVOs = new ArrayList<>();
+        for(UserInfoDTO userInfoDTO : pageListDTO.getList()){
+            userInfoVOs.add(ConverterUtils.userDTO2VO(userInfoDTO));
+        }
+        return new PageListDTO<>(userInfoVOs, pageListDTO.getTotal());
     }
 }

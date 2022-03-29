@@ -24,18 +24,16 @@ public class OrderController {
 
     @GetMapping("/query")
     public List<OrderDTO> query(@RequestParam("userId")String userId){
-        return orderService.queryByUserId(userId);
+        return orderService.listByUserId(userId);
     }
 
     @PutMapping("/add")
     public boolean add(@RequestParam("userId")String userId,
                        @RequestBody List<OrderDetailDTO> orderDetailDTOs){
-        System.out.println(userId);
-        System.out.println(orderDetailDTOs);
         List<String> productIds = new ArrayList<>();
         orderDetailDTOs.forEach(orderDetailDTO -> productIds.add(orderDetailDTO.getProductId()));
         //添加订单然后删除购物车
-        return orderService.insert(userId, orderDetailDTOs)  > 0
-                && chartService.deleteByUserIdAndProductId(userId, productIds) == orderDetailDTOs.size();
+        return (orderService.insert(userId, orderDetailDTOs)  > 0 &&
+                chartService.deleteByUserIdAndProductId(userId, productIds) == orderDetailDTOs.size());
     }
 }

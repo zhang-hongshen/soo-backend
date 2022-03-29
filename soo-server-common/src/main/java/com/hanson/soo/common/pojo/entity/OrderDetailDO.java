@@ -3,6 +3,7 @@ package com.hanson.soo.common.pojo.entity;
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -22,11 +23,11 @@ public class OrderDetailDO {
     @TableField("date")
     Date date;
     @TableField("price")
-    Float price;
+    BigDecimal price;
     @TableField("num")
     Integer num;
     @TableField("amount")
-    Float amount;
+    BigDecimal amount;
     @TableField("create_time")
     Date createTime;
     @TableField("update_time")

@@ -1,16 +1,15 @@
-package com.hanson.soo.user.pojo.vo;
+package com.hanson.soo.admin.pojo.vo;
 
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Data
-public class ProductVO {
+public class ProductInfoVO {
     String productId;
     String productName;
+    String departure;
     String destination;
     BigDecimal price;
-    List<String> imageUrls;
-    List<String> departures;
+    String status;
 }

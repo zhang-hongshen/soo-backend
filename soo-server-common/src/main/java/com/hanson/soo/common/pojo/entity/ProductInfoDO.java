@@ -3,6 +3,7 @@ package com.hanson.soo.common.pojo.entity;
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -15,12 +16,10 @@ public class ProductInfoDO {
     String productId;
     @TableField("product_name")
     String productName;
-    @TableField("departure")
-    String departure;
     @TableField("destination")
     String destination;
     @TableField("price")
-    Float price;
+    BigDecimal price;
     @TableField("status")
     Boolean status;
     @TableField("create_time")

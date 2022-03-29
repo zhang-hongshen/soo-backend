@@ -16,6 +16,7 @@ import com.hanson.soo.user.service.ProductInfoService;
 import com.hanson.soo.user.utils.ConverterUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -32,6 +33,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
     private ProductDepartureDao productDepartureDao;
 
     @Override
+    @Transactional(readOnly = true)
     public PageListDTO<List<ProductInfoDTO>> listInfo(int current, int pageSize, ProductInfoDTO query) {
         List<ProductInfoDO> productInfoDOs = productInfoDao.selectList(new LambdaQueryWrapper<ProductInfoDO>()
                 .like(StringUtils.isNotBlank(query.getDestination()), ProductInfoDO::getDestination, query.getDestination())
@@ -49,10 +51,10 @@ public class ProductInfoServiceImpl implements ProductInfoService {
         }
         //分页查询
         IPage<ProductInfoDO> page = productInfoDao.selectPage(new Page<>(current, pageSize), new LambdaQueryWrapper<ProductInfoDO>()
-                .in(ProductInfoDO::getProductId, productIds));
-        productInfoDOs = page.getRecords();
+                .in(ProductInfoDO::getProductId, productIds)
+                .eq(ProductInfoDO::getStatus, Boolean.TRUE));
         List<ProductInfoDTO> productInfoDTOs = new ArrayList<>();
-        for (ProductInfoDO productInfoDO : productInfoDOs) {
+        for (ProductInfoDO productInfoDO : page.getRecords()) {
             ProductInfoDTO productInfoDTO = ConverterUtils.productInfoDO2DTO(productInfoDO);
             //获取产品封面照片
             String imageUrl = productImageDao.selectOne(new LambdaQueryWrapper<ProductImageDO>()
@@ -65,6 +67,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ProductInfoDTO> listInfoByProductId(List<String> productIds) {
         List<ProductInfoDTO> productInfoDTOs = new ArrayList<>();
         for(String productId : productIds){
@@ -82,6 +85,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ProductInfoDTO getByProductId(String productId) {
         ProductInfoDO productInfoDO = productInfoDao.selectOne(new LambdaQueryWrapper<ProductInfoDO>()
                 .eq(ProductInfoDO::getProductId, productId));

@@ -1,46 +1,39 @@
-package com.hanson.soo.user.service.impl;
+package com.hanson.soo.common.service.impl;
 
-import com.hanson.soo.user.service.RedisService;
+import com.hanson.soo.common.service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @Service
-public class RedisServiceImpl<K, V> implements RedisService<K, V> {
+public class RedisServiceImpl implements RedisService {
     @Autowired
-    private RedisTemplate<K, V> redisTemplate;
+    private RedisTemplate<String, Object> redisTemplate;
 
-    @Override
-    public void expire(K key, long time) {
+    public  void expire(String key, long time) {
         redisTemplate.expire(key, time, TimeUnit.SECONDS);
     }
 
-    @Override
-    public V get(K key) {
+    public  Object get(String key) {
         return redisTemplate.opsForValue().get(key);
     }
 
-    @Override
-    public void put(K key, V value) {
+    public  void put(String key, Object value) {
         redisTemplate.opsForValue().set(key,value);
     }
 
-    @Override
-    public V sPop(K key) {
+    public  Object sPop(String key) {
         return redisTemplate.opsForSet().pop(key);
     }
 
-    @Override
-    public void sAdd(K key, V value) {
+    public  void sAdd(String key, Object value) {
         redisTemplate.opsForSet().add(key,value);
     }
 
-    @Override
-    public Set<V> sMembers(K key) {
+    public Set<Object> sMembers(String key) {
         return redisTemplate.opsForSet().members(key);
     }
 }
