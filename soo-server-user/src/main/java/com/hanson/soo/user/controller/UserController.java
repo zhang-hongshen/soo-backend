@@ -16,7 +16,6 @@ public class UserController {
     @Autowired
     private UserInfoService userInfoService;
 
-
     @PostMapping("/login")
     public String login(@RequestBody UserInfoDTO userInfoDTO){
         return userInfoService.getToken(userInfoDTO);
@@ -33,7 +32,7 @@ public class UserController {
     }
 
     @PostMapping("/phone/validate")
-    public boolean checkPhone(@RequestBody String phone){
+    public boolean validatePhone(@RequestBody String phone){
         return userInfoService.checkPhone(phone);
     }
 
@@ -43,7 +42,6 @@ public class UserController {
         return true;
     }
 
-
     @GetMapping("/location")
     public String getLocation(HttpServletRequest request){
         String ip = request.getRemoteAddr();
@@ -52,7 +50,7 @@ public class UserController {
     }
 
     @GetMapping("/basicinfo")
-    public UserBasicInfoVO queryBasicInfo(@RequestParam("userId")String userId){
+    public UserBasicInfoVO getBasicInfo(@RequestParam("userId")String userId){
         UserInfoDTO userInfoDTO = userInfoService.getUserInfoByUserId(userId);
         return ConverterUtils.userInfoDTO2BasicInfoVO(userInfoDTO);
     }
@@ -65,10 +63,17 @@ public class UserController {
     }
 
     @GetMapping("/password/validate")
-    public boolean checkPasswordByUserId(@RequestParam("userId")String userId,
+    public boolean validatePasswordByUserId(@RequestParam("userId")String userId,
                                          @RequestParam("password")String password){
         String realPassword = userInfoService.getPasswordByUserId(userId);
         return realPassword.equals(password);
+    }
+
+
+    @PostMapping("/password/update")
+    public boolean changePassword(@RequestParam("userId") String userId,
+                                  @RequestBody String password){
+        return userInfoService.updatePasswordByUserId(userId, password) > 0;
     }
 
 }

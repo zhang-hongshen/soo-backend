@@ -70,9 +70,8 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 
     @Override
     public int deleteByProductId(List<String> productIds) {
-        LambdaQueryWrapper<ProductInfoDO> wrapper = new LambdaQueryWrapper<>();
-        wrapper.in(ProductInfoDO::getProductId, productIds);
-        return productInfoDao.delete(wrapper);
+        return productInfoDao.delete(new LambdaQueryWrapper<ProductInfoDO>()
+                .in(ProductInfoDO::getProductId, productIds));
     }
 
     @Override

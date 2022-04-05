@@ -13,23 +13,28 @@ public class RedisServiceImpl implements RedisService {
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
-    public  void expire(String key, long time) {
-        redisTemplate.expire(key, time, TimeUnit.SECONDS);
+    public void expire(String key, long time, TimeUnit timeUnit) {
+        redisTemplate.expire(key, time, timeUnit);
     }
 
-    public  Object get(String key) {
+    public Object get(String key) {
         return redisTemplate.opsForValue().get(key);
     }
 
-    public  void put(String key, Object value) {
+    public void set(String key, Object value) {
         redisTemplate.opsForValue().set(key,value);
     }
 
-    public  Object sPop(String key) {
+    public void set(String key, Object value, long time, TimeUnit timeUnit) {
+        redisTemplate.opsForValue().set(key,value);
+        expire(key, time, timeUnit);
+    }
+
+    public Object sPop(String key) {
         return redisTemplate.opsForSet().pop(key);
     }
 
-    public  void sAdd(String key, Object value) {
+    public void sAdd(String key, Object value) {
         redisTemplate.opsForSet().add(key,value);
     }
 

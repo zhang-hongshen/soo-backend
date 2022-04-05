@@ -12,6 +12,7 @@ import com.hanson.soo.common.pojo.entity.ProductDepartureDO;
 import com.hanson.soo.common.pojo.entity.ProductImageDO;
 import com.hanson.soo.common.pojo.entity.ProductInfoDO;
 import com.hanson.soo.user.pojo.dto.ProductInfoDTO;
+import com.hanson.soo.user.pojo.qo.ProductQO;
 import com.hanson.soo.user.service.ProductInfoService;
 import com.hanson.soo.user.utils.ConverterUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,9 +35,10 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 
     @Override
     @Transactional(readOnly = true)
-    public PageListDTO<List<ProductInfoDTO>> listInfo(int current, int pageSize, ProductInfoDTO query) {
+    public PageListDTO<List<ProductInfoDTO>> listInfo(int current, int pageSize, ProductQO query) {
         List<ProductInfoDO> productInfoDOs = productInfoDao.selectList(new LambdaQueryWrapper<ProductInfoDO>()
                 .like(StringUtils.isNotBlank(query.getDestination()), ProductInfoDO::getDestination, query.getDestination())
+                .like(StringUtils.isNotBlank(query.getProductName()), ProductInfoDO::getProductName, query.getProductName())
                 .eq(ProductInfoDO::getStatus, Boolean.TRUE));
         Set<String> productIds = new HashSet<>();
         productInfoDOs.forEach((productInfoDO) -> productIds.add(productInfoDO.getProductId()));

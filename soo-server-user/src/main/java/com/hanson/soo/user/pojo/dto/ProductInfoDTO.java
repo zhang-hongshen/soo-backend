@@ -9,7 +9,6 @@ public class ProductInfoDTO {
     String productId;
     String productName;
     String destination;
-    String departure;
     String imageUrl;
     BigDecimal price;
 }

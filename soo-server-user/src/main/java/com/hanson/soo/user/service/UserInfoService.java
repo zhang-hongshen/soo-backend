@@ -10,4 +10,5 @@ public interface UserInfoService {
     UserInfoDTO getUserInfoByUserId(String userId);
     String getPasswordByUserId(String userId);
     int updateBasicInfoByUserId(String userId, UserInfoDTO userInfoDTO);
+    int updatePasswordByUserId(String userId, String password);
 }

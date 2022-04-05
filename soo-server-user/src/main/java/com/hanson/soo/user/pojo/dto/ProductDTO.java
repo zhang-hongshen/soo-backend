@@ -1,13 +1,12 @@
-package com.hanson.soo.user.pojo.vo;
+package com.hanson.soo.user.pojo.dto;
 
 import lombok.Data;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 
 @Data
-public class ProductVO implements Serializable {
+public class ProductDTO {
     String productId;
     String productName;
     String destination;

@@ -93,7 +93,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 
     @Override
     @Transactional(readOnly = true)
-    public ProductDetailDTO getProductDetailByProductId(String productId){
+    public ProductDetailDTO getProductDetailByProductId(String productId) {
         List<ProductImageDO> productImageDOs = productImageDao.selectList(new LambdaQueryWrapper<ProductImageDO>()
                 .eq(ProductImageDO::getProductId, productId)
                 .eq(ProductImageDO::getStatus, Boolean.TRUE));
@@ -112,13 +112,13 @@ public class ProductDetailServiceImpl implements ProductDetailService {
     @Override
     @Transactional
     public int deleteByProductId(List<String> productIds){
-        for(String productId : productIds){
+        for (String productId : productIds) {
             List<ProductImageDO> productImageDOs = productImageDao.selectList(new LambdaQueryWrapper<ProductImageDO>()
                     .eq(ProductImageDO::getProductId, productId));
             productImageDao.delete(new LambdaQueryWrapper<ProductImageDO>()
                     .eq(ProductImageDO::getProductId, productId));
             //删除阿里云里的东西
-            for(ProductImageDO productImageDO : productImageDOs){
+            for (ProductImageDO productImageDO : productImageDOs) {
                 AliyunOSSUtils.deleteObjectByUrl(productImageDO.getUrl());
             }
             productDepartureDao.delete(new LambdaQueryWrapper<ProductDepartureDO>()

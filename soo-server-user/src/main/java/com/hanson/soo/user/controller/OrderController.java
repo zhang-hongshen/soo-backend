@@ -7,6 +7,7 @@ import com.hanson.soo.user.pojo.dto.OrderDetailDTO;
 import com.hanson.soo.user.pojo.vo.OrderVO;
 import com.hanson.soo.user.service.ChartService;
 import com.hanson.soo.user.service.OrderService;
+import com.hanson.soo.user.utils.ConverterUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,8 +24,13 @@ public class OrderController {
     private ChartService chartService;
 
     @GetMapping("/query")
-    public List<OrderDTO> query(@RequestParam("userId")String userId){
-        return orderService.listByUserId(userId);
+    public List<OrderVO> query(@RequestParam("userId")String userId){
+        List<OrderDTO> orderDTOs =  orderService.listByUserId(userId);
+        List<OrderVO> orderVOs = new ArrayList<>();
+        for (OrderDTO orderDTO :  orderDTOs) {
+            orderVOs.add(ConverterUtils.orderDTO2VO(orderDTO));
+        }
+        return orderVOs;
     }
 
     @PutMapping("/add")
@@ -32,8 +38,9 @@ public class OrderController {
                        @RequestBody List<OrderDetailDTO> orderDetailDTOs){
         List<String> productIds = new ArrayList<>();
         orderDetailDTOs.forEach(orderDetailDTO -> productIds.add(orderDetailDTO.getProductId()));
-        //添加订单然后删除购物车
-        return (orderService.insert(userId, orderDetailDTOs)  > 0 &&
-                chartService.deleteByUserIdAndProductId(userId, productIds) == orderDetailDTOs.size());
+        //删除购物车，如果直接购买则会省略这一步
+        chartService.deleteByUserIdAndProductId(userId, productIds);
+        //删除购物车后添加订单
+        return orderService.insert(userId, orderDetailDTOs)  > 0;
     }
 }

@@ -17,16 +17,14 @@ public class AdminServiceImpl implements AdminService {
     @Override
     @Transactional(readOnly = true)
     public AdminDO getByPhone(String phone) {
-        LambdaQueryWrapper<AdminDO> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(AdminDO::getPhone,phone);
-        return adminDao.selectOne(queryWrapper);
+        return adminDao.selectOne(new LambdaQueryWrapper<AdminDO>()
+                .eq(AdminDO::getPhone,phone));
     }
 
     @Override
     @Transactional
     public int updateByAdminId(AdminDO adminDO) {
-        LambdaUpdateWrapper<AdminDO> updateWrapper = new LambdaUpdateWrapper<>();
-        updateWrapper.eq(AdminDO::getAdminId, adminDO.getAdminId());
-        return adminDao.update(adminDO,updateWrapper);
+        return adminDao.update(adminDO,new LambdaUpdateWrapper<AdminDO>()
+                .eq(AdminDO::getAdminId, adminDO.getAdminId()));
     }
 }

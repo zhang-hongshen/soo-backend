@@ -21,6 +21,8 @@ public class ChartDO {
     Integer num;
     @TableField("date")
     Date date;
+    @TableField("status")
+    Boolean status;
     @TableField("create_time")
     Date createTime;
     @TableField("update_time")

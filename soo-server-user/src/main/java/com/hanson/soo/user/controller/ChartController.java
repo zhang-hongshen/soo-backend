@@ -29,6 +29,7 @@ public class ChartController {
             ChartVO chartVO = ConverterUtils.chartDTO2VO(chartDTO);
             ProductInfoDTO productInfoDTO = productInfoService.getByProductId(chartVO.getProductId());
             BeanUtils.copyProperties(productInfoDTO, chartVO);
+            System.out.println(chartVO);
             chartVOs.add(chartVO);
         });
         return chartVOs;

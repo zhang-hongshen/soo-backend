@@ -1,20 +1,14 @@
 package com.hanson.soo.admin.utils;
 
-import com.google.common.collect.BiMap;
 import com.hanson.soo.admin.pojo.dto.OrderInfoDTO;
-import com.hanson.soo.admin.pojo.dto.ProductDetailDTO;
 import com.hanson.soo.admin.pojo.dto.ProductInfoDTO;
 import com.hanson.soo.admin.pojo.dto.UserInfoDTO;
 import com.hanson.soo.admin.pojo.vo.OrderInfoVO;
 import com.hanson.soo.admin.pojo.vo.UserInfoVO;
 import com.hanson.soo.common.pojo.entity.OrderInfoDO;
-import com.hanson.soo.common.pojo.entity.ProductImageDO;
 import com.hanson.soo.common.pojo.entity.ProductInfoDO;
 import com.hanson.soo.common.pojo.entity.UserInfoDO;
 import org.springframework.beans.BeanUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ConverterUtils {
 

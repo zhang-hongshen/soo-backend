@@ -19,7 +19,7 @@ public class CityController {
     private RedisService redisService;
 
     @GetMapping
-    public List<Object> query(){
+    public List<Object> query() {
         Set<Object> res = redisService.sMembers("city:name");
         return new ArrayList<>(res);
     }

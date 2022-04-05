@@ -4,11 +4,10 @@ import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.util.Date;
 
 @Data
-@TableName("soo_product")
+@TableName("soo_product_info")
 public class ProductInfoDO {
     @TableId(type = IdType.AUTO)
     Long id;

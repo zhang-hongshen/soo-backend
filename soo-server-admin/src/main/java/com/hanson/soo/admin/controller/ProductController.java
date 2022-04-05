@@ -36,13 +36,13 @@ public class ProductController {
     @PostMapping("/info")
     public PageListDTO<List<ProductInfoVO>> query(@RequestParam("current") int current,
                                                    @RequestParam("pageSize")int pageSize,
-                                                   @RequestBody ProductInfoVO queryVO){
+                                                   @RequestBody ProductInfoVO queryVO) {
         ProductInfoDTO queryDTO = new ProductInfoDTO();
         BeanUtils.copyProperties(queryVO, queryDTO);
         queryDTO.setStatus(statusMap.inverse().get(queryVO.getStatus()));
         PageListDTO<List<ProductInfoDTO>> pageListDTO = productInfoService.listProductInfo(current,pageSize, queryDTO);
         List<ProductInfoVO> productInfoVOs = new ArrayList<>();
-        for(ProductInfoDTO productInfoDTO : pageListDTO.getList()){
+        for (ProductInfoDTO productInfoDTO : pageListDTO.getList()) {
             ProductInfoVO productInfoVO = new ProductInfoVO();
             BeanUtils.copyProperties(productInfoDTO, productInfoVO);
             productInfoVO.setStatus(statusMap.get(productInfoDTO.getStatus()));
@@ -52,7 +52,7 @@ public class ProductController {
     }
 
     @GetMapping("/detail")
-    public ProductVO query(@RequestParam("productId") String productId){
+    public ProductVO query(@RequestParam("productId") String productId) {
         ProductDetailDTO productDetailDTO = productDetailService.getProductDetailByProductId(productId);
         ProductInfoDTO productInfoDTO = productInfoService.getByProductId(productId);
         ProductVO productVO = new ProductVO();
@@ -63,7 +63,7 @@ public class ProductController {
     }
 
     @PutMapping("/update")
-    public boolean update(@RequestBody ProductVO productVO){
+    public boolean update(@RequestBody ProductVO productVO) {
         ProductInfoDTO productInfoDTO = new ProductInfoDTO();
         BeanUtils.copyProperties(productVO, productInfoDTO);
         productInfoDTO.setStatus(statusMap.inverse().get(productVO.getStatus()));
@@ -75,14 +75,14 @@ public class ProductController {
     }
 
     @DeleteMapping("/delete")
-    public boolean delete(@RequestBody List<String> productIds){
+    public boolean delete(@RequestBody List<String> productIds) {
         productInfoService.deleteByProductId(productIds);
         productDetailService.deleteByProductId(productIds);
         return true;
     }
 
     @PostMapping("/add")
-    public boolean insert(@RequestBody ProductVO productVO){
+    public boolean insert(@RequestBody ProductVO productVO) {
         String productId = UUIDUtils.getId();
         ProductInfoDTO productInfoDTO = new ProductInfoDTO();
         ProductDetailDTO productDetailDTO = new ProductDetailDTO();

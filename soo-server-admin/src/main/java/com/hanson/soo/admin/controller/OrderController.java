@@ -19,11 +19,11 @@ public class OrderController {
 
     @PostMapping("/info")
     public PageListDTO<List<OrderInfoVO>> query(@RequestParam("current")int current, @RequestParam("pageSize")int pageSize,
-                                                @RequestBody OrderInfoVO orderInfoVO){
+                                                @RequestBody OrderInfoVO orderInfoVO) {
         PageListDTO<List<OrderInfoDTO>> pageListDTO = orderInfoService.listInfo(current, pageSize,
                 ConverterUtils.orderInfoVO2DTO(orderInfoVO));
         List<OrderInfoVO> orderInfoVOs = new ArrayList<>();
-        for(OrderInfoDTO orderInfoDTO : pageListDTO.getList()){
+        for (OrderInfoDTO orderInfoDTO : pageListDTO.getList()) {
             orderInfoVOs.add(ConverterUtils.orderInfoDTO2VO(orderInfoDTO));
         }
         return new PageListDTO<>(orderInfoVOs, pageListDTO.getTotal());

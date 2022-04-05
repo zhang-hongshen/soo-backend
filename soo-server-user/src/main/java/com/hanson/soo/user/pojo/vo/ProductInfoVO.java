@@ -2,16 +2,14 @@ package com.hanson.soo.user.pojo.vo;
 
 import lombok.Data;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.List;
 
 @Data
-public class ProductVO implements Serializable {
+public class ProductInfoVO {
     String productId;
     String productName;
     String destination;
+    String departure;
+    String imageUrl;
     BigDecimal price;
-    List<String> imageUrls;
-    List<String> departures;
 }

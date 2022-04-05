@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 public class UserInfoServiceImpl implements UserInfoService {
     @Autowired
@@ -51,6 +53,9 @@ public class UserInfoServiceImpl implements UserInfoService {
                 .eq(StringUtils.isNotBlank(userInfoDTO.getUsername()), UserInfoDO::getUsername, userInfoDTO.getUsername())
                 .eq(UserInfoDO::getPassword,  userInfoDTO.getPassword())
                 .eq(StringUtils.isNotBlank(userInfoDTO.getPhone()), UserInfoDO::getPhone, userInfoDTO.getPhone()));
+        if (userInfoDO == null) {
+            return "";
+        }
         String userId = userInfoDO.getUserId();
         UserTokenDO userTokenDO = userTokenDao.selectOne(new LambdaUpdateWrapper<UserTokenDO>()
                 .eq(UserTokenDO::getUserId, userId));
@@ -100,10 +105,16 @@ public class UserInfoServiceImpl implements UserInfoService {
     }
 
     @Override
-    public int updateBasicInfoByUserId(String userId, UserInfoDTO userInfoDTO){
+    public int updateBasicInfoByUserId(String userId, UserInfoDTO userInfoDTO) {
        return userInfoDao.update(ConverterUtils.userInfoDTO2DO(userInfoDTO), new LambdaUpdateWrapper<UserInfoDO>()
                 .eq(UserInfoDO::getUserId, userId));
     }
 
-
+    @Transactional
+    public int updatePasswordByUserId(String userId, String password) {
+        System.out.println(userId + " " + password);
+        return userInfoDao.update(null, new LambdaUpdateWrapper<UserInfoDO>()
+                .set(UserInfoDO::getPassword, password)
+                .eq(UserInfoDO::getUserId, userId));
+    }
 }
