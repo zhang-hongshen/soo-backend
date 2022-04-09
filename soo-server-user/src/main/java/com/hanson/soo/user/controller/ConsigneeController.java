@@ -18,17 +18,15 @@ public class ConsigneeController {
 
     @GetMapping("/info")
     public List<ConsigneeVO> query(@RequestParam("userId")String userId){
-        List<ConsigneeDTO> consigneeDTOs = consigneeService.listConsigneeByUserId(userId);
+        List<ConsigneeDTO> consigneeDTOs = consigneeService.listConsigneesByUserId(userId);
         List<ConsigneeVO> consigneeVOs = new ArrayList<>();
         consigneeDTOs.forEach(consigneeDTO -> consigneeVOs.add(ConverterUtils.consigneeDTO2VO(consigneeDTO)));
         return consigneeVOs;
     }
 
     @PostMapping("/save")
-    public boolean saveConsignee(@RequestParam("userId") String userId,
+    public boolean save(@RequestParam("userId") String userId,
                                  @RequestBody ConsigneeVO consigneeVO){
-        System.out.println(userId);
-        System.out.println(consigneeVO);
         ConsigneeDTO consigneeDTO = ConverterUtils.consigneeVO2DTO(consigneeVO);
         consigneeDTO.setUserId(userId);
         return consigneeService.saveConsignee(userId, consigneeDTO) > 0;

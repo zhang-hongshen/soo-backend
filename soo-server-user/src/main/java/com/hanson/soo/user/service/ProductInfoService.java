@@ -7,7 +7,7 @@ import com.hanson.soo.user.pojo.qo.ProductQO;
 import java.util.List;
 
 public interface ProductInfoService {
-    PageListDTO<List<ProductInfoDTO>> listInfo(int current, int pageSize, ProductQO query);
-    List<ProductInfoDTO> listInfoByProductId(List<String> productIds);
-    ProductInfoDTO getByProductId(String productId);
+    PageListDTO<List<ProductInfoDTO>> listProductInfos(int current, int pageSize, ProductQO query);
+    List<ProductInfoDTO> listProductInfosByProductId(List<String> productIds);
+    ProductInfoDTO getProductInfoByProductId(String productId);
 }

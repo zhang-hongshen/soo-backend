@@ -2,7 +2,7 @@ package com.hanson.soo.common.service.impl;
 
 import com.hanson.soo.common.service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
@@ -11,34 +11,34 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class RedisServiceImpl implements RedisService {
     @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
+    private StringRedisTemplate stringRedisTemplate;
 
     public void expire(String key, long time, TimeUnit timeUnit) {
-        redisTemplate.expire(key, time, timeUnit);
+        stringRedisTemplate.expire(key, time, timeUnit);
     }
 
-    public Object get(String key) {
-        return redisTemplate.opsForValue().get(key);
+    public String get(String key) {
+        return stringRedisTemplate.opsForValue().get(key);
     }
 
-    public void set(String key, Object value) {
-        redisTemplate.opsForValue().set(key,value);
+    public void set(String key, String value) {
+        stringRedisTemplate.opsForValue().set(key,value);
     }
 
-    public void set(String key, Object value, long time, TimeUnit timeUnit) {
-        redisTemplate.opsForValue().set(key,value);
+    public void set(String key, String value, long time, TimeUnit timeUnit) {
+        stringRedisTemplate.opsForValue().set(key,value);
         expire(key, time, timeUnit);
     }
 
-    public Object sPop(String key) {
-        return redisTemplate.opsForSet().pop(key);
+    public String sPop(String key) {
+        return stringRedisTemplate.opsForSet().pop(key);
     }
 
-    public void sAdd(String key, Object value) {
-        redisTemplate.opsForSet().add(key,value);
+    public void sAdd(String key, String value) {
+        stringRedisTemplate.opsForSet().add(key,value);
     }
 
-    public Set<Object> sMembers(String key) {
-        return redisTemplate.opsForSet().members(key);
+    public Set<String> sMembers(String key) {
+        return stringRedisTemplate.opsForSet().members(key);
     }
 }

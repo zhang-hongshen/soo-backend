@@ -20,6 +20,10 @@ public class OrderInfoDO {
     String userId;
     @TableField("total_amount")
     BigDecimal totalAmount;
+    @TableField("status")
+    Integer status;
+    @TableField("payment_time")
+    Date paymentTime;
     @TableField("create_time")
     Date createTime;
     @TableField("update_time")

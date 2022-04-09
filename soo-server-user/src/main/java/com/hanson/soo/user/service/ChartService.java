@@ -6,8 +6,8 @@ import com.hanson.soo.user.pojo.dto.ChartDTO;
 import java.util.List;
 
 public interface ChartService {
-    int insert(ChartDTO chartDTO);
-    List<ChartDTO> listChart(String userId);
-    int deleteByUserIdAndProductId(String userId, List<String> productIds);
-    int updateByUserId(String userId, List<ChartDTO> chartDTOs);
+    int insertChart(ChartDTO chartDTO);
+    List<ChartDTO> listCharts(String userId);
+    int deleteChartsByUserIdAndProductId(String userId, List<String> productIds);
+    int updateChartByUserId(String userId, List<ChartDTO> chartDTOs);
 }

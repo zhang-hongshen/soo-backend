@@ -35,7 +35,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 
     @Override
     @Transactional(readOnly = true)
-    public PageListDTO<List<ProductInfoDTO>> listInfo(int current, int pageSize, ProductQO query) {
+    public PageListDTO<List<ProductInfoDTO>> listProductInfos(int current, int pageSize, ProductQO query) {
         List<ProductInfoDO> productInfoDOs = productInfoDao.selectList(new LambdaQueryWrapper<ProductInfoDO>()
                 .like(StringUtils.isNotBlank(query.getDestination()), ProductInfoDO::getDestination, query.getDestination())
                 .like(StringUtils.isNotBlank(query.getProductName()), ProductInfoDO::getProductName, query.getProductName())
@@ -70,7 +70,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ProductInfoDTO> listInfoByProductId(List<String> productIds) {
+    public List<ProductInfoDTO> listProductInfosByProductId(List<String> productIds) {
         List<ProductInfoDTO> productInfoDTOs = new ArrayList<>();
         for(String productId : productIds){
             ProductInfoDO productInfoDO = productInfoDao.selectOne(new LambdaQueryWrapper<ProductInfoDO>()
@@ -88,7 +88,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 
     @Override
     @Transactional(readOnly = true)
-    public ProductInfoDTO getByProductId(String productId) {
+    public ProductInfoDTO getProductInfoByProductId(String productId) {
         ProductInfoDO productInfoDO = productInfoDao.selectOne(new LambdaQueryWrapper<ProductInfoDO>()
                 .eq(ProductInfoDO::getProductId, productId));
         ProductInfoDTO productInfoDTO = ConverterUtils.productInfoDO2DTO(productInfoDO);

@@ -23,7 +23,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional(readOnly = true)
-    public PageListDTO<List<CommentDTO>> listByProductId(int current, int pageSize, String productId) {
+    public PageListDTO<List<CommentDTO>> listCommentsByProductId(int current, int pageSize, String productId) {
         IPage<CommentDO> page = commentDao.selectPage(new Page<>(current, pageSize), new LambdaQueryWrapper<CommentDO>()
                 .eq(CommentDO::getProductId, productId)
                 .orderByDesc(CommentDO::getCreateTime));
@@ -35,7 +35,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public int add(CommentDTO commentDTO) {
+    public int insertComment(CommentDTO commentDTO) {
         return commentDao.insert(ConverterUtils.commentDTO2DO(commentDTO));
     }
 }

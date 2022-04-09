@@ -22,7 +22,7 @@ public class UserController {
     }
 
     @GetMapping("/info")
-    public UserInfoDTO login(@RequestParam("token") String token){
+    public UserInfoDTO getInfo(@RequestParam("token") String token){
         return userInfoService.getUserInfoByToken(token);
     }
 

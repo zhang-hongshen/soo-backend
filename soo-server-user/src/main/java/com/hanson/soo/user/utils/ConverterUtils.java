@@ -143,4 +143,10 @@ public class ConverterUtils {
         BeanUtils.copyProperties(commentDTO, commentVO);
         return commentVO;
     }
+
+    public static CityDTO cityDO2DTO(CityDO cityDO) {
+        CityDTO cityDTO = new CityDTO();
+        BeanUtils.copyProperties(cityDO, cityDTO);
+        return cityDTO;
+    }
 }

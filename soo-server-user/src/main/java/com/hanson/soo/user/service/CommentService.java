@@ -6,6 +6,6 @@ import com.hanson.soo.user.pojo.dto.CommentDTO;
 import java.util.List;
 
 public interface CommentService {
-    PageListDTO<List<CommentDTO>> listByProductId(int current, int pageSize, String productId);
-    int add(CommentDTO commentDTO);
+    PageListDTO<List<CommentDTO>> listCommentsByProductId(int current, int pageSize, String productId);
+    int insertComment(CommentDTO commentDTO);
 }

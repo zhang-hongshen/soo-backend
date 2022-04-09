@@ -7,8 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 
@@ -19,8 +17,7 @@ public class CityController {
     private RedisService redisService;
 
     @GetMapping
-    public List<Object> query() {
-        Set<Object> res = redisService.sMembers("city:name");
-        return new ArrayList<>(res);
+    public Set<String> query() {
+        return redisService.sMembers("soo:city");
     }
 }

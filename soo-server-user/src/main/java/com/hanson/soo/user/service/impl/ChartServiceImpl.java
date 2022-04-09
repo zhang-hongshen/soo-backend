@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class ChartServiceImpl implements ChartService {
@@ -22,7 +21,7 @@ public class ChartServiceImpl implements ChartService {
 
     @Override
     @Transactional
-    public int insert(ChartDTO chartDTO) {
+    public int insertChart(ChartDTO chartDTO) {
         ChartDO chartDO = chartDao.selectOne(new LambdaQueryWrapper<ChartDO>()
                 .eq(ChartDO::getProductId, chartDTO.getProductId())
                 .eq(ChartDO::getDeparture, chartDTO.getDeparture())
@@ -37,7 +36,7 @@ public class ChartServiceImpl implements ChartService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ChartDTO> listChart(String userId){
+    public List<ChartDTO> listCharts(String userId){
         List<ChartDO> chartDOs = chartDao.selectList(new LambdaQueryWrapper<ChartDO>()
                 .eq(ChartDO::getUserId, userId)
                 .orderByDesc(ChartDO::getCreateTime));
@@ -47,7 +46,7 @@ public class ChartServiceImpl implements ChartService {
     }
 
     @Override
-    public int deleteByUserIdAndProductId(String userId, List<String> productIds){
+    public int deleteChartsByUserIdAndProductId(String userId, List<String> productIds){
         int count = 0;
         for(String productId : productIds){
             count += chartDao.delete(new LambdaQueryWrapper<ChartDO>()
@@ -58,7 +57,7 @@ public class ChartServiceImpl implements ChartService {
     }
 
     @Override
-    public int updateByUserId(String userId, List<ChartDTO> chartDTOs){
+    public int updateChartByUserId(String userId, List<ChartDTO> chartDTOs){
         int count = 0;
         for(ChartDTO chartDTO : chartDTOs){
             count += chartDao.update(ConverterUtils.chartDTO2DO(chartDTO),new LambdaUpdateWrapper<ChartDO>()

@@ -24,7 +24,7 @@ public class ProductController {
     public PageListDTO<List<ProductInfoVO>> query(@RequestParam("current") int current,
                                                     @RequestParam("pageSize") int pageSize,
                                                     @ModelAttribute ProductQO query) {
-        PageListDTO<List<ProductInfoDTO>> pageListDTO = productService.listInfo(current, pageSize, query);
+        PageListDTO<List<ProductInfoDTO>> pageListDTO = productService.listProductInfos(current, pageSize, query);
         List<ProductInfoVO> productInfoVOs = new ArrayList<>();
         for (ProductInfoDTO productInfoDTO : pageListDTO.getList()) {
             productInfoVOs.add(ConverterUtils.productInfoDTO2VO(productInfoDTO));
@@ -44,7 +44,7 @@ public class ProductController {
 
     @GetMapping("/detail")
     public ProductVO query(@RequestParam("productId") String productId) {
-        ProductDTO productDTO = productService.getByProductId(productId);
+        ProductDTO productDTO = productService.getProductByProductId(productId);
         return ConverterUtils.productDTO2VO(productDTO);
     }
 }

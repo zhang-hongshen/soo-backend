@@ -21,7 +21,7 @@ public class ConsigneeServiceImpl implements ConsigneeService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ConsigneeDTO> listConsigneeByUserId(String userId){
+    public List<ConsigneeDTO> listConsigneesByUserId(String userId){
         List<ConsigneeDO> consigneeDOs = consigneeDao.selectList(new LambdaQueryWrapper<ConsigneeDO>()
                 .eq(ConsigneeDO::getUserId, userId));
         List<ConsigneeDTO> consigneeDTOs = new ArrayList<>();

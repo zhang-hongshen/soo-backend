@@ -13,6 +13,9 @@ public class OrderVO {
     String orderId;
     List<OrderDetailDTO> orderDetails;
     BigDecimal totalAmount;
+    String status;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    Date paymentTime;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     Date createTime;
 }

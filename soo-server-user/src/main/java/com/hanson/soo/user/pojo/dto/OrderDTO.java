@@ -11,5 +11,7 @@ public class OrderDTO {
     String orderId;
     List<OrderDetailDTO> orderDetails;
     BigDecimal totalAmount;
+    Integer status;
+    Date paymentTime;
     Date createTime;
 }

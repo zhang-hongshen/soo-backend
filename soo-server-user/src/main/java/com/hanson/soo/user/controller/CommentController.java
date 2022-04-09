@@ -24,7 +24,7 @@ public class CommentController {
     public PageListDTO<List<CommentVO>> query(@RequestParam("current") int current,
                                               @RequestParam("pageSize") int pageSize,
                                               @RequestParam("productId") String productId){
-        PageListDTO<List<CommentDTO>> pageListDTO = commentService.listByProductId(current, pageSize, productId);
+        PageListDTO<List<CommentDTO>> pageListDTO = commentService.listCommentsByProductId(current, pageSize, productId);
         List<CommentVO> commentVOs = new ArrayList<>();
         for(CommentDTO commentDTO : pageListDTO.getList()){
             String username = userInfoService.getUserInfoByUserId(commentDTO.getUserId()).username;
@@ -37,6 +37,6 @@ public class CommentController {
 
     @PostMapping("/add")
     public boolean add(@RequestBody CommentDTO commentDTO){
-        return commentService.add(commentDTO) > 0;
+        return commentService.insertComment(commentDTO) > 0;
     }
 }

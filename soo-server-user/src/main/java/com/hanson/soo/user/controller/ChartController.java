@@ -23,13 +23,12 @@ public class ChartController {
 
     @GetMapping("/query")
     public List<ChartVO> query(@RequestParam("userId")String userId){
-        List<ChartDTO> chartDTOs = chartService.listChart(userId);
+        List<ChartDTO> chartDTOs = chartService.listCharts(userId);
         List<ChartVO> chartVOs = new ArrayList<>();
         chartDTOs.forEach(chartDTO -> {
             ChartVO chartVO = ConverterUtils.chartDTO2VO(chartDTO);
-            ProductInfoDTO productInfoDTO = productInfoService.getByProductId(chartVO.getProductId());
+            ProductInfoDTO productInfoDTO = productInfoService.getProductInfoByProductId(chartVO.getProductId());
             BeanUtils.copyProperties(productInfoDTO, chartVO);
-            System.out.println(chartVO);
             chartVOs.add(chartVO);
         });
         return chartVOs;
@@ -40,13 +39,13 @@ public class ChartController {
                        @RequestBody ChartVO chartVO){
         ChartDTO chartDTO = ConverterUtils.chartVO2DTO(chartVO);
         chartDTO.setUserId(userId);
-        return chartService.insert(chartDTO) > 0;
+        return chartService.insertChart(chartDTO) > 0;
     }
 
     @DeleteMapping("/delete")
     public boolean delete(@RequestParam("userId") String userId,
                           @RequestBody  List<String> productIds){
-        return chartService.deleteByUserIdAndProductId(userId, productIds) == productIds.size();
+        return chartService.deleteChartsByUserIdAndProductId(userId, productIds) == productIds.size();
     }
 
     @PutMapping("/update")
@@ -58,7 +57,7 @@ public class ChartController {
             chartDTO.setUserId(userId);
             chartDTOs.add(chartDTO);
         });
-        chartService.updateByUserId(userId, chartDTOs);
+        chartService.updateChartByUserId(userId, chartDTOs);
         return true;
     }
 }
