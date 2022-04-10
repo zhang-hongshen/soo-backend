@@ -25,7 +25,7 @@ public class ProductController {
                                                     @RequestParam("pageSize") int pageSize,
                                                     @ModelAttribute ProductQO query) {
         PageListDTO<List<ProductInfoDTO>> pageListDTO = productService.listProductInfos(current, pageSize, query);
-        List<ProductInfoVO> productInfoVOs = new ArrayList<>();
+        List<ProductInfoVO> productInfoVOs = new ArrayList<>(pageListDTO.getList().size());
         for (ProductInfoDTO productInfoDTO : pageListDTO.getList()) {
             productInfoVOs.add(ConverterUtils.productInfoDTO2VO(productInfoDTO));
         }
@@ -35,7 +35,7 @@ public class ProductController {
     @GetMapping("/predict")
     public List<ProductInfoVO> predict(@RequestParam("userId")String userId) {
         List<ProductInfoDTO> productInfoDTOs = productService.predict(userId);
-        List<ProductInfoVO> productInfoVOs = new ArrayList<>();
+        List<ProductInfoVO> productInfoVOs = new ArrayList<>(productInfoDTOs.size());
         for (ProductInfoDTO productInfoDTO : productInfoDTOs) {
             productInfoVOs.add(ConverterUtils.productInfoDTO2VO(productInfoDTO));
         }

@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
-public class ChartVO {
+public class CartVO {
     String productId;
     String productName;
     String imageUrl;

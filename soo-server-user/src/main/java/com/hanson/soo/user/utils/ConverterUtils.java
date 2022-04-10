@@ -79,27 +79,27 @@ public class ConverterUtils {
         return productVO;
     }
 
-    public static ChartDTO chartVO2DTO(ChartVO chartVO) {
-        ChartDTO chartDTO = new ChartDTO();
-        BeanUtils.copyProperties(chartVO, chartDTO);
-        return chartDTO;
+    public static CartDTO cartVO2DTO(CartVO cartVO) {
+        CartDTO cartDTO = new CartDTO();
+        BeanUtils.copyProperties(cartVO, cartDTO);
+        return cartDTO;
     }
 
-    public static ChartVO chartDTO2VO(ChartDTO chartDTO) {
-        ChartVO chartVO = new ChartVO();
-        BeanUtils.copyProperties(chartDTO, chartVO);
-        return chartVO;
+    public static CartVO cartDTO2VO(CartDTO cartDTO) {
+        CartVO cartVO = new CartVO();
+        BeanUtils.copyProperties(cartDTO, cartVO);
+        return cartVO;
     }
-    public static ChartDO chartDTO2DO(ChartDTO chartDTO) {
-        ChartDO chartDO = new ChartDO();
-        BeanUtils.copyProperties(chartDTO, chartDO);
-        return chartDO;
+    public static CartDO cartDTO2DO(CartDTO cartDTO) {
+        CartDO cartDO = new CartDO();
+        BeanUtils.copyProperties(cartDTO, cartDO);
+        return cartDO;
     }
 
-    public static ChartDTO chartDO2DTO(ChartDO chartDO) {
-        ChartDTO chartDTO = new ChartDTO();
-        BeanUtils.copyProperties(chartDO, chartDTO);
-        return chartDTO;
+    public static CartDTO cartDO2DTO(CartDO cartDO) {
+        CartDTO cartDTO = new CartDTO();
+        BeanUtils.copyProperties(cartDO, cartDTO);
+        return cartDTO;
     }
 
     public static OrderDetailDO orderDetailDTO2DO(OrderDetailDTO orderDetailDTO) {

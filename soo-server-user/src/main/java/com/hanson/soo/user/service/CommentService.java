@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface CommentService {
     PageListDTO<List<CommentDTO>> listCommentsByProductId(int current, int pageSize, String productId);
-    int insertComment(CommentDTO commentDTO);
+    boolean insertComment(CommentDTO commentDTO);
 }

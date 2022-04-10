@@ -24,25 +24,24 @@ public class ConsigneeServiceImpl implements ConsigneeService {
     public List<ConsigneeDTO> listConsigneesByUserId(String userId){
         List<ConsigneeDO> consigneeDOs = consigneeDao.selectList(new LambdaQueryWrapper<ConsigneeDO>()
                 .eq(ConsigneeDO::getUserId, userId));
-        List<ConsigneeDTO> consigneeDTOs = new ArrayList<>();
+        List<ConsigneeDTO> consigneeDTOs = new ArrayList<>(consigneeDOs.size());
         consigneeDOs.forEach((consigneeDO -> consigneeDTOs.add(ConverterUtils.consigneeDO2DTO(consigneeDO))));
         return consigneeDTOs;
     }
 
     @Override
     @Transactional
-    public int saveConsignee(String userId, ConsigneeDTO consigneeDTO) {
+    public boolean saveConsignee(String userId, ConsigneeDTO consigneeDTO) {
         ConsigneeDO consigneeDO =  consigneeDao.selectById(consigneeDTO.getId());
         if(consigneeDO == null){
-            return consigneeDao.insert(ConverterUtils.consigneeDTO2DO(consigneeDTO));
+            return consigneeDao.insert(ConverterUtils.consigneeDTO2DO(consigneeDTO)) > 0;
         }
         BeanUtils.copyProperties(consigneeDTO, consigneeDO);
-        return  consigneeDao.updateById(consigneeDO);
+        return  consigneeDao.updateById(consigneeDO) > 0;
     }
 
     @Override
-    @Transactional
-    public int deleteConsigneeById(Long id){
-        return consigneeDao.deleteById(id);
+    public boolean deleteConsigneeById(Long id){
+        return consigneeDao.deleteById(id) > 0;
     }
 }

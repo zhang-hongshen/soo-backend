@@ -9,6 +9,6 @@ public interface UserInfoService {
     UserInfoDTO getUserInfoByToken(String token);
     UserInfoDTO getUserInfoByUserId(String userId);
     String getPasswordByUserId(String userId);
-    int updateBasicInfoByUserId(String userId, UserInfoDTO userInfoDTO);
-    int updatePasswordByUserId(String userId, String password);
+    boolean updateBasicInfoByUserId(String userId, UserInfoDTO userInfoDTO);
+    boolean updatePasswordByUserId(String userId, String password);
 }

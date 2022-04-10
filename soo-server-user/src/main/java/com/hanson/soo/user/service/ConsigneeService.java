@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface ConsigneeService {
     List<ConsigneeDTO> listConsigneesByUserId(String userId);
-    int saveConsignee(String userId, ConsigneeDTO consigneeDTO);
-    int deleteConsigneeById(Long id);
+    boolean saveConsignee(String userId, ConsigneeDTO consigneeDTO);
+    boolean deleteConsigneeById(Long id);
 }

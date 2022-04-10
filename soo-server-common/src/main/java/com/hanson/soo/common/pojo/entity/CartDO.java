@@ -9,8 +9,8 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-@TableName("soo_user_chart")
-public class ChartDO {
+@TableName("soo_user_cart")
+public class CartDO {
     @TableId(type = IdType.AUTO)
     Long id;
     @TableField("user_id")

@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class ChartDTO {
+public class CartDTO {
     String productId;
     String userId;
     String departure;

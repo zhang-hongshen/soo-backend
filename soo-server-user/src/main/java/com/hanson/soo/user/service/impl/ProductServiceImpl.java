@@ -55,8 +55,8 @@ public class ProductServiceImpl implements ProductService {
         List<ProductDepartureDO> productDepartureDOs = productDepartureService.listProductDeparturesByProductId(productId);
         List<ProductImageDO> productImageDOs = productImageService.listProductImagesByProductId(productId);
         ProductInfoDTO productInfoDTO = productInfoService.getProductInfoByProductId(productId);
-        List<String> departures = new ArrayList<>();
-        List<String> imageUrls = new ArrayList<>();
+        List<String> departures = new ArrayList<>(productDepartureDOs.size());
+        List<String> imageUrls = new ArrayList<>(productImageDOs.size());
         productImageDOs.forEach((productImageDO) -> imageUrls.add(productImageDO.getUrl()));
         productDepartureDOs.forEach((productDepartureDO) -> departures.add(productDepartureDO.getDeparture()));
         ProductDTO productDTO = new ProductDTO();

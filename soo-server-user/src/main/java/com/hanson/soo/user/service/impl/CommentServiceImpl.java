@@ -35,7 +35,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public int insertComment(CommentDTO commentDTO) {
-        return commentDao.insert(ConverterUtils.commentDTO2DO(commentDTO));
+    public boolean insertComment(CommentDTO commentDTO) {
+        return commentDao.insert(ConverterUtils.commentDTO2DO(commentDTO)) > 0;
     }
 }

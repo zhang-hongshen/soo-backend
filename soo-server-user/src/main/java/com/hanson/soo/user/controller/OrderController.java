@@ -5,7 +5,7 @@ import com.hanson.soo.user.pojo.OrderStatus;
 import com.hanson.soo.user.pojo.dto.OrderDTO;
 import com.hanson.soo.user.pojo.dto.OrderDetailDTO;
 import com.hanson.soo.user.pojo.vo.OrderVO;
-import com.hanson.soo.user.service.ChartService;
+import com.hanson.soo.user.service.CartService;
 import com.hanson.soo.user.service.OrderService;
 import com.hanson.soo.user.utils.ConverterUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +20,12 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
     @Autowired
-    private ChartService chartService;
+    private CartService cartService;
 
     @GetMapping("/query")
     public List<OrderVO> query(@RequestParam("userId")String userId, @RequestParam("status")String status){
         List<OrderDTO> orderDTOs =  orderService.listOrdersByUserIdAndStatus(userId, OrderStatus.getStatusByValue(status));
-        List<OrderVO> orderVOs = new ArrayList<>();
+        List<OrderVO> orderVOs = new ArrayList<>(orderDTOs.size());
         for (OrderDTO orderDTO :  orderDTOs) {
             OrderVO orderVO = ConverterUtils.orderDTO2VO(orderDTO);
             orderVO.setStatus(OrderStatus.getValueByStatus(orderDTO.getStatus()));
@@ -37,10 +37,10 @@ public class OrderController {
     @PutMapping("/add")
     public String add(@RequestParam("userId")String userId,
                        @RequestBody List<OrderDetailDTO> orderDetailDTOs) {
-        List<String> productIds = new ArrayList<>();
+        List<String> productIds = new ArrayList<>(orderDetailDTOs.size());
         orderDetailDTOs.forEach(orderDetailDTO -> productIds.add(orderDetailDTO.getProductId()));
         //删除购物车，如果直接购买则会省略这一步
-        chartService.deleteChartsByUserIdAndProductId(userId, productIds);
+        cartService.deleteCartsByUserIdAndProductId(userId, productIds);
         return orderService.insertOrder(userId, orderDetailDTOs);
     }
 

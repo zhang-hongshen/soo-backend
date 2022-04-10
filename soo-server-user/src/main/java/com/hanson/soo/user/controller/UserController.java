@@ -5,6 +5,7 @@ import com.hanson.soo.user.pojo.dto.UserInfoDTO;
 import com.hanson.soo.user.pojo.vo.UserBasicInfoVO;
 import com.hanson.soo.user.service.UserInfoService;
 import com.hanson.soo.user.utils.ConverterUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -56,7 +57,7 @@ public class UserController {
     }
 
     @PostMapping("/basicinfo/update")
-    public boolean updateByUserId(@RequestParam("userId")String userId,
+    public boolean updateBasicInfoByUserId(@RequestParam("userId")String userId,
                                   @RequestBody UserBasicInfoVO userBasicInfoVO){
         userInfoService.updateBasicInfoByUserId(userId, ConverterUtils.userBasicInfoVO2InfoDTO(userBasicInfoVO));
         return true;
@@ -73,7 +74,7 @@ public class UserController {
     @PostMapping("/password/update")
     public boolean changePassword(@RequestParam("userId") String userId,
                                   @RequestBody String password){
-        return userInfoService.updatePasswordByUserId(userId, password) > 0;
+        return userInfoService.updatePasswordByUserId(userId, password);
     }
 
 }

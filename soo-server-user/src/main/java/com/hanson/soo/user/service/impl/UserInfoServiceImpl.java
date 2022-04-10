@@ -42,8 +42,7 @@ public class UserInfoServiceImpl implements UserInfoService {
     @Override
     @Transactional(readOnly = true)
     public boolean checkPhone(String phone) {
-        long count = userInfoDao.selectCount(new LambdaQueryWrapper<UserInfoDO>().eq(UserInfoDO::getPhone, phone));
-        return count > 0;
+        return userInfoDao.selectCount(new LambdaQueryWrapper<UserInfoDO>().eq(UserInfoDO::getPhone, phone)) > 0;
     }
 
     @Override
@@ -54,13 +53,13 @@ public class UserInfoServiceImpl implements UserInfoService {
                 .eq(UserInfoDO::getPassword,  userInfoDTO.getPassword())
                 .eq(StringUtils.isNotBlank(userInfoDTO.getPhone()), UserInfoDO::getPhone, userInfoDTO.getPhone()));
         if (userInfoDO == null) {
-            return "";
+            return null;
         }
         String userId = userInfoDO.getUserId();
         UserTokenDO userTokenDO = userTokenDao.selectOne(new LambdaUpdateWrapper<UserTokenDO>()
                 .eq(UserTokenDO::getUserId, userId));
         //token不存在，就生成一个token
-        if(userTokenDO == null){
+        if(userTokenDO == null) {
             String token = TokenUtils.createToken();
             UserTokenDO newUserTokenDO = new UserTokenDO();
             newUserTokenDO.setToken(token);
@@ -69,7 +68,7 @@ public class UserInfoServiceImpl implements UserInfoService {
             return token;
         }
         String token = userTokenDO.getToken();
-        if(StringUtils.isBlank(token)){
+        if(StringUtils.isBlank(token)) {
             token = TokenUtils.createToken();
             userTokenDO.setToken(token);
             userTokenDao.updateById(userTokenDO);
@@ -105,16 +104,15 @@ public class UserInfoServiceImpl implements UserInfoService {
     }
 
     @Override
-    public int updateBasicInfoByUserId(String userId, UserInfoDTO userInfoDTO) {
+    public boolean updateBasicInfoByUserId(String userId, UserInfoDTO userInfoDTO) {
        return userInfoDao.update(ConverterUtils.userInfoDTO2DO(userInfoDTO), new LambdaUpdateWrapper<UserInfoDO>()
-                .eq(UserInfoDO::getUserId, userId));
+                .eq(UserInfoDO::getUserId, userId)) > 0;
     }
 
     @Transactional
-    public int updatePasswordByUserId(String userId, String password) {
-        System.out.println(userId + " " + password);
+    public boolean updatePasswordByUserId(String userId, String password) {
         return userInfoDao.update(null, new LambdaUpdateWrapper<UserInfoDO>()
                 .set(UserInfoDO::getPassword, password)
-                .eq(UserInfoDO::getUserId, userId));
+                .eq(UserInfoDO::getUserId, userId)) > 0;
     }
 }

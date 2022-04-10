@@ -35,7 +35,7 @@ public class OrderServiceImpl implements OrderService {
     public String insertOrder(String userId, List<OrderDetailDTO> orderDetailDTOs){
         String orderId = UUIDUtils.getId();
         BigDecimal totalAmount = new BigDecimal(0);
-        List<OrderDetailDO> orderDetailDOs = new ArrayList<>();
+        List<OrderDetailDO> orderDetailDOs = new ArrayList<>(orderDetailDTOs.size());
         for(OrderDetailDTO orderDetailDTO : orderDetailDTOs){
             BigDecimal amount = orderDetailDTO.getPrice().multiply(new BigDecimal(orderDetailDTO.getNum()));
             totalAmount = totalAmount.add(amount);
@@ -49,15 +49,8 @@ public class OrderServiceImpl implements OrderService {
         orderInfoDO.setUserId(userId);
         orderInfoDO.setTotalAmount(totalAmount);
         orderInfoDO.setStatus(OrderStatus.TO_BE_PAY.getStatus());
-        if (! (orderInfoService.save(orderInfoDO) && orderDetailService.saveBatch(orderDetailDOs))) {
-            //删除已插入的元素
-            orderInfoService.remove(new LambdaQueryWrapper<OrderInfoDO>()
-                    .eq(OrderInfoDO::getOrderId, orderId));
-            orderDetailService.remove(new LambdaQueryWrapper<OrderDetailDO>()
-                    .eq(OrderDetailDO::getOrderId, orderId));
-            return null;
-        }
-        return orderId;
+        return orderInfoService.save(orderInfoDO) &&
+                orderDetailService.saveBatch(orderDetailDOs) ? orderId : null;
     }
 
     @Override

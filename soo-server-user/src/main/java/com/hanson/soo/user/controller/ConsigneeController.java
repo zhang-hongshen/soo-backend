@@ -19,7 +19,7 @@ public class ConsigneeController {
     @GetMapping("/info")
     public List<ConsigneeVO> query(@RequestParam("userId")String userId){
         List<ConsigneeDTO> consigneeDTOs = consigneeService.listConsigneesByUserId(userId);
-        List<ConsigneeVO> consigneeVOs = new ArrayList<>();
+        List<ConsigneeVO> consigneeVOs = new ArrayList<>(consigneeDTOs.size());
         consigneeDTOs.forEach(consigneeDTO -> consigneeVOs.add(ConverterUtils.consigneeDTO2VO(consigneeDTO)));
         return consigneeVOs;
     }
@@ -29,11 +29,11 @@ public class ConsigneeController {
                                  @RequestBody ConsigneeVO consigneeVO){
         ConsigneeDTO consigneeDTO = ConverterUtils.consigneeVO2DTO(consigneeVO);
         consigneeDTO.setUserId(userId);
-        return consigneeService.saveConsignee(userId, consigneeDTO) > 0;
+        return consigneeService.saveConsignee(userId, consigneeDTO);
     }
 
     @PostMapping("/delete")
     public boolean delete(@RequestBody Long id){
-        return consigneeService.deleteConsigneeById(id) > 0;
+        return consigneeService.deleteConsigneeById(id);
     }
 }
