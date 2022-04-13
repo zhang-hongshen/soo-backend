@@ -23,8 +23,11 @@ public class OrderController {
     private CartService cartService;
 
     @GetMapping("/query")
-    public List<OrderVO> query(@RequestParam("userId")String userId, @RequestParam("status")String status){
-        List<OrderDTO> orderDTOs =  orderService.listOrdersByUserIdAndStatus(userId, OrderStatus.getStatusByValue(status));
+    public List<OrderVO> query(@RequestParam("userId")String userId, @RequestParam("status")Integer status){
+        if (status < 0) {
+            throw new IllegalArgumentException();
+        }
+        List<OrderDTO> orderDTOs =  orderService.listOrdersByUserIdAndStatus(userId, status);
         List<OrderVO> orderVOs = new ArrayList<>(orderDTOs.size());
         for (OrderDTO orderDTO :  orderDTOs) {
             OrderVO orderVO = ConverterUtils.orderDTO2VO(orderDTO);

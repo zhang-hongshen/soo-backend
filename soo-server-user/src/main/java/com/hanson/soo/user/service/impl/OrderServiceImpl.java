@@ -58,7 +58,7 @@ public class OrderServiceImpl implements OrderService {
     public List<OrderDTO> listOrdersByUserIdAndStatus(String userId, Integer status) {
         List<OrderInfoDO> orderInfoDOs = orderInfoService.list(new LambdaQueryWrapper<OrderInfoDO>()
                 .eq(OrderInfoDO::getUserId, userId)
-                .eq(status != null, OrderInfoDO::getStatus, status)
+                .eq( !status.equals(OrderStatus.ALL.getStatus()), OrderInfoDO::getStatus, status)
                 .orderByDesc(OrderInfoDO::getCreateTime));
         List<OrderDTO> orderDTOs = new ArrayList<>();
         for(OrderInfoDO orderInfoDO : orderInfoDOs){

@@ -1,5 +1,7 @@
 package com.hanson.soo.user.controller;
 
+import com.hanson.soo.common.pojo.dto.PageListDTO;
+import com.hanson.soo.common.pojo.vo.PageVO;
 import com.hanson.soo.user.pojo.dto.CartDTO;
 import com.hanson.soo.user.pojo.dto.ProductInfoDTO;
 import com.hanson.soo.user.pojo.vo.CartVO;
@@ -22,16 +24,18 @@ public class CartController {
     private ProductInfoService productInfoService;
 
     @GetMapping("/query")
-    public List<CartVO> query(@RequestParam("userId")String userId){
-        List<CartDTO> cartDTOS = cartService.listCarts(userId);
-        List<CartVO> cartVOS = new ArrayList<>(cartDTOS.size());
-        cartDTOS.forEach(cartDTO -> {
+    public PageVO<List<CartVO>> query(@RequestParam("current") int current,
+                              @RequestParam("pageSize") int pageSize,
+                              @RequestParam("userId") String userId){
+        PageListDTO<List<CartDTO>> pageListDTO = cartService.listCarts(current, pageSize, userId);
+        List<CartVO> cartVOS = new ArrayList<>(pageListDTO.getList().size());
+        pageListDTO.getList().forEach(cartDTO -> {
             CartVO cartVO = ConverterUtils.cartDTO2VO(cartDTO);
             ProductInfoDTO productInfoDTO = productInfoService.getProductInfoByProductId(cartVO.getProductId());
             BeanUtils.copyProperties(productInfoDTO, cartVO);
             cartVOS.add(cartVO);
         });
-        return cartVOS;
+        return new PageVO<>(cartVOS, pageListDTO.getTotal());
     }
 
     @PostMapping("/add")

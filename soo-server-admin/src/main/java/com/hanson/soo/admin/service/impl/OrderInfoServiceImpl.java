@@ -22,7 +22,7 @@ public class OrderInfoServiceImpl implements OrderInfoService {
     private OrderInfoDao orderInfoDao;
 
     public PageListDTO<List<OrderInfoDTO>> listInfo(int current, int pageSize, OrderInfoDTO query) {
-        IPage<OrderInfoDO> page = orderInfoDao.page(new Page<>(current, pageSize),
+        IPage<OrderInfoDO> page = orderInfoDao.selectPage(new Page<>(current, pageSize),
                 new LambdaQueryWrapper<OrderInfoDO>()
                         .like(StringUtils.isNotBlank(query.getOrderId()), OrderInfoDO::getOrderId, query.getOrderId())
                         .like(StringUtils.isNotBlank(query.getUserId()), OrderInfoDO::getUserId, query.getUserId()));
