@@ -1,5 +1,9 @@
 # soo-server
 soo项目的服务端代码，soo项目是一个推荐系统。目前正在开发中...
+## 项目架构图
+![image](https://user-images.githubusercontent.com/51166261/163837965-0b4a5d17-970e-45dd-a068-c2b49b14440a.png)
+## 功能模块图
+![image](https://user-images.githubusercontent.com/51166261/163837994-38dc7d3a-1eb7-4277-beb5-ad9675fc2f20.png)
 ## 项目Web端预览图
 首页
 ![image](https://user-images.githubusercontent.com/51166261/163823742-1cdac83a-2a53-4793-a537-2bf3b23285f7.png)
