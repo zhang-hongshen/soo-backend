@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.hanson.soo.common.pojo.entity.OrderDetailDO;
 import com.hanson.soo.common.pojo.entity.OrderInfoDO;
 import com.hanson.soo.common.utils.UUIDUtils;
-import com.hanson.soo.user.pojo.OrderStatus;
+import com.hanson.soo.user.pojo.OrderStatusEnum;
 import com.hanson.soo.user.pojo.dto.OrderDTO;
 import com.hanson.soo.user.pojo.dto.OrderDetailDTO;
 import com.hanson.soo.common.service.OrderDetailService;
@@ -48,7 +48,7 @@ public class OrderServiceImpl implements OrderService {
         orderInfoDO.setOrderId(orderId);
         orderInfoDO.setUserId(userId);
         orderInfoDO.setTotalAmount(totalAmount);
-        orderInfoDO.setStatus(OrderStatus.TO_BE_PAY.getStatus());
+        orderInfoDO.setStatus(OrderStatusEnum.TO_BE_PAY.getStatus());
         return orderInfoService.save(orderInfoDO) &&
                 orderDetailService.saveBatch(orderDetailDOs) ? orderId : null;
     }
@@ -58,7 +58,7 @@ public class OrderServiceImpl implements OrderService {
     public List<OrderDTO> listOrdersByUserIdAndStatus(String userId, Integer status) {
         List<OrderInfoDO> orderInfoDOs = orderInfoService.list(new LambdaQueryWrapper<OrderInfoDO>()
                 .eq(OrderInfoDO::getUserId, userId)
-                .eq( !status.equals(OrderStatus.ALL.getStatus()), OrderInfoDO::getStatus, status)
+                .eq( !status.equals(OrderStatusEnum.ALL.getStatus()), OrderInfoDO::getStatus, status)
                 .orderByDesc(OrderInfoDO::getCreateTime));
         List<OrderDTO> orderDTOs = new ArrayList<>();
         for(OrderInfoDO orderInfoDO : orderInfoDOs){
@@ -79,14 +79,14 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public boolean pay(String orderId) {
-        if (!getStatusByOrderId(orderId).equals(OrderStatus.TO_BE_PAY.getStatus())) {
+        if (!getStatusByOrderId(orderId).equals(OrderStatusEnum.TO_BE_PAY.getStatus())) {
             return false;
         }
         System.out.println("请求支付服务！");
         System.out.println("订单支付成功！");
         return orderInfoService.update(null, new LambdaUpdateWrapper<OrderInfoDO>()
                 .eq(OrderInfoDO::getOrderId, orderId)
-                .set(OrderInfoDO::getStatus, OrderStatus.PAID.getStatus())
+                .set(OrderInfoDO::getStatus, OrderStatusEnum.PAID.getStatus())
                 .set(OrderInfoDO::getPaymentTime, new Date())
         );
     }
@@ -94,13 +94,13 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public boolean refund(String orderId) {
-        if (!getStatusByOrderId(orderId).equals(OrderStatus.PAID.getStatus())) {
+        if (!getStatusByOrderId(orderId).equals(OrderStatusEnum.PAID.getStatus())) {
             return false;
         }
         System.out.println("申请退款中！");
         return orderInfoService.update(null, new LambdaUpdateWrapper<OrderInfoDO>()
                 .eq(OrderInfoDO::getOrderId, orderId)
-                .set(OrderInfoDO::getStatus, OrderStatus.REFUNDING.getStatus())
+                .set(OrderInfoDO::getStatus, OrderStatusEnum.REFUNDING.getStatus())
                 .set(OrderInfoDO::getPaymentTime, new Date())
         );
     }

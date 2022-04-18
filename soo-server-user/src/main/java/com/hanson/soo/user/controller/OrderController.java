@@ -1,7 +1,7 @@
 package com.hanson.soo.user.controller;
 
 
-import com.hanson.soo.user.pojo.OrderStatus;
+import com.hanson.soo.user.pojo.OrderStatusEnum;
 import com.hanson.soo.user.pojo.dto.OrderDTO;
 import com.hanson.soo.user.pojo.dto.OrderDetailDTO;
 import com.hanson.soo.user.pojo.vo.OrderVO;
@@ -31,14 +31,14 @@ public class OrderController {
         List<OrderVO> orderVOs = new ArrayList<>(orderDTOs.size());
         for (OrderDTO orderDTO :  orderDTOs) {
             OrderVO orderVO = ConverterUtils.orderDTO2VO(orderDTO);
-            orderVO.setStatus(OrderStatus.getValueByStatus(orderDTO.getStatus()));
+            orderVO.setStatus(OrderStatusEnum.getValueByStatus(orderDTO.getStatus()));
             orderVOs.add(orderVO);
         }
         return orderVOs;
     }
 
-    @PutMapping("/add")
-    public String add(@RequestParam("userId")String userId,
+    @PutMapping("/add/{userId}")
+    public String add(@PathVariable("userId")String userId,
                        @RequestBody List<OrderDetailDTO> orderDetailDTOs) {
         List<String> productIds = new ArrayList<>(orderDetailDTOs.size());
         orderDetailDTOs.forEach(orderDetailDTO -> productIds.add(orderDetailDTO.getProductId()));

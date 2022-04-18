@@ -8,7 +8,7 @@ import com.hanson.soo.common.pojo.entity.UserInfoDO;
 import com.hanson.soo.common.dao.UserInfoDao;
 import com.hanson.soo.common.pojo.entity.UserTokenDO;
 import com.hanson.soo.user.pojo.dto.UserInfoDTO;
-import com.hanson.soo.user.service.UserInfoService;
+import com.hanson.soo.user.service.UserService;
 import com.hanson.soo.user.utils.ConverterUtils;
 import com.hanson.soo.user.utils.TokenUtils;
 import com.hanson.soo.common.utils.UUIDUtils;
@@ -16,10 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 @Service
-public class UserInfoServiceImpl implements UserInfoService {
+public class UserServiceImpl implements UserService {
     @Autowired
     private UserInfoDao userInfoDao;
     @Autowired
@@ -41,8 +39,15 @@ public class UserInfoServiceImpl implements UserInfoService {
 
     @Override
     @Transactional(readOnly = true)
-    public boolean checkPhone(String phone) {
+    public boolean validatePhone(String phone) {
         return userInfoDao.selectCount(new LambdaQueryWrapper<UserInfoDO>().eq(UserInfoDO::getPhone, phone)) > 0;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean validateToken(String token) {
+        return userTokenDao.selectOne(new LambdaQueryWrapper<UserTokenDO>()
+                .eq(UserTokenDO::getToken, token)) != null;
     }
 
     @Override
@@ -109,10 +114,17 @@ public class UserInfoServiceImpl implements UserInfoService {
                 .eq(UserInfoDO::getUserId, userId)) > 0;
     }
 
+    @Override
     @Transactional
     public boolean updatePasswordByUserId(String userId, String password) {
         return userInfoDao.update(null, new LambdaUpdateWrapper<UserInfoDO>()
                 .set(UserInfoDO::getPassword, password)
                 .eq(UserInfoDO::getUserId, userId)) > 0;
+    }
+
+    @Override
+    public boolean deleteUserToken(String token) {
+        return userTokenDao.delete(new LambdaUpdateWrapper<UserTokenDO>()
+                .eq(UserTokenDO::getToken, token)) > 0;
     }
 }

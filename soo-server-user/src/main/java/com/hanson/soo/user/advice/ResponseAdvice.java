@@ -1,4 +1,4 @@
-package com.hanson.soo.admin.api;
+package com.hanson.soo.user.advice;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hanson.soo.common.api.ResponseData;

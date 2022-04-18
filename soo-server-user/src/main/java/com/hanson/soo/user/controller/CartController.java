@@ -27,6 +27,9 @@ public class CartController {
     public PageVO<List<CartVO>> query(@RequestParam("current") int current,
                               @RequestParam("pageSize") int pageSize,
                               @RequestParam("userId") String userId){
+        if (current <= 0) {
+            throw new IllegalArgumentException();
+        }
         PageListDTO<List<CartDTO>> pageListDTO = cartService.listCarts(current, pageSize, userId);
         List<CartVO> cartVOS = new ArrayList<>(pageListDTO.getList().size());
         pageListDTO.getList().forEach(cartDTO -> {
@@ -38,30 +41,38 @@ public class CartController {
         return new PageVO<>(cartVOS, pageListDTO.getTotal());
     }
 
-    @PostMapping("/add")
-    public boolean add(@RequestParam("userId") String userId,
+    @PostMapping("/add/{userId}")
+    public boolean add(@PathVariable("userId") String userId,
                        @RequestBody CartVO cartVO){
+        if (cartVO == null) {
+            return true;
+        }
         CartDTO cartDTO = ConverterUtils.cartVO2DTO(cartVO);
         cartDTO.setUserId(userId);
         return cartService.insertCart(cartDTO);
     }
 
-    @DeleteMapping("/delete")
-    public boolean delete(@RequestParam("userId") String userId,
+    @DeleteMapping("/delete/{userId}")
+    public boolean delete(@PathVariable("userId") String userId,
                           @RequestBody  List<String> productIds){
+        if (productIds == null || productIds.size() == 0) {
+            return true;
+        }
         return cartService.deleteCartsByUserIdAndProductId(userId, productIds);
     }
 
-    @PutMapping("/update")
-    public boolean update(@RequestParam("userId") String userId,
+    @PutMapping("/update/{userId}")
+    public boolean update(@PathVariable("userId") String userId,
                           @RequestBody  List<CartVO> cartVOS){
+        if (cartVOS == null || cartVOS.size() == 0) {
+            return true;
+        }
         List<CartDTO> cartDTOS = new ArrayList<>(cartVOS.size());
         cartVOS.forEach(cartVO -> {
             CartDTO cartDTO = ConverterUtils.cartVO2DTO(cartVO);
             cartDTO.setUserId(userId);
             cartDTOS.add(cartDTO);
         });
-        cartService.updateCartByUserId(userId, cartDTOS);
-        return true;
+        return cartService.updateCartByUserId(userId, cartDTOS);
     }
 }

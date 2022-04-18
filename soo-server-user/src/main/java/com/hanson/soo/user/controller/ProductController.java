@@ -24,6 +24,9 @@ public class ProductController {
     public PageListDTO<List<ProductInfoVO>> query(@RequestParam("current") int current,
                                                     @RequestParam("pageSize") int pageSize,
                                                     @ModelAttribute ProductQO query) {
+        if (current <= 0) {
+            throw new IllegalArgumentException();
+        }
         PageListDTO<List<ProductInfoDTO>> pageListDTO = productService.listProductInfos(current, pageSize, query);
         List<ProductInfoVO> productInfoVOs = new ArrayList<>(pageListDTO.getList().size());
         for (ProductInfoDTO productInfoDTO : pageListDTO.getList()) {
@@ -32,8 +35,8 @@ public class ProductController {
         return new PageListDTO<>(productInfoVOs, pageListDTO.getTotal());
     }
 
-    @GetMapping("/predict")
-    public List<ProductInfoVO> predict(@RequestParam("userId")String userId) {
+    @GetMapping("/predict/{userId}")
+    public List<ProductInfoVO> predict(@PathVariable("userId") String userId) {
         List<ProductInfoDTO> productInfoDTOs = productService.predict(userId);
         List<ProductInfoVO> productInfoVOs = new ArrayList<>(productInfoDTOs.size());
         for (ProductInfoDTO productInfoDTO : productInfoDTOs) {
@@ -42,8 +45,8 @@ public class ProductController {
         return  productInfoVOs;
     }
 
-    @GetMapping("/detail")
-    public ProductVO query(@RequestParam("productId") String productId) {
+    @GetMapping("/detail/{productId}")
+    public ProductVO query(@PathVariable("productId")String productId) {
         ProductDTO productDTO = productService.getProductByProductId(productId);
         return ConverterUtils.productDTO2VO(productDTO);
     }

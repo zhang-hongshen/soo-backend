@@ -46,8 +46,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDTO getProductByProductId(String productId) {
-        final String redisKey = REDIS_KEY_PREFIX + productId;
         //查询缓存
+        final String redisKey = REDIS_KEY_PREFIX + productId;
         String jsonStr = redisService.get(redisKey);
         if (StringUtils.isNotBlank(jsonStr)) {
             return JSON.parseObject(jsonStr, ProductDTO.class);
@@ -63,7 +63,7 @@ public class ProductServiceImpl implements ProductService {
         productDTO.setDepartures(departures);
         productDTO.setImageUrls(imageUrls);
         BeanUtils.copyProperties(productInfoDTO, productDTO);
-        redisService.set(redisKey, JSON.toJSONString(productDTO), 2, TimeUnit.HOURS);
+        redisService.set(redisKey, JSON.toJSONString(productDTO), 24, TimeUnit.HOURS);
         return productDTO;
     }
 }
