@@ -19,3 +19,5 @@ soo项目的服务端代码，soo项目是一个推荐系统。目前正在开�
 ![image](https://user-images.githubusercontent.com/51166261/163823803-7b84857e-89c1-464d-a5cb-a887b60f7ee1.png)
 多语言
 ![image](https://user-images.githubusercontent.com/51166261/163825486-74874a93-ce1c-434a-8bed-ce74f4b16aa7.png)
+## 项目后台管理系统界面预览图
+![image](https://user-images.githubusercontent.com/51166261/164269360-f482ea25-6d23-42e1-89d0-2cea79c75646.png)
