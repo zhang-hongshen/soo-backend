@@ -10,11 +10,11 @@ import org.springframework.beans.BeanUtils;
 @Getter
 @Setter
 public class MyExceptionHandler {
-    ResponseCode responseCode;
+    private ResponseCode responseCode;
 
     public static MyExceptionHandler fail(ResponseCode responseCode) {
         MyExceptionHandler exceptionHandler = new MyExceptionHandler();
-        BeanUtils.copyProperties(responseCode, exceptionHandler);
+        exceptionHandler.setResponseCode(responseCode);
         return exceptionHandler;
     }
 }

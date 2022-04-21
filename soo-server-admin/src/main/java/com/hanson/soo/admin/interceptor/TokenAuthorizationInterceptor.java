@@ -25,6 +25,10 @@ public class TokenAuthorizationInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         System.out.println("preHandle");
         String token = request.getHeader("Authorization");
+        if (StringUtils.isBlank(token)) {
+            // token异常
+            throw new TokenAuthorizationException();
+        }
         if (StringUtils.isNotBlank(redisService.get(REDIS_KEY_PREFIX + ":" + token))) {
             // token还未过期
             return true;

@@ -40,6 +40,7 @@ public class ResponseAdvice implements ResponseBodyAdvice<Object> {
     @Override
     public Object beforeBodyWrite(Object o, MethodParameter methodParameter, MediaType mediaType, Class<? extends HttpMessageConverter<?>> aClass, ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse) {
         if (o instanceof MyExceptionHandler) {
+            System.out.println("错误码："+ ((MyExceptionHandler) o).getResponseCode().getCode() + "错误信息："+ ((MyExceptionHandler) o).getResponseCode().getMessage());
             return ResponseData.fail(((MyExceptionHandler) o).getResponseCode());
         } else if(o instanceof String) {
             return objectMapper.writeValueAsString(ResponseData.success(o));
