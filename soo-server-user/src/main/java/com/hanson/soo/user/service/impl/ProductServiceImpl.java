@@ -2,7 +2,7 @@ package com.hanson.soo.user.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
-import com.hanson.soo.common.pojo.dto.PageListDTO;
+import com.hanson.soo.common.pojo.dto.PageDTO;
 import com.hanson.soo.common.pojo.entity.ProductDepartureDO;
 import com.hanson.soo.common.pojo.entity.ProductImageDO;
 import com.hanson.soo.common.service.RedisService;
@@ -34,7 +34,7 @@ public class ProductServiceImpl implements ProductService {
     final String REDIS_KEY_PREFIX = "soo:product:";
 
     @Override
-    public PageListDTO<List<ProductInfoDTO>> listProductInfos(int current, int pageSize, ProductQO query) {
+    public PageDTO<List<ProductInfoDTO>> listProductInfos(int current, int pageSize, ProductQO query) {
         return productInfoService.listProductInfos(current, pageSize, query);
     }
 

@@ -1,35 +1,31 @@
 package com.hanson.soo.user.service.impl;
 
-import com.hanson.soo.common.dao.CityDao;
-import com.hanson.soo.common.pojo.entity.CityDO;
+import com.hanson.soo.user.dao.CityDao;
 import com.hanson.soo.common.service.RedisService;
 import com.hanson.soo.user.service.CityService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class CityServiceImpl implements CityService {
     @Autowired
     private CityDao cityDao;
     @Autowired
-    private StringRedisTemplate stringRedisTemplate;
+    private RedisService redisService;
 
     final String REDIS_KEY= "soo:city";
 
     @Override
-    public Set<String> listCities() {
-        Set<String> cities = stringRedisTemplate.opsForSet().members(REDIS_KEY);
-        if (cities == null || cities.isEmpty()) {
-            List<CityDO> cityDOs = cityDao.selectList(null);
-            cities = new HashSet<>();
-            for (CityDO cityDO : cityDOs) {
-                cities.add(cityDO.getName());
-            }
+    public List<String> listCityNames() {
+        List<String> cities = new ArrayList<>(redisService.sMembers(REDIS_KEY));
+        if (cities.isEmpty()) {
+            cities = cityDao.listCityNames();
+            cities.forEach(city -> redisService.sAdd(REDIS_KEY, city));
+            redisService.expire(REDIS_KEY, 24, TimeUnit.HOURS);
         }
         return cities;
     }

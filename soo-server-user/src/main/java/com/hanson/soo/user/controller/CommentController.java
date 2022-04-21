@@ -1,6 +1,6 @@
 package com.hanson.soo.user.controller;
 
-import com.hanson.soo.common.pojo.dto.PageListDTO;
+import com.hanson.soo.common.pojo.dto.PageDTO;
 import com.hanson.soo.user.pojo.dto.CommentDTO;
 import com.hanson.soo.user.pojo.vo.CommentVO;
 import com.hanson.soo.user.service.CommentService;
@@ -21,21 +21,21 @@ public class CommentController {
     private UserService userService;
 
     @GetMapping("/query")
-    public PageListDTO<List<CommentVO>> query(@RequestParam("current") int current,
-                                              @RequestParam("pageSize") int pageSize,
-                                              @RequestParam("productId") String productId){
+    public PageDTO<List<CommentVO>> query(@RequestParam("current") int current,
+                                          @RequestParam("pageSize") int pageSize,
+                                          @RequestParam("productId") String productId){
         if (current <= 0) {
             throw new IllegalArgumentException();
         }
-        PageListDTO<List<CommentDTO>> pageListDTO = commentService.listCommentsByProductId(current, pageSize, productId);
-        List<CommentVO> commentVOs = new ArrayList<>(pageListDTO.getList().size());
-        for(CommentDTO commentDTO : pageListDTO.getList()){
+        PageDTO<List<CommentDTO>> pageDTO = commentService.listCommentsByProductId(current, pageSize, productId);
+        List<CommentVO> commentVOs = new ArrayList<>(pageDTO.getList().size());
+        for(CommentDTO commentDTO : pageDTO.getList()){
             String username = userService.getUserInfoByUserId(commentDTO.getUserId()).username;
             CommentVO commentVO = ConverterUtils.commentDTO2VO(commentDTO);
             commentVO.setUsername(username);
             commentVOs.add(commentVO);
         }
-        return new PageListDTO<>(commentVOs, pageListDTO.getTotal());
+        return new PageDTO<>(commentVOs, pageDTO.getTotal());
     }
 
     @PostMapping("/add")

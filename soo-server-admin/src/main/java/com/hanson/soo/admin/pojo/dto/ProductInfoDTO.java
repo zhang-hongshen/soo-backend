@@ -8,8 +8,7 @@ import java.math.BigDecimal;
 public class ProductInfoDTO {
     String productId;
     String productName;
-    String departure;
     String destination;
     BigDecimal price;
-    Boolean status;
+    Integer status;
 }

@@ -3,8 +3,8 @@ package com.hanson.soo.user.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.hanson.soo.common.dao.CommentDao;
-import com.hanson.soo.common.pojo.dto.PageListDTO;
+import com.hanson.soo.user.dao.CommentDao;
+import com.hanson.soo.common.pojo.dto.PageDTO;
 import com.hanson.soo.common.pojo.entity.CommentDO;
 import com.hanson.soo.user.pojo.dto.CommentDTO;
 import com.hanson.soo.user.service.CommentService;
@@ -23,15 +23,13 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional(readOnly = true)
-    public PageListDTO<List<CommentDTO>> listCommentsByProductId(int current, int pageSize, String productId) {
+    public PageDTO<List<CommentDTO>> listCommentsByProductId(int current, int pageSize, String productId) {
         IPage<CommentDO> page = commentDao.selectPage(new Page<>(current, pageSize), new LambdaQueryWrapper<CommentDO>()
                 .eq(CommentDO::getProductId, productId)
                 .orderByDesc(CommentDO::getCreateTime));
         List<CommentDTO> commentDTOs = new ArrayList<>();
-        for(CommentDO commentDO : page.getRecords()){
-            commentDTOs.add(ConverterUtils.commentDO2DTO(commentDO));
-        }
-        return new PageListDTO<>(commentDTOs, (int) page.getTotal());
+        page.getRecords().forEach(commentDO -> commentDTOs.add(ConverterUtils.commentDO2DTO(commentDO)));
+        return new PageDTO<>(commentDTOs, (int) page.getTotal());
     }
 
     @Override

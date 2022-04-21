@@ -4,16 +4,15 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.hanson.soo.common.dao.CartDao;
-import com.hanson.soo.common.pojo.dto.PageListDTO;
+import com.hanson.soo.common.pojo.dto.PageDTO;
 import com.hanson.soo.common.pojo.entity.CartDO;
+import com.hanson.soo.user.dao.CartDao;
 import com.hanson.soo.user.pojo.dto.CartDTO;
 import com.hanson.soo.user.service.CartService;
 import com.hanson.soo.user.utils.ConverterUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,13 +38,13 @@ public class CartServiceImpl implements CartService {
 
     @Override
     @Transactional(readOnly = true)
-    public PageListDTO<List<CartDTO>> listCarts(int current, int pageSize, String userId){
+    public PageDTO<List<CartDTO>> listCarts(int current, int pageSize, String userId){
         IPage<CartDO> page = cartDao.selectPage(new Page<>(current, pageSize), new LambdaQueryWrapper<CartDO>()
                 .eq(CartDO::getUserId, userId)
                 .orderByDesc(CartDO::getCreateTime));
         List<CartDTO> cartDTOs = new ArrayList<>(page.getRecords().size());
         page.getRecords().forEach(cartDO -> cartDTOs.add(ConverterUtils.cartDO2DTO(cartDO)));
-        return new PageListDTO<>(cartDTOs, (int) page.getTotal());
+        return new PageDTO<>(cartDTOs, (int) page.getTotal());
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.hanson.soo.user.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.hanson.soo.common.dao.ProductDepartureDao;
+import com.hanson.soo.user.dao.ProductDepartureDao;
 import com.hanson.soo.common.pojo.entity.ProductDepartureDO;
 import com.hanson.soo.user.service.ProductDepartureService;
 import org.springframework.beans.factory.annotation.Autowired;

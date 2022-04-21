@@ -1,7 +1,7 @@
 package com.hanson.soo.user.handler;
 
-import com.hanson.soo.common.api.ResponseCode;
-import com.hanson.soo.common.api.ResponseData;
+import com.hanson.soo.common.response.ResponseCode;
+import com.hanson.soo.common.response.ResponseData;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;

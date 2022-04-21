@@ -1,7 +1,7 @@
 package com.hanson.soo.user.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.hanson.soo.common.dao.ConsigneeDao;
+import com.hanson.soo.user.dao.ConsigneeDao;
 import com.hanson.soo.common.pojo.entity.ConsigneeDO;
 import com.hanson.soo.user.pojo.dto.ConsigneeDTO;
 import com.hanson.soo.user.service.ConsigneeService;

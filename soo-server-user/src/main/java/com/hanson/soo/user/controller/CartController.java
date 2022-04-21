@@ -1,6 +1,6 @@
 package com.hanson.soo.user.controller;
 
-import com.hanson.soo.common.pojo.dto.PageListDTO;
+import com.hanson.soo.common.pojo.dto.PageDTO;
 import com.hanson.soo.common.pojo.vo.PageVO;
 import com.hanson.soo.user.pojo.dto.CartDTO;
 import com.hanson.soo.user.pojo.dto.ProductInfoDTO;
@@ -30,15 +30,15 @@ public class CartController {
         if (current <= 0) {
             throw new IllegalArgumentException();
         }
-        PageListDTO<List<CartDTO>> pageListDTO = cartService.listCarts(current, pageSize, userId);
-        List<CartVO> cartVOS = new ArrayList<>(pageListDTO.getList().size());
-        pageListDTO.getList().forEach(cartDTO -> {
+        PageDTO<List<CartDTO>> pageDTO = cartService.listCarts(current, pageSize, userId);
+        List<CartVO> cartVOS = new ArrayList<>(pageDTO.getList().size());
+        pageDTO.getList().forEach(cartDTO -> {
             CartVO cartVO = ConverterUtils.cartDTO2VO(cartDTO);
             ProductInfoDTO productInfoDTO = productInfoService.getProductInfoByProductId(cartVO.getProductId());
             BeanUtils.copyProperties(productInfoDTO, cartVO);
             cartVOS.add(cartVO);
         });
-        return new PageVO<>(cartVOS, pageListDTO.getTotal());
+        return new PageVO<>(cartVOS, pageDTO.getTotal());
     }
 
     @PostMapping("/add/{userId}")

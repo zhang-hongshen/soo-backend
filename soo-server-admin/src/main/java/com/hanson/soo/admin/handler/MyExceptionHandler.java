@@ -1,20 +1,20 @@
 package com.hanson.soo.admin.handler;
 
-import com.hanson.soo.common.api.ResponseCode;
-import com.hanson.soo.common.api.ResponseData;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
+import com.hanson.soo.common.response.ResponseCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.beans.BeanUtils;
 
-/**
- * 全局异常处理
- */
-@RestControllerAdvice
+@NoArgsConstructor
+@Getter
+@Setter
 public class MyExceptionHandler {
+    ResponseCode responseCode;
 
-    @ExceptionHandler(Exception.class)
-    @ResponseBody
-    public ResponseData<String> exception(Exception e) {
-        return ResponseData.fail(ResponseCode.RC500);
+    public static MyExceptionHandler fail(ResponseCode responseCode) {
+        MyExceptionHandler exceptionHandler = new MyExceptionHandler();
+        BeanUtils.copyProperties(responseCode, exceptionHandler);
+        return exceptionHandler;
     }
 }

@@ -15,10 +15,6 @@ public class WebConfig implements WebMvcConfigurer {
     @Autowired
     private TokenAuthorizationInterceptor tokenAuthorizationInterceptor;
 
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        WebMvcConfigurer.super.addCorsMappings(registry);
-    }
 
     /**
      * token验证拦截器

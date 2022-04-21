@@ -1,23 +1,22 @@
 package com.hanson.soo.admin.controller;
 
-
-import com.hanson.soo.common.service.RedisService;
+import com.hanson.soo.admin.service.CityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Set;
+import java.util.List;
 
 
 @RestController
 @RequestMapping("/api/city")
 public class CityController {
     @Autowired
-    private RedisService redisService;
+    private CityService cityService;
 
     @GetMapping
-    public Set<String> query() {
-        return redisService.sMembers("soo:city");
+    public List<String> query() {
+        return cityService.listCityNames();
     }
 }

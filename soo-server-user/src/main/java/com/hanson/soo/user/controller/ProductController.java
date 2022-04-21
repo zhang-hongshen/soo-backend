@@ -1,6 +1,6 @@
 package com.hanson.soo.user.controller;
 
-import com.hanson.soo.common.pojo.dto.PageListDTO;
+import com.hanson.soo.common.pojo.dto.PageDTO;
 import com.hanson.soo.user.pojo.dto.ProductDTO;
 import com.hanson.soo.user.pojo.dto.ProductInfoDTO;
 import com.hanson.soo.user.pojo.qo.ProductQO;
@@ -21,18 +21,18 @@ public class ProductController {
     private ProductService productService;
 
     @GetMapping("/query")
-    public PageListDTO<List<ProductInfoVO>> query(@RequestParam("current") int current,
-                                                    @RequestParam("pageSize") int pageSize,
-                                                    @ModelAttribute ProductQO query) {
+    public PageDTO<List<ProductInfoVO>> query(@RequestParam("current") int current,
+                                              @RequestParam("pageSize") int pageSize,
+                                              @ModelAttribute ProductQO query) {
         if (current <= 0) {
             throw new IllegalArgumentException();
         }
-        PageListDTO<List<ProductInfoDTO>> pageListDTO = productService.listProductInfos(current, pageSize, query);
-        List<ProductInfoVO> productInfoVOs = new ArrayList<>(pageListDTO.getList().size());
-        for (ProductInfoDTO productInfoDTO : pageListDTO.getList()) {
+        PageDTO<List<ProductInfoDTO>> pageDTO = productService.listProductInfos(current, pageSize, query);
+        List<ProductInfoVO> productInfoVOs = new ArrayList<>(pageDTO.getList().size());
+        for (ProductInfoDTO productInfoDTO : pageDTO.getList()) {
             productInfoVOs.add(ConverterUtils.productInfoDTO2VO(productInfoDTO));
         }
-        return new PageListDTO<>(productInfoVOs, pageListDTO.getTotal());
+        return new PageDTO<>(productInfoVOs, pageDTO.getTotal());
     }
 
     @GetMapping("/predict/{userId}")

@@ -9,7 +9,8 @@ public interface RedisService {
     void set(String key, String value);
     void set(String key, String value, long time, TimeUnit timeUnit);
     String sPop(String key);
-    void sAdd(String key, String value);
+    void sAdd(String key, String... values);
     Set<String> sMembers(String key);
 
+    void delete(String key);
 }

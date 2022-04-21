@@ -1,7 +1,7 @@
 package com.hanson.soo.user.advice;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hanson.soo.common.api.ResponseData;
+import com.hanson.soo.common.response.ResponseData;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;

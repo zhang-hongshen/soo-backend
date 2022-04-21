@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hanson.soo.admin.dao.AdminTokenDao">
+    <select id="getAdminIdByToken" resultType="string" >
+        select admin_id from soo_admin_token
+        <where>
+            token = #{token}
+        </where>
+    </select>
+    <insert id="insertOrUpdateTokenByAdminId">
+        insert into soo_admin_token(admin_id, token) values(#{adminId}, #{token})
+        on duplicate key update token = #{token}
+    </insert>
+</mapper>

@@ -1,7 +1,7 @@
 package com.hanson.soo.user.service;
 
-import java.util.Set;
+import java.util.List;
 
 public interface CityService {
-    Set<String> listCities();
+    List<String> listCityNames();
 }

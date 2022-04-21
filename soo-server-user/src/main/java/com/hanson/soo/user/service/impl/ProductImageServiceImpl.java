@@ -1,7 +1,7 @@
 package com.hanson.soo.user.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.hanson.soo.common.dao.ProductImageDao;
+import com.hanson.soo.user.dao.ProductImageDao;
 import com.hanson.soo.common.pojo.entity.ProductImageDO;
 import com.hanson.soo.user.service.ProductImageService;
 import org.springframework.beans.factory.annotation.Autowired;

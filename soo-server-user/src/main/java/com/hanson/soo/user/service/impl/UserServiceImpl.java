@@ -3,9 +3,9 @@ package com.hanson.soo.user.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
-import com.hanson.soo.common.dao.UserTokenDao;
+import com.hanson.soo.user.dao.UserTokenDao;
 import com.hanson.soo.common.pojo.entity.UserInfoDO;
-import com.hanson.soo.common.dao.UserInfoDao;
+import com.hanson.soo.user.dao.UserInfoDao;
 import com.hanson.soo.common.pojo.entity.UserTokenDO;
 import com.hanson.soo.user.pojo.dto.UserInfoDTO;
 import com.hanson.soo.user.service.UserService;
@@ -79,7 +79,7 @@ public class UserServiceImpl implements UserService {
             userTokenDao.updateById(userTokenDO);
         }
         return token;
-}
+    }
 
     @Override
     @Transactional(readOnly = true)

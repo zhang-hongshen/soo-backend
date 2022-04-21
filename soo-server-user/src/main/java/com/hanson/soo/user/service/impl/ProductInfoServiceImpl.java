@@ -4,13 +4,14 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.hanson.soo.common.dao.ProductDepartureDao;
-import com.hanson.soo.common.dao.ProductImageDao;
-import com.hanson.soo.common.dao.ProductInfoDao;
-import com.hanson.soo.common.pojo.dto.PageListDTO;
+import com.hanson.soo.user.dao.ProductDepartureDao;
+import com.hanson.soo.user.dao.ProductImageDao;
+import com.hanson.soo.user.dao.ProductInfoDao;
+import com.hanson.soo.common.pojo.dto.PageDTO;
 import com.hanson.soo.common.pojo.entity.ProductDepartureDO;
 import com.hanson.soo.common.pojo.entity.ProductImageDO;
 import com.hanson.soo.common.pojo.entity.ProductInfoDO;
+import com.hanson.soo.user.pojo.ProductStatusEnum;
 import com.hanson.soo.user.pojo.dto.ProductInfoDTO;
 import com.hanson.soo.user.pojo.qo.ProductQO;
 import com.hanson.soo.user.service.ProductInfoService;
@@ -35,11 +36,11 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 
     @Override
     @Transactional(readOnly = true)
-    public PageListDTO<List<ProductInfoDTO>> listProductInfos(int current, int pageSize, ProductQO query) {
+    public PageDTO<List<ProductInfoDTO>> listProductInfos(int current, int pageSize, ProductQO query) {
         List<ProductInfoDO> productInfoDOs = productInfoDao.selectList(new LambdaQueryWrapper<ProductInfoDO>()
+                .eq(ProductInfoDO::getStatus, ProductStatusEnum.ON_SALE.getStatus())
                 .like(StringUtils.isNotBlank(query.getDestination()), ProductInfoDO::getDestination, query.getDestination())
-                .like(StringUtils.isNotBlank(query.getProductName()), ProductInfoDO::getProductName, query.getProductName())
-                .eq(ProductInfoDO::getStatus, Boolean.TRUE));
+                .like(StringUtils.isNotBlank(query.getProductName()), ProductInfoDO::getProductName, query.getProductName()));
         Set<String> productIds = new HashSet<>();
         productInfoDOs.forEach((productInfoDO) -> productIds.add(productInfoDO.getProductId()));
         List<ProductDepartureDO> productDepartureDOs = productDepartureDao.selectList(new LambdaQueryWrapper<ProductDepartureDO>()
@@ -49,7 +50,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
         //取交集
         productIds.retainAll(productIdsByDeparture);
         if(productIds.isEmpty()){
-            return new PageListDTO<>(new ArrayList<>(), 0);
+            return new PageDTO<>(new ArrayList<>(), 0);
         }
         //分页查询
         IPage<ProductInfoDO> page = productInfoDao.selectPage(new Page<>(current, pageSize), new LambdaQueryWrapper<ProductInfoDO>()
@@ -59,13 +60,13 @@ public class ProductInfoServiceImpl implements ProductInfoService {
         for (ProductInfoDO productInfoDO : page.getRecords()) {
             ProductInfoDTO productInfoDTO = ConverterUtils.productInfoDO2DTO(productInfoDO);
             //获取产品封面照片
-            String imageUrl = productImageDao.selectOne(new LambdaQueryWrapper<ProductImageDO>()
-                    .eq(ProductImageDO::getProductId, productInfoDTO.getProductId())
-                    .last("limit 1")).getUrl();
-            productInfoDTO.setImageUrl(imageUrl);
+//            String imageUrl = productImageDao.selectOne(new LambdaQueryWrapper<ProductImageDO>()
+//                    .eq(ProductImageDO::getProductId, productInfoDTO.getProductId())
+//                    .last("limit 1")).getUrl();
+//            productInfoDTO.setImageUrl(imageUrl);
             productInfoDTOs.add(productInfoDTO);
         }
-        return new PageListDTO<>(productInfoDTOs, (int) page.getTotal());
+        return new PageDTO<>(productInfoDTOs, (int) page.getTotal());
     }
 
     @Override

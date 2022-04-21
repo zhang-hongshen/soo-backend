@@ -15,12 +15,14 @@ public class ProductInfoDO {
     String productId;
     @TableField("product_name")
     String productName;
+    @TableField("image_url")
+    String imageUrl;
     @TableField("destination")
     String destination;
     @TableField("price")
     BigDecimal price;
     @TableField("status")
-    Boolean status;
+    Integer status;
     @TableField("create_time")
     Date createTime;
     @TableField("update_time")

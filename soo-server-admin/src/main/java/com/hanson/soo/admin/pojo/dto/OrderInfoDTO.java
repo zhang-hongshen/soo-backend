@@ -9,6 +9,8 @@ import java.util.Date;
 public class OrderInfoDTO {
     String orderId;
     String userId;
+    Integer status;
     BigDecimal totalAmount;
+    Date paymentTime;
     Date createTime;
 }
