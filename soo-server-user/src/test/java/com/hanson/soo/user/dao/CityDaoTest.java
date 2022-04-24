@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.concurrent.locks.ReentrantLock;
+
 @SpringBootTest
 class CityDaoTest {
     @Autowired
@@ -13,5 +15,7 @@ class CityDaoTest {
     @Test
     void listCityNames() {
         System.out.println(cityDao.listCityNames());
+        ReentrantLock lock = new ReentrantLock();
+        lock.hasWaiters(lock.newCondition());
     }
 }

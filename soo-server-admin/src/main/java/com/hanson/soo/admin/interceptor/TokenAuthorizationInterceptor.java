@@ -29,7 +29,7 @@ public class TokenAuthorizationInterceptor implements HandlerInterceptor {
             // token异常
             throw new TokenAuthorizationException();
         }
-        if (StringUtils.isNotBlank(redisService.get(REDIS_KEY_PREFIX + ":" + token))) {
+        if (redisService.exists(REDIS_KEY_PREFIX + ":" + token)) {
             // token还未过期
             return true;
         }

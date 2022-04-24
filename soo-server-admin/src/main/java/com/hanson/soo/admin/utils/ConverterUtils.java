@@ -1,11 +1,9 @@
 package com.hanson.soo.admin.utils;
 
+import com.hanson.soo.admin.pojo.OrderStatusEnum;
+import com.hanson.soo.admin.pojo.ProductStatusEnum;
 import com.hanson.soo.admin.pojo.dto.*;
-import com.hanson.soo.admin.pojo.qo.OrderInfoQO;
-import com.hanson.soo.admin.pojo.vo.AdminVO;
-import com.hanson.soo.admin.pojo.vo.OrderInfoVO;
-import com.hanson.soo.admin.pojo.vo.ProductVO;
-import com.hanson.soo.admin.pojo.vo.UserInfoVO;
+import com.hanson.soo.admin.pojo.vo.*;
 import com.hanson.soo.common.pojo.entity.AdminDO;
 import com.hanson.soo.common.pojo.entity.OrderInfoDO;
 import com.hanson.soo.common.pojo.entity.ProductInfoDO;
@@ -47,12 +45,14 @@ public class ConverterUtils {
     public static ProductVO productDTO2VO(ProductDTO productDTO) {
         ProductVO productVO = new ProductVO();
         BeanUtils.copyProperties(productDTO, productVO);
+        productVO.setStatus(ProductStatusEnum.getValueByStatus(productDTO.getStatus()));
         return  productVO;
     }
 
     public static ProductDTO productVO2DTO(ProductVO productVO) {
         ProductDTO productDTO = new ProductDTO();
         BeanUtils.copyProperties(productVO, productDTO);
+        productDTO.setStatus(ProductStatusEnum.getStatusByValue(productVO.getStatus()));
         return  productDTO;
     }
 
@@ -68,6 +68,14 @@ public class ConverterUtils {
         return productInfoDTO;
     }
 
+    public static ProductInfoVO productInfoDTO2VO(ProductInfoDTO productInfoDTO){
+        ProductInfoVO productInfoVO = new ProductInfoVO();
+        BeanUtils.copyProperties(productInfoDTO, productInfoVO);
+        productInfoVO.setStatus(ProductStatusEnum.getValueByStatus(productInfoDTO.getStatus()));
+        return productInfoVO;
+    }
+
+
     public static OrderInfoDTO orderInfoDO2DTO(OrderInfoDO orderInfoDO){
         OrderInfoDTO orderInfoDTO = new OrderInfoDTO();
         BeanUtils.copyProperties(orderInfoDO, orderInfoDTO);
@@ -77,18 +85,14 @@ public class ConverterUtils {
     public static OrderInfoVO orderInfoDTO2VO(OrderInfoDTO orderInfoDTO){
         OrderInfoVO orderInfoVO = new OrderInfoVO();
         BeanUtils.copyProperties(orderInfoDTO, orderInfoVO);
+        orderInfoVO.setStatus(OrderStatusEnum.getValueByStatus(orderInfoDTO.getStatus()));
         return orderInfoVO;
     }
 
     public static OrderInfoDTO orderInfoVO2DTO(OrderInfoVO orderInfoVO){
         OrderInfoDTO orderInfoDTO = new OrderInfoDTO();
         BeanUtils.copyProperties(orderInfoVO, orderInfoDTO);
-        return orderInfoDTO;
-    }
-
-    public static OrderInfoDTO orderInfoQO2DTO(OrderInfoQO orderInfoQO){
-        OrderInfoDTO orderInfoDTO = new OrderInfoDTO();
-        BeanUtils.copyProperties(orderInfoQO, orderInfoDTO);
+        orderInfoDTO.setStatus(OrderStatusEnum.getStatusByValue(orderInfoVO.getStatus()));
         return orderInfoDTO;
     }
 }

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -35,13 +36,13 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public PageDTO<List<ProductInfoDTO>> listProductInfos(int current, int pageSize, ProductQO query) {
-        return productInfoService.listProductInfos(current, pageSize, query);
+        return productInfoService.listProductInfo(current, pageSize, query);
     }
 
     @Override
     public List<ProductInfoDTO> predict(String userId) {
         List<String> productIds = recommendService.predict(userId);
-        return productInfoService.listProductInfosByProductId(productIds);
+        return productInfoService.listProductInfoByProductId(productIds);
     }
 
     @Override
@@ -52,16 +53,10 @@ public class ProductServiceImpl implements ProductService {
         if (StringUtils.isNotBlank(jsonStr)) {
             return JSON.parseObject(jsonStr, ProductDTO.class);
         }
-        List<ProductDepartureDO> productDepartureDOs = productDepartureService.listProductDeparturesByProductId(productId);
-        List<ProductImageDO> productImageDOs = productImageService.listProductImagesByProductId(productId);
         ProductInfoDTO productInfoDTO = productInfoService.getProductInfoByProductId(productId);
-        List<String> departures = new ArrayList<>(productDepartureDOs.size());
-        List<String> imageUrls = new ArrayList<>(productImageDOs.size());
-        productImageDOs.forEach((productImageDO) -> imageUrls.add(productImageDO.getUrl()));
-        productDepartureDOs.forEach((productDepartureDO) -> departures.add(productDepartureDO.getDeparture()));
         ProductDTO productDTO = new ProductDTO();
-        productDTO.setDepartures(departures);
-        productDTO.setImageUrls(imageUrls);
+        productDTO.setDepartures(productDepartureService.listProductDepartureByProductId(productId));
+        productDTO.setImageUrls(productImageService.listProductImageUrlByProductId(productId));
         BeanUtils.copyProperties(productInfoDTO, productDTO);
         redisService.set(redisKey, JSON.toJSONString(productDTO), 24, TimeUnit.HOURS);
         return productDTO;

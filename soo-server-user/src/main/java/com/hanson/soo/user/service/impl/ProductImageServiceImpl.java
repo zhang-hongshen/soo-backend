@@ -15,7 +15,7 @@ public class ProductImageServiceImpl implements ProductImageService {
     private ProductImageDao productImageDao;
 
     @Override
-    public List<ProductImageDO> listProductImagesByProductId(String productId) {
+    public List<ProductImageDO> listProductImageByProductId(String productId) {
         return  productImageDao.selectList(new LambdaQueryWrapper<ProductImageDO>()
                 .eq(ProductImageDO::getProductId, productId)
                 .eq(ProductImageDO::getStatus, Boolean.TRUE));
@@ -26,5 +26,10 @@ public class ProductImageServiceImpl implements ProductImageService {
         return productImageDao.selectOne(new LambdaQueryWrapper<ProductImageDO>()
                 .eq(ProductImageDO::getProductId, productId)
                 .last("limit 1")).getUrl();
+    }
+
+    @Override
+    public List<String> listProductImageUrlByProductId(String productId) {
+        return productImageDao.listProductImageUrlByProductId(productId);
     }
 }

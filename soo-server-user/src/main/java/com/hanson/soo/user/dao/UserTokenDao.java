@@ -6,4 +6,5 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface UserTokenDao extends BaseMapper<UserTokenDO> {
+    void insertOrUpdateTokenByUserId(String userId, String token);
 }

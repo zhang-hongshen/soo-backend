@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/product")
@@ -28,29 +29,21 @@ public class ProductController {
                                               @RequestParam("pageSize")int pageSize,
                                               @RequestBody ProductQO productQO) {
         PageDTO<List<ProductInfoDTO>> pageDTO = productService.listProductInfo(current,pageSize, productQO);
-        List<ProductInfoVO> productInfoVOs = new ArrayList<>();
-        for (ProductInfoDTO productInfoDTO : pageDTO.getList()) {
-            ProductInfoVO productInfoVO = new ProductInfoVO();
-            BeanUtils.copyProperties(productInfoDTO, productInfoVO);
-            productInfoVO.setStatus(ProductStatusEnum.getValueByStatus(productInfoDTO.getStatus()));
-            productInfoVOs.add(productInfoVO);
-        }
+        List<ProductInfoVO> productInfoVOs = pageDTO.getList().stream()
+                .map(ConverterUtils::productInfoDTO2VO)
+                .collect(Collectors.toList());
         return new PageVO<>(productInfoVOs, pageDTO.getTotal());
     }
 
     @GetMapping("/detail/{productId}")
     public ProductVO query(@PathVariable("productId")String productId) {
         ProductDTO productDTO = productService.getProductByProductId(productId);
-        ProductVO productVO = ConverterUtils.productDTO2VO(productDTO);
-        productVO.setStatus(ProductStatusEnum.getValueByStatus(productDTO.getStatus()));
-        return productVO;
+        return ConverterUtils.productDTO2VO(productDTO);
     }
 
     @PutMapping("/update")
     public boolean update(@RequestBody ProductVO productVO) {
-        ProductDTO productDTO = ConverterUtils.productVO2DTO(productVO);
-        productDTO.setStatus(ProductStatusEnum.getStatusByValue(productVO.getStatus()));
-        return productService.updateProductByProductId(productDTO);
+        return productService.updateProductByProductId(ConverterUtils.productVO2DTO(productVO));
     }
 
     @DeleteMapping("/delete")
@@ -60,8 +53,6 @@ public class ProductController {
 
     @PostMapping("/add")
     public boolean insert(@RequestBody ProductVO productVO) {
-        ProductDTO productDTO = ConverterUtils.productVO2DTO(productVO);
-        productDTO.setStatus(ProductStatusEnum.getStatusByValue(productVO.getStatus()));
-        return productService.insert(productDTO);
+        return productService.insert(ConverterUtils.productVO2DTO(productVO));
     }
 }

@@ -19,6 +19,7 @@ import com.hanson.soo.common.pojo.dto.PageDTO;
 import com.hanson.soo.common.pojo.entity.ProductDepartureDO;
 import com.hanson.soo.common.pojo.entity.ProductImageDO;
 import com.hanson.soo.common.pojo.entity.ProductInfoDO;
+import com.hanson.soo.common.service.RedisService;
 import com.hanson.soo.common.utils.UUIDUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -38,6 +40,10 @@ public class ProductServiceImpl implements ProductService {
     private ProductImageDao productImageDao;
     @Autowired
     private ProductDepartureDao productDepartureDao;
+    @Autowired
+    private RedisService redisService;
+
+    private final String REDIS_KEY_PREFIX = "soo:product";
 
     @Override
     public PageDTO<List<ProductInfoDTO>> listProductInfo(int current, int pageSize, ProductQO productQO) {
@@ -104,6 +110,9 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public boolean updateProductByProductId(ProductDTO productDTO) {
         String productId = productDTO.getProductId();
+        // Redis第一次删除
+        redisService.delete(REDIS_KEY_PREFIX + ":" +productId);
+        // 开始更新MySQL
         ProductInfoDO productInfoDO = new ProductInfoDO();
         BeanUtils.copyProperties(productDTO, productInfoDO);
         productInfoDao.update(productInfoDO, new LambdaUpdateWrapper<ProductInfoDO>()
@@ -150,19 +159,30 @@ public class ProductServiceImpl implements ProductService {
                     .eq(ProductImageDO::getProductId, productId)
                     .eq(ProductImageDO::getUrl, productImageDO.getUrl()));
         }
+        // Redis第一次删除
+        redisService.delete(REDIS_KEY_PREFIX + ":" +productId);
         return true;
     }
 
     @Override
     public boolean deleteByProductIds(List<String> productIds) {
+        List<String> redisKeys = productIds.stream()
+                .map(productId -> REDIS_KEY_PREFIX + ":" +productId)
+                .collect(Collectors.toList());
+        // 第一次删除
+        redisService.delete(redisKeys);
+        // 更新MySQL
         productInfoDao.delete(new LambdaUpdateWrapper<ProductInfoDO>()
                 .in(ProductInfoDO::getProductId, productIds));
-        productIds.forEach(productId ->
-                productImageDao.listImageUrlByProductId(productId).forEach(AliyunOSSUtils::deleteObjectByUrl));
         productImageDao.delete(new LambdaUpdateWrapper<ProductImageDO>()
                 .in(ProductImageDO::getProductId, productIds));
         productDepartureDao.delete(new LambdaUpdateWrapper<ProductDepartureDO>()
                 .in(ProductDepartureDO::getProductId, productIds));
+        // 第二次删除
+        redisService.delete(redisKeys);
+        // 删除阿里云OSS存储的图片
+        productIds.forEach(productId ->
+                productImageDao.listImageUrlByProductId(productId).forEach(AliyunOSSUtils::deleteObjectByUrl));
         return true;
     }
 }

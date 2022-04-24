@@ -6,6 +6,9 @@ public interface UserService {
     String insertUser(UserInfoDTO userInfoDTO);
     boolean validatePhone(String phone);
     boolean validateToken(String token);
+
+    String refreshTokenByUserId(String userId);
+
     String getToken(UserInfoDTO userInfoDTO);
     UserInfoDTO getUserInfoByToken(String token);
     UserInfoDTO getUserInfoByUserId(String userId);

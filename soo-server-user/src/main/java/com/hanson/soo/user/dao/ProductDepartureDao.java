@@ -8,5 +8,5 @@ import java.util.List;
 
 @Mapper
 public interface ProductDepartureDao extends BaseMapper<ProductDepartureDO> {
-
+    List<String> listProductDepartureByProductId(String productId);
 }

@@ -1,8 +1,7 @@
 package com.hanson.soo.admin.controller;
 
-import com.hanson.soo.admin.pojo.OrderStatusEnum;
 import com.hanson.soo.admin.pojo.dto.OrderInfoDTO;
-import com.hanson.soo.admin.pojo.qo.OrderInfoQO;
+import com.hanson.soo.admin.pojo.qo.OrderQO;
 import com.hanson.soo.admin.pojo.vo.OrderInfoVO;
 import com.hanson.soo.admin.service.OrderService;
 import com.hanson.soo.admin.utils.ConverterUtils;
@@ -11,8 +10,8 @@ import com.hanson.soo.common.pojo.vo.PageVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/order")
@@ -22,15 +21,11 @@ public class OrderController {
 
     @PostMapping("/info")
     public PageVO<List<OrderInfoVO>> query(@RequestParam("current")int current, @RequestParam("pageSize")int pageSize,
-                                           @RequestBody OrderInfoQO orderInfoQO) {
+                                           @RequestBody OrderQO orderQO) {
         PageDTO<List<OrderInfoDTO>> pageDTO = orderService.listOrderInfos(current, pageSize,
-                ConverterUtils.orderInfoQO2DTO(orderInfoQO));
-        List<OrderInfoVO> orderInfoVOs = new ArrayList<>();
-        for (OrderInfoDTO orderInfoDTO : pageDTO.getList()) {
-            OrderInfoVO orderInfoVO = ConverterUtils.orderInfoDTO2VO(orderInfoDTO);
-            orderInfoVO.setStatus(OrderStatusEnum.getValueByStatus(orderInfoDTO.getStatus()));
-            orderInfoVOs.add(orderInfoVO);
-        }
+                orderQO);
+        List<OrderInfoVO> orderInfoVOs = pageDTO.getList().stream()
+                .map(ConverterUtils::orderInfoDTO2VO).collect(Collectors.toList());
         return new PageVO<>(orderInfoVOs, pageDTO.getTotal());
     }
 

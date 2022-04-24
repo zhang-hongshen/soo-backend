@@ -24,7 +24,7 @@ public class WebConfig implements WebMvcConfigurer {
         System.out.println("添加token验证拦截器");
         registry.addInterceptor(tokenAuthorizationInterceptor)
                 .addPathPatterns("/api/**")
-                .excludePathPatterns("/api/admin/login");
+                .excludePathPatterns("/api/admin/login", "/api/admin/logout");
 
     }
 

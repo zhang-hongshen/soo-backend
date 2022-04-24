@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/product")
@@ -28,21 +29,18 @@ public class ProductController {
             throw new IllegalArgumentException();
         }
         PageDTO<List<ProductInfoDTO>> pageDTO = productService.listProductInfos(current, pageSize, query);
-        List<ProductInfoVO> productInfoVOs = new ArrayList<>(pageDTO.getList().size());
-        for (ProductInfoDTO productInfoDTO : pageDTO.getList()) {
-            productInfoVOs.add(ConverterUtils.productInfoDTO2VO(productInfoDTO));
-        }
+        List<ProductInfoVO> productInfoVOs = pageDTO.getList().stream()
+                .map(ConverterUtils::productInfoDTO2VO)
+                .collect(Collectors.toList());
         return new PageDTO<>(productInfoVOs, pageDTO.getTotal());
     }
 
     @GetMapping("/predict/{userId}")
     public List<ProductInfoVO> predict(@PathVariable("userId") String userId) {
-        List<ProductInfoDTO> productInfoDTOs = productService.predict(userId);
-        List<ProductInfoVO> productInfoVOs = new ArrayList<>(productInfoDTOs.size());
-        for (ProductInfoDTO productInfoDTO : productInfoDTOs) {
-            productInfoVOs.add(ConverterUtils.productInfoDTO2VO(productInfoDTO));
-        }
-        return  productInfoVOs;
+        return productService.predict(userId)
+                .stream()
+                .map(ConverterUtils::productInfoDTO2VO)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/detail/{productId}")

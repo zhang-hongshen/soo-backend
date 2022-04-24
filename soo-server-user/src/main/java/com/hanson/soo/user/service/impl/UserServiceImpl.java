@@ -51,6 +51,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public String refreshTokenByUserId(String userId) {
+        String token = TokenUtils.createToken();
+        // 更新或插入token
+        userTokenDao.insertOrUpdateTokenByUserId(userId, token);
+        return token;
+    }
+
+    @Override
     @Transactional
     public String getToken(UserInfoDTO userInfoDTO) {
         UserInfoDO userInfoDO = userInfoDao.selectOne(new LambdaQueryWrapper<UserInfoDO>()
@@ -58,27 +66,9 @@ public class UserServiceImpl implements UserService {
                 .eq(UserInfoDO::getPassword,  userInfoDTO.getPassword())
                 .eq(StringUtils.isNotBlank(userInfoDTO.getPhone()), UserInfoDO::getPhone, userInfoDTO.getPhone()));
         if (userInfoDO == null) {
-            return null;
+            return "";
         }
-        String userId = userInfoDO.getUserId();
-        UserTokenDO userTokenDO = userTokenDao.selectOne(new LambdaUpdateWrapper<UserTokenDO>()
-                .eq(UserTokenDO::getUserId, userId));
-        //token不存在，就生成一个token
-        if(userTokenDO == null) {
-            String token = TokenUtils.createToken();
-            UserTokenDO newUserTokenDO = new UserTokenDO();
-            newUserTokenDO.setToken(token);
-            newUserTokenDO.setUserId(userId);
-            userTokenDao.insert(newUserTokenDO);
-            return token;
-        }
-        String token = userTokenDO.getToken();
-        if(StringUtils.isBlank(token)) {
-            token = TokenUtils.createToken();
-            userTokenDO.setToken(token);
-            userTokenDao.updateById(userTokenDO);
-        }
-        return token;
+        return refreshTokenByUserId(userInfoDO.getUserId());
     }
 
     @Override

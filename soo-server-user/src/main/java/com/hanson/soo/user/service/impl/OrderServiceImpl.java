@@ -23,6 +23,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -66,8 +67,9 @@ public class OrderServiceImpl implements OrderService {
             String orderId = orderInfoDO.getOrderId();
             List<OrderDetailDO> orderDetailDOs = orderDetailService.list(new LambdaQueryWrapper<OrderDetailDO>()
                     .eq(OrderDetailDO::getOrderId, orderId));
-            List<OrderDetailDTO> orderDetailDTOs = new ArrayList<>();
-            orderDetailDOs.forEach(orderDetailDO -> orderDetailDTOs.add(ConverterUtils.orderDetailDO2DTO(orderDetailDO)));
+            List<OrderDetailDTO> orderDetailDTOs = orderDetailDOs.stream()
+                    .map(ConverterUtils::orderDetailDO2DTO)
+                    .collect(Collectors.toList());
             OrderDTO orderDTO = new OrderDTO();
             BeanUtils.copyProperties(orderInfoDO, orderDTO);
             orderDTO.setOrderDetails(orderDetailDTOs);

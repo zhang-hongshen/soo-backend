@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CommentServiceImpl implements CommentService {
@@ -27,8 +28,9 @@ public class CommentServiceImpl implements CommentService {
         IPage<CommentDO> page = commentDao.selectPage(new Page<>(current, pageSize), new LambdaQueryWrapper<CommentDO>()
                 .eq(CommentDO::getProductId, productId)
                 .orderByDesc(CommentDO::getCreateTime));
-        List<CommentDTO> commentDTOs = new ArrayList<>();
-        page.getRecords().forEach(commentDO -> commentDTOs.add(ConverterUtils.commentDO2DTO(commentDO)));
+        List<CommentDTO> commentDTOs = page.getRecords().stream()
+                .map(ConverterUtils::commentDO2DTO)
+                .collect(Collectors.toList());
         return new PageDTO<>(commentDTOs, (int) page.getTotal());
     }
 

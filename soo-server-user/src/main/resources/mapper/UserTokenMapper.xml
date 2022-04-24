@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hanson.soo.user.dao.UserTokenDao">
+    <insert id="insertOrUpdateTokenByUserId">
+        insert into soo_user_token(user_id, token) values(#{user_id}, #{token})
+        on duplicate key update token = #{token}
+    </insert>
+</mapper>

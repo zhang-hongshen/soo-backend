@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -25,10 +26,9 @@ public class UserController {
                                           @RequestParam("pageSize")int pageSize,
                                           @RequestBody UserQO userQO) {
         PageDTO<List<UserInfoDTO>> pageDTO = userService.listUser(current, pageSize, userQO);
-        List<UserInfoVO> userInfoVOs = new ArrayList<>();
-        for (UserInfoDTO userInfoDTO : pageDTO.getList()) {
-            userInfoVOs.add(ConverterUtils.userDTO2VO(userInfoDTO));
-        }
+        List<UserInfoVO> userInfoVOs = pageDTO.getList().stream()
+                .map(ConverterUtils::userDTO2VO)
+                .collect(Collectors.toList());
         return new PageVO<>(userInfoVOs, pageDTO.getTotal());
     }
 }

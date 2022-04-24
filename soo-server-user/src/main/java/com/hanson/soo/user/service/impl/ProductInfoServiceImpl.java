@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductInfoServiceImpl implements ProductInfoService {
@@ -36,17 +37,19 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 
     @Override
     @Transactional(readOnly = true)
-    public PageDTO<List<ProductInfoDTO>> listProductInfos(int current, int pageSize, ProductQO query) {
+    public PageDTO<List<ProductInfoDTO>> listProductInfo(int current, int pageSize, ProductQO query) {
         List<ProductInfoDO> productInfoDOs = productInfoDao.selectList(new LambdaQueryWrapper<ProductInfoDO>()
                 .eq(ProductInfoDO::getStatus, ProductStatusEnum.ON_SALE.getStatus())
                 .like(StringUtils.isNotBlank(query.getDestination()), ProductInfoDO::getDestination, query.getDestination())
                 .like(StringUtils.isNotBlank(query.getProductName()), ProductInfoDO::getProductName, query.getProductName()));
-        Set<String> productIds = new HashSet<>();
-        productInfoDOs.forEach((productInfoDO) -> productIds.add(productInfoDO.getProductId()));
+        Set<String> productIds = productInfoDOs.stream()
+                .map(ProductInfoDO::getProductId)
+                .collect(Collectors.toSet());
         List<ProductDepartureDO> productDepartureDOs = productDepartureDao.selectList(new LambdaQueryWrapper<ProductDepartureDO>()
                 .like(StringUtils.isNotBlank(query.getDeparture()), ProductDepartureDO::getDeparture, query.getDeparture()));
-        Set<String> productIdsByDeparture = new HashSet<>();
-        productDepartureDOs.forEach((productDepartureDO) -> productIdsByDeparture.add(productDepartureDO.getProductId()));
+        Set<String> productIdsByDeparture = productDepartureDOs.stream()
+                .map(ProductDepartureDO::getProductId)
+                .collect(Collectors.toSet());
         //取交集
         productIds.retainAll(productIdsByDeparture);
         if(productIds.isEmpty()){
@@ -71,7 +74,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ProductInfoDTO> listProductInfosByProductId(List<String> productIds) {
+    public List<ProductInfoDTO> listProductInfoByProductId(List<String> productIds) {
         List<ProductInfoDTO> productInfoDTOs = new ArrayList<>();
         for(String productId : productIds){
             ProductInfoDO productInfoDO = productInfoDao.selectOne(new LambdaQueryWrapper<ProductInfoDO>()

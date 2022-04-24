@@ -26,7 +26,7 @@ public class AdminController {
     }
 
     @PostMapping("/logout")
-    public boolean logout(@RequestHeader("Authorization")String token) {
-        return adminService.deleteToken(token);
+    public void logout(@RequestHeader("Authorization")String token) {
+        adminService.deleteToken(token);
     }
 }

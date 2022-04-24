@@ -16,11 +16,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 @Service
 public class CartServiceImpl implements CartService {
     @Autowired
     private CartDao cartDao;
+
 
     @Override
     @Transactional
@@ -42,31 +45,31 @@ public class CartServiceImpl implements CartService {
         IPage<CartDO> page = cartDao.selectPage(new Page<>(current, pageSize), new LambdaQueryWrapper<CartDO>()
                 .eq(CartDO::getUserId, userId)
                 .orderByDesc(CartDO::getCreateTime));
-        List<CartDTO> cartDTOs = new ArrayList<>(page.getRecords().size());
-        page.getRecords().forEach(cartDO -> cartDTOs.add(ConverterUtils.cartDO2DTO(cartDO)));
+        List<CartDTO> cartDTOs = page.getRecords().stream()
+                .map(ConverterUtils::cartDO2DTO)
+                .collect(Collectors.toList());
         return new PageDTO<>(cartDTOs, (int) page.getTotal());
     }
 
     @Override
     @Transactional
     public boolean deleteCartsByUserIdAndProductId(String userId, List<String> productIds){
-        int count = 0;
-        for(String productId : productIds){
-            count += cartDao.delete(new LambdaQueryWrapper<CartDO>()
+        AtomicInteger count = new AtomicInteger(0);
+        productIds.forEach(productId -> {
+            count.addAndGet(cartDao.delete(new LambdaQueryWrapper<CartDO>()
                     .eq(CartDO::getUserId, userId)
-                    .eq(CartDO::getProductId, productId));
-        }
-        return count == productIds.size();
+                    .eq(CartDO::getProductId, productId)));
+        });
+        return count.get() == productIds.size();
     }
 
     @Override
     @Transactional
     public boolean updateCartByUserId(String userId, List<CartDTO> cartDTOS){
-        for(CartDTO cartDTO : cartDTOS){
-            cartDao.update(ConverterUtils.cartDTO2DO(cartDTO),new LambdaUpdateWrapper<CartDO>()
-                    .eq(CartDO::getUserId, userId)
-                    .eq(CartDO::getProductId, cartDTO.getProductId()));
-        }
+        cartDTOS.forEach(cartDTO ->
+                cartDao.update(ConverterUtils.cartDTO2DO(cartDTO),new LambdaUpdateWrapper<CartDO>()
+                        .eq(CartDO::getUserId, userId)
+                        .eq(CartDO::getProductId, cartDTO.getProductId())));
         return true;
     }
 }

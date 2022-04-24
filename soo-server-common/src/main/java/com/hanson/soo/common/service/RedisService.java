@@ -1,5 +1,6 @@
 package com.hanson.soo.common.service;
 
+import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -12,5 +13,8 @@ public interface RedisService {
     void sAdd(String key, String... values);
     Set<String> sMembers(String key);
 
+    void delete(Collection<String> keys);
+
+    boolean exists(String key);
     void delete(String key);
 }
