@@ -1,16 +1,15 @@
 package com.hanson.soo.admin.controller;
 
+import com.hanson.soo.admin.pojo.dto.UserInfoDTO;
 import com.hanson.soo.admin.pojo.qo.UserQO;
 import com.hanson.soo.admin.pojo.vo.UserInfoVO;
+import com.hanson.soo.admin.service.UserService;
 import com.hanson.soo.admin.utils.ConverterUtils;
 import com.hanson.soo.common.pojo.dto.PageDTO;
-import com.hanson.soo.admin.pojo.dto.UserInfoDTO;
-import com.hanson.soo.admin.service.UserService;
 import com.hanson.soo.common.pojo.vo.PageVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 

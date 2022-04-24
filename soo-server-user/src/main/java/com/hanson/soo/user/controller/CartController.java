@@ -30,7 +30,7 @@ public class CartController {
         if (current <= 0) {
             throw new IllegalArgumentException();
         }
-        PageDTO<List<CartDTO>> pageDTO = cartService.listCarts(current, pageSize, userId);
+        PageDTO<List<CartDTO>> pageDTO = cartService.listCart(current, pageSize, userId);
         List<CartVO> cartVOS = new ArrayList<>(pageDTO.getList().size());
         pageDTO.getList().forEach(cartDTO -> {
             CartVO cartVO = ConverterUtils.cartDTO2VO(cartDTO);

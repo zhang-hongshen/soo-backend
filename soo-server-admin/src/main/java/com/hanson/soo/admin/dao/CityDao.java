@@ -8,5 +8,5 @@ import java.util.List;
 
 @Mapper
 public interface CityDao extends BaseMapper<CityDO> {
-    List<String> listCityNames();
+    List<String> listCityName();
 }

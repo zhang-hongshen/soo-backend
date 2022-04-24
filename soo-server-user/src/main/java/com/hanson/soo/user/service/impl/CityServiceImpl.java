@@ -20,11 +20,11 @@ public class CityServiceImpl implements CityService {
     final String REDIS_KEY= "soo:city";
 
     @Override
-    public List<String> listCityNames() {
+    public List<String> listCityName() {
         List<String> cities;
         if (!redisService.exists(REDIS_KEY) ||
                 (cities = new ArrayList<>(redisService.sMembers(REDIS_KEY))).isEmpty()) {
-            cities = cityDao.listCityNames();
+            cities = cityDao.listCityName();
             redisService.sAdd(REDIS_KEY, cities.toArray(new String[0]));
             redisService.expire(REDIS_KEY, 24, TimeUnit.HOURS);
         }

@@ -14,7 +14,7 @@ class CityDaoTest {
 
     @Test
     void listCityNames() {
-        System.out.println(cityDao.listCityNames());
+        System.out.println(cityDao.listCityName());
         ReentrantLock lock = new ReentrantLock();
         lock.hasWaiters(lock.newCondition());
     }

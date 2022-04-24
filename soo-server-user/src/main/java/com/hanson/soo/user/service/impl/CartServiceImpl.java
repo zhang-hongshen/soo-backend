@@ -24,7 +24,6 @@ public class CartServiceImpl implements CartService {
     @Autowired
     private CartDao cartDao;
 
-
     @Override
     @Transactional
     public boolean insertCart(CartDTO cartDTO) {
@@ -41,7 +40,7 @@ public class CartServiceImpl implements CartService {
 
     @Override
     @Transactional(readOnly = true)
-    public PageDTO<List<CartDTO>> listCarts(int current, int pageSize, String userId){
+    public PageDTO<List<CartDTO>> listCart(int current, int pageSize, String userId){
         IPage<CartDO> page = cartDao.selectPage(new Page<>(current, pageSize), new LambdaQueryWrapper<CartDO>()
                 .eq(CartDO::getUserId, userId)
                 .orderByDesc(CartDO::getCreateTime));

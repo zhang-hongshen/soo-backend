@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface CartService {
     boolean insertCart(CartDTO cartDTO);
-    PageDTO<List<CartDTO>> listCarts(int current, int pageSize, String userId);
+    PageDTO<List<CartDTO>> listCart(int current, int pageSize, String userId);
     boolean deleteCartsByUserIdAndProductId(String userId, List<String> productIds);
     boolean updateCartByUserId(String userId, List<CartDTO> cartDTOS);
 }

@@ -25,7 +25,8 @@ public class OrderController {
         PageDTO<List<OrderInfoDTO>> pageDTO = orderService.listOrderInfos(current, pageSize,
                 orderQO);
         List<OrderInfoVO> orderInfoVOs = pageDTO.getList().stream()
-                .map(ConverterUtils::orderInfoDTO2VO).collect(Collectors.toList());
+                .map(ConverterUtils::orderInfoDTO2VO)
+                .collect(Collectors.toList());
         return new PageVO<>(orderInfoVOs, pageDTO.getTotal());
     }
 

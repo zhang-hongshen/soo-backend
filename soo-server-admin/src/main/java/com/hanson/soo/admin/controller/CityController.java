@@ -17,6 +17,6 @@ public class CityController {
 
     @GetMapping
     public List<String> query() {
-        return cityService.listCityNames();
+        return cityService.listCityName();
     }
 }
