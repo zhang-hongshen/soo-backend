@@ -10,7 +10,6 @@ import java.util.List;
 public interface ProductService {
 
     PageDTO<List<ProductInfoDTO>> listProductInfo(int current, int pageSize, ProductQO productQO);
-
     boolean insert(ProductDTO productDTO);
     ProductDTO getProductByProductId(String productId);
     boolean updateProductByProductId(ProductDTO productDTO);

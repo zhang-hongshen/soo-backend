@@ -6,5 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface UserInfoDao extends BaseMapper<UserInfoDO> {
+    String getPasswordByUserId(String userId);
+    int updatePasswordByUserId(String userId, String password);
 }
 

@@ -26,7 +26,11 @@ public class UserController {
                                           @RequestBody UserQO userQO) {
         PageDTO<List<UserInfoDTO>> pageDTO = userService.listUser(current, pageSize, userQO);
         List<UserInfoVO> userInfoVOs = pageDTO.getList().stream()
-                .map(ConverterUtils::userDTO2VO)
+                .map(userInfoDTO -> {
+                    UserInfoVO userInfoVO = ConverterUtils.userDTO2VO(userInfoDTO);
+                    userInfoVO.setPhone(userInfoVO.getPhone().replaceAll("(\\d{3})\\d{4}(\\d{4})","$1****$2"));
+                    return userInfoVO;
+                })
                 .collect(Collectors.toList());
         return new PageVO<>(userInfoVOs, pageDTO.getTotal());
     }

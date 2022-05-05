@@ -1,6 +1,5 @@
 package com.hanson.soo.admin.controller;
 
-import com.hanson.soo.admin.pojo.ProductStatusEnum;
 import com.hanson.soo.admin.pojo.dto.ProductDTO;
 import com.hanson.soo.admin.pojo.dto.ProductInfoDTO;
 import com.hanson.soo.admin.pojo.qo.ProductQO;
@@ -10,11 +9,9 @@ import com.hanson.soo.admin.service.ProductService;
 import com.hanson.soo.admin.utils.ConverterUtils;
 import com.hanson.soo.common.pojo.dto.PageDTO;
 import com.hanson.soo.common.pojo.vo.PageVO;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,7 +39,7 @@ public class ProductController {
     }
 
     @PutMapping("/update")
-    public boolean update(@RequestBody ProductVO productVO) {
+    public boolean update(@RequestBody ProductVO productVO){
         return productService.updateProductByProductId(ConverterUtils.productVO2DTO(productVO));
     }
 

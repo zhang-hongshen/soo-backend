@@ -23,7 +23,7 @@ public class UserController {
 
     @GetMapping("/info")
     public UserInfoDTO getInfo(@RequestHeader("Authorization") String token){
-        return userService.getUserInfoByToken(token);
+        return userService.getUserInfoByUserId(userService.getUserIdByToken(token));
     }
 
     @PostMapping("/register")

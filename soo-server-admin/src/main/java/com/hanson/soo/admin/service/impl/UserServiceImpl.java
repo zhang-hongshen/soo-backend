@@ -13,9 +13,7 @@ import com.hanson.soo.common.pojo.dto.PageDTO;
 import com.hanson.soo.common.pojo.entity.UserInfoDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,7 +23,6 @@ public class UserServiceImpl implements UserService {
     public UserInfoDao userInfoDao;
 
     @Override
-    @Transactional(readOnly = true)
     public PageDTO<List<UserInfoDTO>> listUser(int current, int pageSize, UserQO userQO) {
         IPage<UserInfoDO> userPage = userInfoDao.selectPage(new Page<>(current, pageSize), new LambdaQueryWrapper<UserInfoDO>()
                 .like(StringUtils.isNotBlank(userQO.getUsername()), UserInfoDO::getUsername, userQO.getUsername()));

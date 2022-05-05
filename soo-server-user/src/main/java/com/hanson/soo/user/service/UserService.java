@@ -10,6 +10,9 @@ public interface UserService {
     String refreshTokenByUserId(String userId);
 
     String getToken(UserInfoDTO userInfoDTO);
+
+    String getUserIdByToken(String token);
+
     UserInfoDTO getUserInfoByToken(String token);
     UserInfoDTO getUserInfoByUserId(String userId);
     String getPasswordByUserId(String userId);

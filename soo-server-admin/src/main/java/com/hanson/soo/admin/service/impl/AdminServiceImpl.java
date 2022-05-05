@@ -29,21 +29,18 @@ public class AdminServiceImpl implements AdminService {
     private final String REDIS_KEY_PREFIX = "soo:admin:token";
 
     @Override
-    @Transactional(readOnly = true)
     public AdminDO getByPhone(String phone) {
         return adminDao.selectOne(new LambdaQueryWrapper<AdminDO>()
                 .eq(AdminDO::getPhone,phone));
     }
 
     @Override
-    @Transactional
     public int updateByAdminId(AdminDO adminDO) {
         return adminDao.update(adminDO,new LambdaUpdateWrapper<AdminDO>()
                 .eq(AdminDO::getAdminId, adminDO.getAdminId()));
     }
 
     @Override
-    @Transactional(readOnly = true)
     public String getAdminIdByToken(String token) {
         return adminTokenDao.getAdminIdByToken(token);
     }
@@ -59,7 +56,6 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    @Transactional
     public String getToken(AdminDTO adminDTO) {
         AdminDO adminDO = adminDao.selectOne(new LambdaQueryWrapper<AdminDO>()
                 .eq(AdminDO::getName, adminDTO.getName())

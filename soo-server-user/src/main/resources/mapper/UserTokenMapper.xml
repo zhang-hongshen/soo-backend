@@ -8,4 +8,7 @@
         insert into soo_user_token(user_id, token) values(#{user_id}, #{token})
         on duplicate key update token = #{token}
     </insert>
+    <select id="getUserIdByToken" resultType="string">
+        select user_id from soo_user_token where token = #{token}
+    </select>
 </mapper>

@@ -2,10 +2,9 @@ package com.hanson.soo.admin.handler;
 
 import com.hanson.soo.common.response.ResponseCode;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@NoArgsConstructor
+
 @Getter
 @Setter
 public class MyExceptionHandler {

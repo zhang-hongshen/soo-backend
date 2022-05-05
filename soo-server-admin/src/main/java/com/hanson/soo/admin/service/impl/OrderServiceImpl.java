@@ -17,8 +17,8 @@ import com.hanson.soo.common.pojo.entity.OrderDetailDO;
 import com.hanson.soo.common.pojo.entity.OrderInfoDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,6 +44,7 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Override
+    @Transactional
     public boolean deleteByOrderIds(List<String> orderIds) {
         orderDetailDao.delete(new LambdaUpdateWrapper<OrderDetailDO>()
                 .in(OrderDetailDO::getOrderId, orderIds));

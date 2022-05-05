@@ -3,6 +3,7 @@ package com.hanson.soo.user.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.hanson.soo.common.service.RedisService;
 import com.hanson.soo.user.dao.UserTokenDao;
 import com.hanson.soo.common.pojo.entity.UserInfoDO;
 import com.hanson.soo.user.dao.UserInfoDao;
@@ -13,6 +14,7 @@ import com.hanson.soo.user.utils.ConverterUtils;
 import com.hanson.soo.user.utils.TokenUtils;
 import com.hanson.soo.common.utils.UUIDUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,8 +24,13 @@ public class UserServiceImpl implements UserService {
     private UserInfoDao userInfoDao;
     @Autowired
     private UserTokenDao userTokenDao;
+    @Autowired
+    private RedisService redisService;
+
+    private final String REDIS_KEY_PREFIX = "soo:user";
 
     @Override
+    @Transactional
     public String insertUser(UserInfoDTO userInfoDTO) {
         UserInfoDO userInfoDO = ConverterUtils.userInfoDTO2DO(userInfoDTO);
         String userId = UUIDUtils.getId();
@@ -38,13 +45,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public boolean validatePhone(String phone) {
         return userInfoDao.selectCount(new LambdaQueryWrapper<UserInfoDO>().eq(UserInfoDO::getPhone, phone)) > 0;
     }
 
     @Override
-    @Transactional(readOnly = true)
     public boolean validateToken(String token) {
         return userTokenDao.selectOne(new LambdaQueryWrapper<UserTokenDO>()
                 .eq(UserTokenDO::getToken, token)) != null;
@@ -72,18 +77,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public UserInfoDTO getUserInfoByToken(String token){
-        UserTokenDO userTokenDO = userTokenDao.selectOne(new LambdaUpdateWrapper<UserTokenDO>()
-                .eq(UserTokenDO::getToken, token));
-        String userId = userTokenDO.getUserId();
-        UserInfoDO userInfoDO = userInfoDao.selectOne(new LambdaUpdateWrapper<UserInfoDO>()
-                .eq(UserInfoDO::getUserId, userId));
-        return ConverterUtils.userInfoDO2DTO(userInfoDO);
+    public String getUserIdByToken(String token) {
+        return userTokenDao.getUserIdByToken(token);
     }
 
     @Override
-    @Transactional(readOnly = true)
+    public UserInfoDTO getUserInfoByToken(String token){
+        return getUserInfoByUserId(getUserIdByToken(token));
+    }
+
+    @Override
     public UserInfoDTO getUserInfoByUserId(String userId) {
         UserInfoDO userInfoDO = userInfoDao.selectOne(new LambdaQueryWrapper<UserInfoDO>()
                 .eq(UserInfoDO::getUserId, userId));
@@ -91,11 +94,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public String getPasswordByUserId(String userId) {
-        UserInfoDO userInfoDO = userInfoDao.selectOne(new LambdaQueryWrapper<UserInfoDO>()
-                .eq(UserInfoDO::getUserId, userId));
-        return userInfoDO.getPassword();
+        return userInfoDao.getPasswordByUserId(userId);
     }
 
     @Override
@@ -105,7 +105,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
     public boolean updatePasswordByUserId(String userId, String password) {
         return userInfoDao.update(null, new LambdaUpdateWrapper<UserInfoDO>()
                 .set(UserInfoDO::getPassword, password)

@@ -21,6 +21,7 @@ import com.hanson.soo.common.pojo.entity.ProductImageDO;
 import com.hanson.soo.common.pojo.entity.ProductInfoDO;
 import com.hanson.soo.common.service.RedisService;
 import com.hanson.soo.common.utils.UUIDUtils;
+import lombok.SneakyThrows;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,6 +46,7 @@ public class ProductServiceImpl implements ProductService {
 
     private final String REDIS_KEY_PREFIX = "soo:product";
 
+    @Transactional(readOnly = true)
     @Override
     public PageDTO<List<ProductInfoDTO>> listProductInfo(int current, int pageSize, ProductQO productQO) {
         List<ProductInfoDO> productInfoDOs = productInfoDao.selectList(new LambdaQueryWrapper<ProductInfoDO>()
@@ -72,6 +74,7 @@ public class ProductServiceImpl implements ProductService {
         return new PageDTO<>(productInfoDTOs, (int) page.getTotal());
     }
 
+    @Transactional
     @Override
     public boolean insert(ProductDTO productDTO) {
         String productId = UUIDUtils.getId();
@@ -94,8 +97,8 @@ public class ProductServiceImpl implements ProductService {
         return true;
     }
 
-    @Override
     @Transactional(readOnly = true)
+    @Override
     public ProductDTO getProductByProductId(String productId) {
         ProductInfoDO productInfoDO = productInfoDao.selectOne(new LambdaQueryWrapper<ProductInfoDO>()
                 .eq(ProductInfoDO::getProductId, productId));
@@ -106,9 +109,10 @@ public class ProductServiceImpl implements ProductService {
         return productDTO;
     }
 
-    @Override
+    @SneakyThrows
     @Transactional
-    public boolean updateProductByProductId(ProductDTO productDTO) {
+    @Override
+    public boolean updateProductByProductId(ProductDTO productDTO){
         String productId = productDTO.getProductId();
         // Redis第一次删除
         redisService.delete(REDIS_KEY_PREFIX + ":" +productId);
@@ -143,15 +147,15 @@ public class ProductServiceImpl implements ProductService {
         //求差集
         oldProductImageDOs.removeAll(intersection);
         newProductImageDOs.removeAll(intersection);
-        /**
-         * 插入新图片
+        /*
+          插入新图片
          */
         for (ProductImageDO productImageDO : newProductImageDOs) {
             productImageDO.setStatus(Boolean.TRUE);
             productImageDao.insert(productImageDO);
         }
-        /**
-         * 旧图片设置为历史图片
+        /*
+          旧图片设置为历史图片
          */
         for (ProductImageDO productImageDO : oldProductImageDOs) {
             productImageDO.setStatus(Boolean.FALSE);
@@ -159,11 +163,14 @@ public class ProductServiceImpl implements ProductService {
                     .eq(ProductImageDO::getProductId, productId)
                     .eq(ProductImageDO::getUrl, productImageDO.getUrl()));
         }
+        Thread.sleep(500);
         // Redis第一次删除
         redisService.delete(REDIS_KEY_PREFIX + ":" +productId);
         return true;
     }
 
+    @SneakyThrows
+    @Transactional
     @Override
     public boolean deleteByProductIds(List<String> productIds) {
         List<String> redisKeys = productIds.stream()
@@ -178,6 +185,7 @@ public class ProductServiceImpl implements ProductService {
                 .in(ProductImageDO::getProductId, productIds));
         productDepartureDao.delete(new LambdaUpdateWrapper<ProductDepartureDO>()
                 .in(ProductDepartureDO::getProductId, productIds));
+        Thread.sleep(500);
         // 第二次删除
         redisService.delete(redisKeys);
         // 删除阿里云OSS存储的图片

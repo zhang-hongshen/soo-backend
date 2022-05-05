@@ -8,7 +8,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Enumeration;
 
 @Component
 public class TokenAuthorizationInterceptor implements HandlerInterceptor {
@@ -18,7 +17,14 @@ public class TokenAuthorizationInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         System.out.println("preHandle");
-        return userService.validateToken(request.getHeader("Authorization"));
+        String token = request.getHeader("Authorization");
+        // 权限校验
+        if (!userService.validateToken(token)) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        }
+        // 将token转换为userId
+        request.setAttribute("userId", userService.getUserIdByToken(token));
+        return true;
     }
 
     @Override
