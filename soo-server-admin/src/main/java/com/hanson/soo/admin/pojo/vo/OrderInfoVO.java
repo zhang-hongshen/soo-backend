@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Data
 public class OrderInfoVO {
@@ -13,7 +13,7 @@ public class OrderInfoVO {
     BigDecimal totalAmount;
     String status;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    Date paymentTime;
+    LocalDateTime paymentTime;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    Date createTime;
+    LocalDateTime createTime;
 }

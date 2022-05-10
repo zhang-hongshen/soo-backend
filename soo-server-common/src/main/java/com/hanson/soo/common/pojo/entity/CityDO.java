@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -14,7 +15,7 @@ public class CityDO {
     @TableField("name")
     String name;
     @TableField("create_time")
-    Date createTime;
+    LocalDateTime createTime;
     @TableField("update_time")
-    Date updateTime;
+    LocalDateTime updateTime;
 }

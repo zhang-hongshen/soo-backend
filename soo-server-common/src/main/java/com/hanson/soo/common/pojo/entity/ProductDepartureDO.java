@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -18,7 +19,7 @@ public class ProductDepartureDO {
     @TableField("departure")
     String departure;
     @TableField("create_time")
-    Date createTime;
+    LocalDateTime createTime;
     @TableField("update_time")
-    Date updateTime;
+    LocalDateTime updateTime;
 }

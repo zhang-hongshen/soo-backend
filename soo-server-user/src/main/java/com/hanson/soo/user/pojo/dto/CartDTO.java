@@ -2,7 +2,7 @@ package com.hanson.soo.user.pojo.dto;
 
 import lombok.Data;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Data
 public class CartDTO {
@@ -10,5 +10,5 @@ public class CartDTO {
     String userId;
     String departure;
     Integer num;
-    Date date;
+    LocalDate date;
 }

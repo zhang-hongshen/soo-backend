@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -21,7 +22,7 @@ public class OrderDetailDO {
     @TableField("departure")
     String departure;
     @TableField("date")
-    Date date;
+    LocalDateTime date;
     @TableField("price")
     BigDecimal price;
     @TableField("num")
@@ -29,7 +30,7 @@ public class OrderDetailDO {
     @TableField("amount")
     BigDecimal amount;
     @TableField("create_time")
-    Date createTime;
+    LocalDateTime createTime;
     @TableField("update_time")
-    Date updateTime;
+    LocalDateTime updateTime;
 }

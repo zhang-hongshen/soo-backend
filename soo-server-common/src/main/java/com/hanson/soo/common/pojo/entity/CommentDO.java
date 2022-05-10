@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -20,7 +21,7 @@ public class CommentDO {
     @TableField("content")
     String content;
     @TableField("create_time")
-    Date createTime;
+    LocalDateTime createTime;
     @TableField("update_time")
-    Date updateTime;
+    LocalDateTime updateTime;
 }

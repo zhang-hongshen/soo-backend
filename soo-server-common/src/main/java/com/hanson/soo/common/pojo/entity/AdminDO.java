@@ -1,10 +1,12 @@
 package com.hanson.soo.common.pojo.entity;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
-import java.sql.Timestamp;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Data
 @TableName("soo_admin")
@@ -20,7 +22,7 @@ public class AdminDO {
     @TableField("phone")
     String phone;
     @TableField("create_time")
-    Date createTime;
+    LocalDateTime createTime;
     @TableField("update_time")
-    Date updateTime;
+    LocalDateTime updateTime;
 }

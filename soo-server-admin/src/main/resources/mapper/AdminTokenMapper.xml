@@ -14,4 +14,10 @@
         insert into soo_admin_token(admin_id, token) values(#{adminId}, #{token})
         on duplicate key update token = #{token}
     </insert>
+    <select id="getUpdateTimeByAdminId" resultType="java.time.LocalDateTime">
+        select update_time from soo_admin_token
+        <where>
+            admin_id = #{adminId}
+        </where>
+    </select>
 </mapper>

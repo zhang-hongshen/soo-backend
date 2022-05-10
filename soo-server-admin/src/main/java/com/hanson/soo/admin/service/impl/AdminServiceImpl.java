@@ -9,12 +9,13 @@ import com.hanson.soo.admin.service.AdminService;
 import com.hanson.soo.admin.utils.ConverterUtils;
 import com.hanson.soo.admin.utils.TokenUtils;
 import com.hanson.soo.common.pojo.entity.AdminDO;
-import com.hanson.soo.common.pojo.entity.AdminTokenDO;
 import com.hanson.soo.common.service.RedisService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -28,17 +29,7 @@ public class AdminServiceImpl implements AdminService {
 
     private final String REDIS_KEY_PREFIX = "soo:admin:token";
 
-    @Override
-    public AdminDO getByPhone(String phone) {
-        return adminDao.selectOne(new LambdaQueryWrapper<AdminDO>()
-                .eq(AdminDO::getPhone,phone));
-    }
-
-    @Override
-    public int updateByAdminId(AdminDO adminDO) {
-        return adminDao.update(adminDO,new LambdaUpdateWrapper<AdminDO>()
-                .eq(AdminDO::getAdminId, adminDO.getAdminId()));
-    }
+    private static Logger logger = LogManager.getLogger(AdminService.class);
 
     @Override
     public String getAdminIdByToken(String token) {
@@ -61,6 +52,7 @@ public class AdminServiceImpl implements AdminService {
                 .eq(AdminDO::getName, adminDTO.getName())
                 .eq(AdminDO::getPassword, adminDTO.getPassword()));
         if (adminDO == null) {
+            logger.info("用户不存在");
             // 用户不存在
             return "";
         }
@@ -68,18 +60,20 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public AdminDTO getAdminInfoByToken(String token){
-        AdminTokenDO adminTokenDO = adminTokenDao.selectOne(new LambdaUpdateWrapper<AdminTokenDO>()
-                .eq(AdminTokenDO::getToken, token));
+    public LocalDateTime getTokenUpdateTimeByAdminId(String adminId) {
+        return adminTokenDao.getUpdateTimeByAdminId(adminId);
+    }
+
+    @Override
+    public AdminDTO getAdminInfoByAdminId(String adminId){
         AdminDO adminDO = adminDao.selectOne(new LambdaUpdateWrapper<AdminDO>()
-                .eq(AdminDO::getAdminId, adminTokenDO.getAdminId()));
+                .eq(AdminDO::getAdminId, adminId));
         return ConverterUtils.adminDO2DTO(adminDO);
     }
 
     @Override
     public boolean deleteToken(String token) {
         redisService.delete(REDIS_KEY_PREFIX+ ":" + token);
-        return adminTokenDao.delete(new LambdaUpdateWrapper<AdminTokenDO>().eq(AdminTokenDO::getToken, token)) > 0;
+        return true;
     }
 }

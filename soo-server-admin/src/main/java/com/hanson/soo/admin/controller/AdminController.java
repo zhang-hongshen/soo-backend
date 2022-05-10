@@ -22,11 +22,12 @@ public class AdminController {
 
     @GetMapping("/info")
     public AdminVO login(@RequestHeader("Authorization")String token) {
-        return ConverterUtils.adminDTO2VO(adminService.getAdminInfoByToken(token));
+        String adminId = adminService.getAdminIdByToken(token);
+        return ConverterUtils.adminDTO2VO(adminService.getAdminInfoByAdminId(adminId));
     }
 
     @PostMapping("/logout")
-    public void logout(@RequestHeader("Authorization")String token) {
-        adminService.deleteToken(token);
+    public boolean logout(@RequestHeader("Authorization")String token) {
+        return adminService.deleteToken(token);
     }
 }

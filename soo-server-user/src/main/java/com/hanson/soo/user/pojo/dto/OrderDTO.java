@@ -3,6 +3,7 @@ package com.hanson.soo.user.pojo.dto;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -12,6 +13,6 @@ public class OrderDTO {
     List<OrderDetailDTO> orderDetails;
     BigDecimal totalAmount;
     Integer status;
-    Date paymentTime;
-    Date createTime;
+    LocalDateTime paymentTime;
+    LocalDateTime createTime;
 }

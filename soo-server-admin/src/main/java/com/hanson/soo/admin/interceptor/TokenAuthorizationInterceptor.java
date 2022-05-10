@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.hanson.soo.admin.exception.TokenAuthorizationException;
 import com.hanson.soo.admin.service.AdminService;
 import com.hanson.soo.common.service.RedisService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -11,6 +13,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @Component
 public class TokenAuthorizationInterceptor implements HandlerInterceptor {
@@ -21,37 +25,47 @@ public class TokenAuthorizationInterceptor implements HandlerInterceptor {
 
     private final String REDIS_KEY_PREFIX = "soo:admin:token";
 
+    private static Logger logger = LogManager.getLogger(TokenAuthorizationInterceptor.class);
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        System.out.println(handler);
-        System.out.println("preHandle");
+        logger.info("preHandle");
         String token = request.getHeader("Authorization");
+        logger.info("token值为：" + token);
+        // 前端token异常
         if (StringUtils.isBlank(token)) {
-            // token异常
             throw new TokenAuthorizationException();
         }
+        // token还未过期
         if (redisService.exists(REDIS_KEY_PREFIX + ":" + token)) {
-            // token还未过期
+            logger.info("token验证成功");
             return true;
         }
         String adminId = adminService.getAdminIdByToken(token);
+        // token异常
         if (StringUtils.isBlank(adminId)) {
-            // token异常
+            logger.info("token不存在");
             throw new TokenAuthorizationException();
         }
+        // 用户超过2小时未操作登出
+        if (ChronoUnit.MINUTES.between(adminService.getTokenUpdateTimeByAdminId(adminId), LocalDateTime.now()) >= 120) {
+            logger.info("用户长时间位操作登出");
+            throw new TokenAuthorizationException();
+        }
+        // token续签
         response.setHeader("Authorization", adminService.refreshTokenByAdminId(adminId));
         return true;
     }
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-        System.out.println("postHandle");
+        logger.info("postHandle");
         HandlerInterceptor.super.postHandle(request, response, handler, modelAndView);
     }
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-        System.out.println("afterCompletion");
+        logger.info("afterCompletion");
         HandlerInterceptor.super.afterCompletion(request, response, handler, ex);
     }
 }

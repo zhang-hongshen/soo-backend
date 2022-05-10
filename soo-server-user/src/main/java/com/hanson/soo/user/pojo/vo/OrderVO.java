@@ -5,7 +5,7 @@ import com.hanson.soo.user.pojo.dto.OrderDetailDTO;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -15,7 +15,7 @@ public class OrderVO {
     BigDecimal totalAmount;
     String status;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    Date paymentTime;
+    LocalDateTime paymentTime;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    Date createTime;
+    LocalDateTime createTime;
 }
