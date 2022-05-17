@@ -7,7 +7,9 @@
     <select id="listProductImageUrlByProductId" resultType="string">
         select image_url from soo_product_image
         <where>
-            product_id = #{productId} and status = true
+            product_id = #{productId}
+            and
+            state = true
         </where>
     </select>
 </mapper>

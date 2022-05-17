@@ -1,8 +1,9 @@
-package com.hanson.soo.user.service.impl.interceptor;
+package com.hanson.soo.user.interceptor;
 
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.hanson.soo.common.service.RedisService;
 import com.hanson.soo.user.exception.TokenAuthorizationException;
+import com.hanson.soo.user.pojo.RedisKeyPrefix;
 import com.hanson.soo.user.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,8 +24,6 @@ public class TokenAuthorizationInterceptor implements HandlerInterceptor {
     @Autowired
     private RedisService redisService;
 
-    private final String REDIS_KEY_PREFIX = "soo:user:token";
-
     private static final Logger logger = LoggerFactory.getLogger(TokenAuthorizationInterceptor.class);
 
     @Override
@@ -37,7 +36,7 @@ public class TokenAuthorizationInterceptor implements HandlerInterceptor {
             throw new TokenAuthorizationException();
         }
         // token还未过期
-        if (redisService.exists(REDIS_KEY_PREFIX + ":" + token)) {
+        if (redisService.exists(RedisKeyPrefix.USER_TOKEN.getPrefix() + token)) {
             logger.info("token验证成功");
             return true;
         }

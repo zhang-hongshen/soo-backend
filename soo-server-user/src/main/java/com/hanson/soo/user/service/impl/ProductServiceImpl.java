@@ -3,9 +3,8 @@ package com.hanson.soo.user.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.hanson.soo.common.pojo.dto.PageDTO;
-import com.hanson.soo.common.pojo.entity.ProductDepartureDO;
-import com.hanson.soo.common.pojo.entity.ProductImageDO;
 import com.hanson.soo.common.service.RedisService;
+import com.hanson.soo.user.pojo.RedisKeyPrefix;
 import com.hanson.soo.user.pojo.dto.ProductDTO;
 import com.hanson.soo.user.pojo.dto.ProductInfoDTO;
 import com.hanson.soo.user.pojo.qo.ProductQO;
@@ -14,10 +13,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -32,10 +29,9 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private RecommendService recommendService;
 
-    final String REDIS_KEY_PREFIX = "soo:product:";
 
     @Override
-    public PageDTO<List<ProductInfoDTO>> listProductInfos(int current, int pageSize, ProductQO query) {
+    public PageDTO<List<ProductInfoDTO>> listProductInfo(int current, int pageSize, ProductQO query) {
         return productInfoService.listProductInfo(current, pageSize, query);
     }
 
@@ -47,12 +43,14 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDTO getProductByProductId(String productId) {
-        //查询缓存
-        final String redisKey = REDIS_KEY_PREFIX + productId;
+        // 查询缓存
+        final String redisKey = RedisKeyPrefix.PRODUCT_INFO.getPrefix() + productId;
         String jsonStr = redisService.get(redisKey);
+        // 缓存命中
         if (StringUtils.isNotBlank(jsonStr)) {
             return JSON.parseObject(jsonStr, ProductDTO.class);
         }
+        // 查询数据库
         ProductInfoDTO productInfoDTO = productInfoService.getProductInfoByProductId(productId);
         ProductDTO productDTO = new ProductDTO();
         productDTO.setDepartures(productDepartureService.listProductDepartureByProductId(productId));

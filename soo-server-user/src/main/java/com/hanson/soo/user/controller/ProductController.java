@@ -28,7 +28,7 @@ public class ProductController {
         if (current <= 0) {
             throw new IllegalArgumentException();
         }
-        PageDTO<List<ProductInfoDTO>> pageDTO = productService.listProductInfos(current, pageSize, query);
+        PageDTO<List<ProductInfoDTO>> pageDTO = productService.listProductInfo(current, pageSize, query);
         List<ProductInfoVO> productInfoVOs = pageDTO.getList().stream()
                 .map(ConverterUtils::productInfoDTO2VO)
                 .collect(Collectors.toList());

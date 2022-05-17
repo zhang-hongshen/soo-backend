@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 public class ProductInfoVO {
     String productId;
     String productName;
-    String departure;
     String destination;
     BigDecimal price;
     String state;

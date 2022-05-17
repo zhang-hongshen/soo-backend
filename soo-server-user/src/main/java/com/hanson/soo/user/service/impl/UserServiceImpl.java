@@ -8,6 +8,7 @@ import com.hanson.soo.user.dao.UserTokenDao;
 import com.hanson.soo.common.pojo.entity.UserInfoDO;
 import com.hanson.soo.user.dao.UserInfoDao;
 import com.hanson.soo.common.pojo.entity.UserTokenDO;
+import com.hanson.soo.user.pojo.RedisKeyPrefix;
 import com.hanson.soo.user.pojo.dto.UserInfoDTO;
 import com.hanson.soo.user.service.UserService;
 import com.hanson.soo.user.utils.ConverterUtils;
@@ -29,7 +30,6 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private RedisService redisService;
 
-    private final String REDIS_KEY_PREFIX = "soo:user:token";
 
     @Override
     @Transactional
@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService {
         String token = TokenUtils.createToken();
         // 更新或插入token
         userTokenDao.insertOrUpdateTokenByUserId(userId, token);
-        redisService.set(REDIS_KEY_PREFIX + ":" + token, "", 1, TimeUnit.HOURS);
+        redisService.set(RedisKeyPrefix.USER_TOKEN.getPrefix() + token, "", 1, TimeUnit.HOURS);
         return token;
     }
 
@@ -104,14 +104,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean updatePasswordByUserId(String userId, String password) {
-        return userInfoDao.update(null, new LambdaUpdateWrapper<UserInfoDO>()
-                .set(UserInfoDO::getPassword, password)
-                .eq(UserInfoDO::getUserId, userId)) > 0;
+        return userInfoDao.updatePasswordByUserId(userId, password) > 0;
     }
 
     @Override
     public boolean deleteUserToken(String token) {
-        redisService.delete(REDIS_KEY_PREFIX+ ":" + token);
+        redisService.delete(RedisKeyPrefix.USER_TOKEN.getPrefix() + token);
         return true;
     }
 }

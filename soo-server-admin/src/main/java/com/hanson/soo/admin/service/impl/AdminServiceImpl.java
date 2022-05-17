@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.hanson.soo.admin.dao.AdminDao;
 import com.hanson.soo.admin.dao.AdminTokenDao;
+import com.hanson.soo.admin.pojo.RedisKeyPrefix;
 import com.hanson.soo.admin.pojo.dto.AdminDTO;
 import com.hanson.soo.admin.service.AdminService;
 import com.hanson.soo.admin.utils.ConverterUtils;
@@ -27,8 +28,6 @@ public class AdminServiceImpl implements AdminService {
     @Autowired
     private RedisService redisService;
 
-    private final String REDIS_KEY_PREFIX = "soo:admin:token";
-
     private static Logger logger = LogManager.getLogger(AdminService.class);
 
     @Override
@@ -42,7 +41,7 @@ public class AdminServiceImpl implements AdminService {
         // 更新或插入token
         adminTokenDao.insertOrUpdateTokenByAdminId(adminId, token);
         //更新后的token存入redis，value为用户信息
-        redisService.set(REDIS_KEY_PREFIX + ":" + token, "", 1, TimeUnit.HOURS);
+        redisService.set(RedisKeyPrefix.ADMIN_TOKEN.getPrefix() + token, "", 1, TimeUnit.HOURS);
         return token;
     }
 
@@ -73,7 +72,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public boolean deleteToken(String token) {
-        redisService.delete(REDIS_KEY_PREFIX+ ":" + token);
+        redisService.delete(RedisKeyPrefix.ADMIN_TOKEN.getPrefix() + token);
         return true;
     }
 }

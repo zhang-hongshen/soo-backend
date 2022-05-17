@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hanson.soo.admin.dao.ProductDepartureDao;
 import com.hanson.soo.admin.dao.ProductImageDao;
 import com.hanson.soo.admin.dao.ProductInfoDao;
+import com.hanson.soo.admin.pojo.RedisKeyPrefix;
 import com.hanson.soo.admin.pojo.dto.ProductDTO;
 import com.hanson.soo.admin.pojo.dto.ProductInfoDTO;
 import com.hanson.soo.admin.pojo.qo.ProductQO;
@@ -44,7 +45,6 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private RedisService redisService;
 
-    private final String REDIS_KEY_PREFIX = "soo:product";
 
     @Transactional(readOnly = true)
     @Override
@@ -115,8 +115,8 @@ public class ProductServiceImpl implements ProductService {
     public boolean updateProductByProductId(ProductDTO productDTO){
         String productId = productDTO.getProductId();
         // Redis第一次删除
-        redisService.delete(REDIS_KEY_PREFIX + ":" +productId);
-        // 开始更新MySQL
+        redisService.delete(RedisKeyPrefix.PRODUCT_INFO.getPrefix() + productId);
+        // 更新数据库
         ProductInfoDO productInfoDO = new ProductInfoDO();
         BeanUtils.copyProperties(productDTO, productInfoDO);
         productInfoDao.update(productInfoDO, new LambdaUpdateWrapper<ProductInfoDO>()
@@ -129,18 +129,18 @@ public class ProductServiceImpl implements ProductService {
             productDepartureDO.setDeparture(departure);
             productDepartureDao.insert(productDepartureDO);
         });
-        //更新图片
+        // 更新产品图片
         Set<ProductImageDO> newProductImageDOs = new HashSet<>();
         productDTO.getImageUrls().forEach((url) -> {
             ProductImageDO productImageDO = new ProductImageDO();
             productImageDO.setProductId(productId);
             productImageDO.setUrl(url);
-            productImageDO.setStatus(Boolean.TRUE);
+            productImageDO.setState(Boolean.TRUE);
             newProductImageDOs.add(productImageDO);
         });
         Set<ProductImageDO> oldProductImageDOs = new HashSet<>(productImageDao.selectList(new LambdaQueryWrapper<ProductImageDO>()
                 .eq(ProductImageDO::getProductId, productId)
-                .eq(ProductImageDO::getStatus, Boolean.TRUE)));
+                .eq(ProductImageDO::getState, Boolean.TRUE)));
         //求交集
         Set<ProductImageDO> intersection = new HashSet<>(oldProductImageDOs);
         intersection.retainAll(newProductImageDOs);
@@ -151,21 +151,22 @@ public class ProductServiceImpl implements ProductService {
           插入新图片
          */
         for (ProductImageDO productImageDO : newProductImageDOs) {
-            productImageDO.setStatus(Boolean.TRUE);
+            productImageDO.setState(Boolean.TRUE);
             productImageDao.insert(productImageDO);
         }
         /*
           旧图片设置为历史图片
          */
         for (ProductImageDO productImageDO : oldProductImageDOs) {
-            productImageDO.setStatus(Boolean.FALSE);
+            productImageDO.setState(Boolean.FALSE);
             productImageDao.update(productImageDO, new LambdaUpdateWrapper<ProductImageDO>()
                     .eq(ProductImageDO::getProductId, productId)
                     .eq(ProductImageDO::getUrl, productImageDO.getUrl()));
         }
+        // 延时
         Thread.sleep(500);
         // Redis第一次删除
-        redisService.delete(REDIS_KEY_PREFIX + ":" +productId);
+        redisService.delete(RedisKeyPrefix.PRODUCT_INFO.getPrefix() + productId);
         return true;
     }
 
@@ -174,7 +175,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public boolean deleteByProductIds(List<String> productIds) {
         List<String> redisKeys = productIds.stream()
-                .map(productId -> REDIS_KEY_PREFIX + ":" +productId)
+                .map(productId -> RedisKeyPrefix.PRODUCT_INFO.getPrefix() +productId)
                 .collect(Collectors.toList());
         // 第一次删除
         redisService.delete(redisKeys);

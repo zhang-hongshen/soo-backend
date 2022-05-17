@@ -39,7 +39,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
     @Transactional(readOnly = true)
     public PageDTO<List<ProductInfoDTO>> listProductInfo(int current, int pageSize, ProductQO query) {
         List<ProductInfoDO> productInfoDOs = productInfoDao.selectList(new LambdaQueryWrapper<ProductInfoDO>()
-                .eq(ProductInfoDO::getStatus, ProductState.ON_SALE.getState())
+                .eq(ProductInfoDO::getState, ProductState.ON_SALE.getState())
                 .like(StringUtils.isNotBlank(query.getDestination()), ProductInfoDO::getDestination, query.getDestination())
                 .like(StringUtils.isNotBlank(query.getProductName()), ProductInfoDO::getProductName, query.getProductName()));
         Set<String> productIds = productInfoDOs.stream()
@@ -58,13 +58,14 @@ public class ProductInfoServiceImpl implements ProductInfoService {
         //分页查询
         IPage<ProductInfoDO> page = productInfoDao.selectPage(new Page<>(current, pageSize), new LambdaQueryWrapper<ProductInfoDO>()
                 .in(ProductInfoDO::getProductId, productIds)
-                .eq(ProductInfoDO::getStatus, Boolean.TRUE));
+                .eq(ProductInfoDO::getState, Boolean.TRUE));
         List<ProductInfoDTO> productInfoDTOs = new ArrayList<>();
         for (ProductInfoDO productInfoDO : page.getRecords()) {
             ProductInfoDTO productInfoDTO = ConverterUtils.productInfoDO2DTO(productInfoDO);
             //获取产品封面照片
             String imageUrl = productImageDao.selectOne(new LambdaQueryWrapper<ProductImageDO>()
                     .eq(ProductImageDO::getProductId, productInfoDTO.getProductId())
+                    .eq(ProductImageDO::getState, Boolean.TRUE)
                     .last("limit 1")).getUrl();
             productInfoDTO.setImageUrl(imageUrl);
             productInfoDTOs.add(productInfoDTO);

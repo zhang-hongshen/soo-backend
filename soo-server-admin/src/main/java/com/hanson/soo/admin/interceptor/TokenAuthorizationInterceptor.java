@@ -2,6 +2,7 @@ package com.hanson.soo.admin.interceptor;
 
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.hanson.soo.admin.exception.TokenAuthorizationException;
+import com.hanson.soo.admin.pojo.RedisKeyPrefix;
 import com.hanson.soo.admin.service.AdminService;
 import com.hanson.soo.common.service.RedisService;
 import org.apache.logging.log4j.LogManager;
@@ -46,7 +47,7 @@ public class TokenAuthorizationInterceptor implements HandlerInterceptor {
             throw new TokenAuthorizationException();
         }
         // token还未过期
-        if (redisService.exists(REDIS_KEY_PREFIX + ":" + token)) {
+        if (redisService.exists(RedisKeyPrefix.ADMIN_TOKEN.getPrefix() + token)) {
             logger.info("token验证成功");
             return true;
         }

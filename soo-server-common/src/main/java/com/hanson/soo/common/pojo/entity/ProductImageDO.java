@@ -23,8 +23,8 @@ public class ProductImageDO {
     String productId;
     @TableField("image_url")
     String url;
-    @TableField("status")
-    Boolean status;
+    @TableField("state")
+    Boolean state;
     @TableField("create_time")
     LocalDateTime createTime;
     @TableField("update_time")
