@@ -1,11 +1,13 @@
 package com.hanson.soo.common.pojo.entity;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Data
 @TableName("soo_product_info")
@@ -22,8 +24,8 @@ public class ProductInfoDO {
     String destination;
     @TableField("price")
     BigDecimal price;
-    @TableField("status")
-    Integer status;
+    @TableField("state")
+    Integer state;
     @TableField("create_time")
     LocalDateTime createTime;
     @TableField("update_time")

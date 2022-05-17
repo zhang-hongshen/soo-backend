@@ -1,7 +1,7 @@
 package com.hanson.soo.user.utils;
 
 import com.hanson.soo.common.pojo.entity.*;
-import com.hanson.soo.user.pojo.OrderStatusEnum;
+import com.hanson.soo.common.pojo.OrderState;
 import com.hanson.soo.user.pojo.dto.*;
 import com.hanson.soo.user.pojo.vo.*;
 import org.springframework.beans.BeanUtils;
@@ -118,7 +118,7 @@ public class ConverterUtils {
     public static OrderVO orderDTO2VO(OrderDTO orderDTO) {
         OrderVO orderVO = new OrderVO();
         BeanUtils.copyProperties(orderDTO, orderVO);
-        orderVO.setStatus(OrderStatusEnum.getValueByStatus(orderDTO.getStatus()));
+        orderVO.setState(OrderState.getValueByState(orderDTO.getState()));
         return orderVO;
     }
 

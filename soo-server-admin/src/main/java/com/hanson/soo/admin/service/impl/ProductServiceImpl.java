@@ -8,13 +8,13 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hanson.soo.admin.dao.ProductDepartureDao;
 import com.hanson.soo.admin.dao.ProductImageDao;
 import com.hanson.soo.admin.dao.ProductInfoDao;
-import com.hanson.soo.admin.pojo.ProductStatusEnum;
 import com.hanson.soo.admin.pojo.dto.ProductDTO;
 import com.hanson.soo.admin.pojo.dto.ProductInfoDTO;
 import com.hanson.soo.admin.pojo.qo.ProductQO;
 import com.hanson.soo.admin.service.ProductService;
 import com.hanson.soo.admin.utils.AliyunOSSUtils;
 import com.hanson.soo.admin.utils.ConverterUtils;
+import com.hanson.soo.common.pojo.ProductState;
 import com.hanson.soo.common.pojo.dto.PageDTO;
 import com.hanson.soo.common.pojo.entity.ProductDepartureDO;
 import com.hanson.soo.common.pojo.entity.ProductImageDO;
@@ -50,8 +50,8 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public PageDTO<List<ProductInfoDTO>> listProductInfo(int current, int pageSize, ProductQO productQO) {
         List<ProductInfoDO> productInfoDOs = productInfoDao.selectList(new LambdaQueryWrapper<ProductInfoDO>()
-                .eq(!productQO.getStatus().equals(ProductStatusEnum.ALL.getValue()),
-                        ProductInfoDO::getStatus, ProductStatusEnum.getStatusByValue(productQO.getStatus()))
+                .eq(!productQO.getStatus().equals(ProductState.ALL.getValue()),
+                        ProductInfoDO::getState, ProductState.getStateByValue(productQO.getStatus()))
                 .like(StringUtils.isNotBlank(productQO.getProductName()), ProductInfoDO::getProductName, productQO.getProductName())
                 .like(StringUtils.isNotBlank(productQO.getDestination()), ProductInfoDO::getDestination, productQO.getDestination()));
         Set<String> productIds = new HashSet<>();

@@ -7,11 +7,11 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hanson.soo.admin.dao.OrderDetailDao;
 import com.hanson.soo.admin.dao.OrderInfoDao;
-import com.hanson.soo.admin.pojo.OrderStatusEnum;
 import com.hanson.soo.admin.pojo.dto.OrderInfoDTO;
 import com.hanson.soo.admin.pojo.qo.OrderQO;
 import com.hanson.soo.admin.service.OrderService;
 import com.hanson.soo.admin.utils.ConverterUtils;
+import com.hanson.soo.common.pojo.OrderState;
 import com.hanson.soo.common.pojo.dto.PageDTO;
 import com.hanson.soo.common.pojo.entity.OrderDetailDO;
 import com.hanson.soo.common.pojo.entity.OrderInfoDO;
@@ -35,7 +35,7 @@ public class OrderServiceImpl implements OrderService {
                 new LambdaQueryWrapper<OrderInfoDO>()
                         .like(StringUtils.isNotBlank(query.getOrderId()), OrderInfoDO::getOrderId, query.getOrderId())
                         .like(StringUtils.isNotBlank(query.getUserId()), OrderInfoDO::getUserId, query.getUserId())
-                        .eq(!query.getStatus().equals(OrderStatusEnum.ALL.getValue()), OrderInfoDO::getStatus, OrderStatusEnum.getStatusByValue(query.getStatus())));
+                        .eq(!query.getStatus().equals(OrderState.ALL.getValue()), OrderInfoDO::getState, OrderState.getStateByValue(query.getStatus())));
         List<OrderInfoDTO> orderInfoDTOs = page.getRecords().stream()
                 .map(ConverterUtils::orderInfoDO2DTO)
                 .collect(Collectors.toList());

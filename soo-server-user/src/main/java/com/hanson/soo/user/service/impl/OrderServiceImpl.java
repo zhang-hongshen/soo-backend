@@ -3,19 +3,23 @@ package com.hanson.soo.user.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.hanson.soo.common.pojo.OrderEvent;
+import com.hanson.soo.common.utils.UUIDUtils;
+import com.hanson.soo.common.pojo.OrderState;
 import com.hanson.soo.common.pojo.entity.OrderDetailDO;
 import com.hanson.soo.common.pojo.entity.OrderInfoDO;
-import com.hanson.soo.common.utils.UUIDUtils;
-import com.hanson.soo.user.pojo.OrderStatusEnum;
 import com.hanson.soo.user.pojo.dto.OrderDTO;
 import com.hanson.soo.user.pojo.dto.OrderDetailDTO;
 import com.hanson.soo.user.service.OrderDetailService;
 import com.hanson.soo.user.service.OrderInfoService;
-import com.hanson.soo.user.service.OrderDetailService;
 import com.hanson.soo.user.service.OrderService;
 import com.hanson.soo.user.utils.ConverterUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.statemachine.config.StateMachineBuilder;
+import org.springframework.statemachine.config.StateMachineFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +27,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,6 +36,8 @@ public class OrderServiceImpl implements OrderService {
     private OrderInfoService orderInfoService;
     @Autowired
     private OrderDetailService orderDetailService;
+
+    private static Logger logger = LoggerFactory.getLogger(OrderService.class);
 
     @Override
     @Transactional
@@ -50,17 +57,16 @@ public class OrderServiceImpl implements OrderService {
         orderInfoDO.setOrderId(orderId);
         orderInfoDO.setUserId(userId);
         orderInfoDO.setTotalAmount(totalAmount);
-        orderInfoDO.setStatus(OrderStatusEnum.TO_BE_PAY.getStatus());
+        orderInfoDO.setState(OrderState.SUBMITTED.getState());
         return orderInfoService.save(orderInfoDO) &&
                 orderDetailService.saveBatch(orderDetailDOs) ? orderId : null;
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<OrderDTO> listOrdersByUserIdAndStatus(String userId, Integer status) {
+    public List<OrderDTO> listOrdersByUserIdAndState(String userId, Integer state) {
         List<OrderInfoDO> orderInfoDOs = orderInfoService.list(new LambdaQueryWrapper<OrderInfoDO>()
                 .eq(OrderInfoDO::getUserId, userId)
-                .eq( !status.equals(OrderStatusEnum.ALL.getStatus()), OrderInfoDO::getStatus, status)
+                .eq( !state.equals(OrderState.ALL.getState()), OrderInfoDO::getState, state)
                 .orderByDesc(OrderInfoDO::getCreateTime));
         List<OrderDTO> orderDTOs = new ArrayList<>();
         for(OrderInfoDO orderInfoDO : orderInfoDOs){
@@ -82,37 +88,35 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public boolean pay(String orderId) {
-        if (!getStatusByOrderId(orderId).equals(OrderStatusEnum.TO_BE_PAY.getStatus())) {
+        if (!Objects.equals(getStateByOrderId(orderId), OrderState.SUBMITTED.getState())) {
             return false;
         }
-        System.out.println("请求支付服务！");
-        System.out.println("订单支付成功！");
+        logger.info("请求支付服务！");
+        logger.info("订单支付成功！");
         return orderInfoService.update(null, new LambdaUpdateWrapper<OrderInfoDO>()
                 .eq(OrderInfoDO::getOrderId, orderId)
-                .set(OrderInfoDO::getStatus, OrderStatusEnum.PAID.getStatus())
+                .set(OrderInfoDO::getState, OrderState.PAID.getState())
                 .set(OrderInfoDO::getPaymentTime, new Date())
         );
     }
 
     @Override
-    @Transactional
     public boolean refund(String orderId) {
-        if (!getStatusByOrderId(orderId).equals(OrderStatusEnum.PAID.getStatus())) {
+        if (!Objects.equals(getStateByOrderId(orderId), OrderState.PAID.getState())) {
             return false;
         }
-        System.out.println("申请退款中！");
+        logger.info("申请退款中！");
         return orderInfoService.update(null, new LambdaUpdateWrapper<OrderInfoDO>()
                 .eq(OrderInfoDO::getOrderId, orderId)
-                .set(OrderInfoDO::getStatus, OrderStatusEnum.REFUNDING.getStatus())
+                .set(OrderInfoDO::getState, OrderState.REFUNDING.getState())
                 .set(OrderInfoDO::getPaymentTime, new Date())
         );
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Integer getStatusByOrderId(String orderId) {
+    public Integer getStateByOrderId(String orderId) {
         OrderInfoDO orderInfoDO = orderInfoService.getOne(new LambdaQueryWrapper<OrderInfoDO>()
                 .eq(OrderInfoDO::getOrderId, orderId));
-        return orderInfoDO == null ? null : orderInfoDO.getStatus();
+        return orderInfoDO == null ? null : orderInfoDO.getState();
     }
 }

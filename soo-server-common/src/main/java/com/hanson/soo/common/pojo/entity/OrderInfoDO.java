@@ -8,7 +8,6 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Data
 @TableName("soo_order_info")
@@ -21,8 +20,8 @@ public class OrderInfoDO {
     String userId;
     @TableField("total_amount")
     BigDecimal totalAmount;
-    @TableField("status")
-    Integer status;
+    @TableField("state")
+    Integer state;
     @TableField("payment_time")
     LocalDateTime paymentTime;
     @TableField("create_time")

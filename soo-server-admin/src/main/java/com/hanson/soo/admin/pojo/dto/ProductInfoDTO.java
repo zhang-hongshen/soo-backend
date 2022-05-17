@@ -10,5 +10,5 @@ public class ProductInfoDTO {
     String productName;
     String destination;
     BigDecimal price;
-    Integer status;
+    Integer state;
 }

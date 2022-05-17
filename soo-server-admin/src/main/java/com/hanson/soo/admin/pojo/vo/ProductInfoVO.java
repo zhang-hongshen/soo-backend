@@ -11,5 +11,5 @@ public class ProductInfoVO {
     String departure;
     String destination;
     BigDecimal price;
-    String status;
+    String state;
 }

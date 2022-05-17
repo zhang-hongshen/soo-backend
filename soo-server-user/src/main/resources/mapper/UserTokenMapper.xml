@@ -5,10 +5,16 @@
 
 <mapper namespace="com.hanson.soo.user.dao.UserTokenDao">
     <insert id="insertOrUpdateTokenByUserId">
-        insert into soo_user_token(user_id, token) values(#{user_id}, #{token})
+        insert into soo_user_token(user_id, token) values(#{userId}, #{token})
         on duplicate key update token = #{token}
     </insert>
     <select id="getUserIdByToken" resultType="string">
         select user_id from soo_user_token where token = #{token}
+    </select>
+    <select id="getUpdateTimeByUserId" resultType="java.time.LocalDateTime">
+        select update_time from soo_user_token
+        <where>
+            user_id = #{userId}
+        </where>
     </select>
 </mapper>

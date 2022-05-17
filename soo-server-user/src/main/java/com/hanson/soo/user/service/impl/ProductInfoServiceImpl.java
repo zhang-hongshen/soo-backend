@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.hanson.soo.common.pojo.ProductState;
 import com.hanson.soo.user.dao.ProductDepartureDao;
 import com.hanson.soo.user.dao.ProductImageDao;
 import com.hanson.soo.user.dao.ProductInfoDao;
@@ -11,7 +12,7 @@ import com.hanson.soo.common.pojo.dto.PageDTO;
 import com.hanson.soo.common.pojo.entity.ProductDepartureDO;
 import com.hanson.soo.common.pojo.entity.ProductImageDO;
 import com.hanson.soo.common.pojo.entity.ProductInfoDO;
-import com.hanson.soo.user.pojo.ProductStatusEnum;
+import com.hanson.soo.common.pojo.ProductState;
 import com.hanson.soo.user.pojo.dto.ProductInfoDTO;
 import com.hanson.soo.user.pojo.qo.ProductQO;
 import com.hanson.soo.user.service.ProductInfoService;
@@ -21,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -39,7 +39,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
     @Transactional(readOnly = true)
     public PageDTO<List<ProductInfoDTO>> listProductInfo(int current, int pageSize, ProductQO query) {
         List<ProductInfoDO> productInfoDOs = productInfoDao.selectList(new LambdaQueryWrapper<ProductInfoDO>()
-                .eq(ProductInfoDO::getStatus, ProductStatusEnum.ON_SALE.getStatus())
+                .eq(ProductInfoDO::getStatus, ProductState.ON_SALE.getState())
                 .like(StringUtils.isNotBlank(query.getDestination()), ProductInfoDO::getDestination, query.getDestination())
                 .like(StringUtils.isNotBlank(query.getProductName()), ProductInfoDO::getProductName, query.getProductName()));
         Set<String> productIds = productInfoDOs.stream()
@@ -63,10 +63,10 @@ public class ProductInfoServiceImpl implements ProductInfoService {
         for (ProductInfoDO productInfoDO : page.getRecords()) {
             ProductInfoDTO productInfoDTO = ConverterUtils.productInfoDO2DTO(productInfoDO);
             //获取产品封面照片
-//            String imageUrl = productImageDao.selectOne(new LambdaQueryWrapper<ProductImageDO>()
-//                    .eq(ProductImageDO::getProductId, productInfoDTO.getProductId())
-//                    .last("limit 1")).getUrl();
-//            productInfoDTO.setImageUrl(imageUrl);
+            String imageUrl = productImageDao.selectOne(new LambdaQueryWrapper<ProductImageDO>()
+                    .eq(ProductImageDO::getProductId, productInfoDTO.getProductId())
+                    .last("limit 1")).getUrl();
+            productInfoDTO.setImageUrl(imageUrl);
             productInfoDTOs.add(productInfoDTO);
         }
         return new PageDTO<>(productInfoDTOs, (int) page.getTotal());

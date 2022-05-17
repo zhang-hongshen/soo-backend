@@ -13,7 +13,7 @@ public class OrderVO {
     String orderId;
     List<OrderDetailDTO> orderDetails;
     BigDecimal totalAmount;
-    String status;
+    String state;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     LocalDateTime paymentTime;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

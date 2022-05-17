@@ -12,7 +12,7 @@
     <name>soo-server-admin</name>
     <description>soo-server-admin</description>
     <properties>
-        <java.version>11</java.version>
+        <java.version>17</java.version>
     </properties>
     <dependencies>
         <dependency>

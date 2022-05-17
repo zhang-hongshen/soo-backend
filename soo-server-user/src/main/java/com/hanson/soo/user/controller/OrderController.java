@@ -1,6 +1,7 @@
 package com.hanson.soo.user.controller;
 
 
+import com.hanson.soo.user.pojo.dto.OrderDTO;
 import com.hanson.soo.user.pojo.dto.OrderDetailDTO;
 import com.hanson.soo.user.pojo.vo.OrderVO;
 import com.hanson.soo.user.service.CartService;
@@ -21,11 +22,11 @@ public class OrderController {
     private CartService cartService;
 
     @GetMapping("/query")
-    public List<OrderVO> query(@RequestParam("userId")String userId, @RequestParam("status")Integer status){
-        if (status < 0) {
+    public List<OrderVO> query(@RequestParam("userId")String userId, @RequestParam("state")Integer state){
+        if (state < 0) {
             throw new IllegalArgumentException();
         }
-        return orderService.listOrdersByUserIdAndStatus(userId, status)
+        return orderService.listOrdersByUserIdAndState(userId, state)
                 .stream()
                 .map(ConverterUtils::orderDTO2VO)
                 .collect(Collectors.toList());

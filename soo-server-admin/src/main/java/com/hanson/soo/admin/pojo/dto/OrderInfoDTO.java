@@ -10,7 +10,7 @@ import java.util.Date;
 public class OrderInfoDTO {
     String orderId;
     String userId;
-    Integer status;
+    Integer state;
     BigDecimal totalAmount;
     LocalDateTime paymentTime;
     LocalDateTime createTime;

@@ -1,11 +1,11 @@
-package com.hanson.soo.admin.interceptor;
+package com.hanson.soo.user.service.impl.interceptor;
 
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
-import com.hanson.soo.admin.exception.TokenAuthorizationException;
-import com.hanson.soo.admin.service.AdminService;
 import com.hanson.soo.common.service.RedisService;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.hanson.soo.user.exception.TokenAuthorizationException;
+import com.hanson.soo.user.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -19,25 +19,16 @@ import java.time.temporal.ChronoUnit;
 @Component
 public class TokenAuthorizationInterceptor implements HandlerInterceptor {
     @Autowired
-    private AdminService adminService;
+    private UserService userService;
     @Autowired
     private RedisService redisService;
 
-    private final String REDIS_KEY_PREFIX = "soo:admin:token";
+    private final String REDIS_KEY_PREFIX = "soo:user:token";
 
-    private static Logger logger = LogManager.getLogger(TokenAuthorizationInterceptor.class);
+    private static final Logger logger = LoggerFactory.getLogger(TokenAuthorizationInterceptor.class);
 
-    /**
-     *
-     * @param request 请求
-     * @param response 响应
-     * @param handler 处理器
-     * @return
-     * @throws TokenAuthorizationException 权限认证异常
-     */
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
-            throws TokenAuthorizationException{
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         logger.info("TokenAuthorizationInterceptor.preHandle");
         String token = request.getHeader("Authorization");
         logger.info("token值为：" + token);
@@ -50,19 +41,19 @@ public class TokenAuthorizationInterceptor implements HandlerInterceptor {
             logger.info("token验证成功");
             return true;
         }
-        String adminId = adminService.getAdminIdByToken(token);
+        String userId = userService.getUserIdByToken(token);
         // token异常
-        if (StringUtils.isBlank(adminId)) {
+        if (StringUtils.isBlank(userId)) {
             logger.info("token不存在");
             throw new TokenAuthorizationException();
         }
         // 用户超过2小时未操作登出
-        if (ChronoUnit.MINUTES.between(adminService.getTokenUpdateTimeByAdminId(adminId), LocalDateTime.now()) >= 120) {
+        if (ChronoUnit.MINUTES.between(userService.getTokenUpdateTimeByUserId(userId), LocalDateTime.now()) >= 120) {
             logger.info("用户长时间位操作登出");
             throw new TokenAuthorizationException();
         }
         // token续签
-        response.setHeader("Authorization", adminService.refreshTokenByAdminId(adminId));
+        response.setHeader("Authorization", userService.refreshTokenByUserId(userId));
         return true;
     }
 

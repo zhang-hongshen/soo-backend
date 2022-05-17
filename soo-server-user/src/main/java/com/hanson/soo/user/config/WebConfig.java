@@ -1,9 +1,8 @@
 package com.hanson.soo.user.config;
 
-import com.hanson.soo.user.interceptor.TokenAuthorizationInterceptor;
+import com.hanson.soo.user.service.impl.interceptor.TokenAuthorizationInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 

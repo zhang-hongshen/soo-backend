@@ -1,20 +1,18 @@
 package com.hanson.soo.user.handler;
 
 import com.hanson.soo.common.response.ResponseCode;
-import com.hanson.soo.common.response.ResponseData;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
+import lombok.Getter;
+import lombok.Setter;
 
-/**
- * 全局异常处理
- */
-@RestControllerAdvice
+
+@Getter
+@Setter
 public class MyExceptionHandler {
+    private ResponseCode responseCode;
 
-    @ExceptionHandler(Exception.class)
-    @ResponseBody
-    public ResponseData<String> exception(Exception e) {
-        return ResponseData.fail(ResponseCode.RC500);
+    public static MyExceptionHandler fail(ResponseCode responseCode) {
+        MyExceptionHandler exceptionHandler = new MyExceptionHandler();
+        exceptionHandler.setResponseCode(responseCode);
+        return exceptionHandler;
     }
 }

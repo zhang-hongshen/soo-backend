@@ -8,8 +8,8 @@ import java.util.List;
 
 public interface OrderService {
     String insertOrder(String userId, List<OrderDetailDTO> orderDetailDTOs);
-    List<OrderDTO> listOrdersByUserIdAndStatus(String userId, Integer status);
+    List<OrderDTO> listOrdersByUserIdAndState(String userId, Integer state);
     boolean pay(String orderId);
     boolean refund(String orderId);
-    Integer getStatusByOrderId(String orderId);
+    Integer getStateByOrderId(String orderId);
 }

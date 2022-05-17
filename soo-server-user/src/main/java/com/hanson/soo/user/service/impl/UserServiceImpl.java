@@ -14,9 +14,11 @@ import com.hanson.soo.user.utils.ConverterUtils;
 import com.hanson.soo.user.utils.TokenUtils;
 import com.hanson.soo.common.utils.UUIDUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -27,7 +29,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private RedisService redisService;
 
-    private final String REDIS_KEY_PREFIX = "soo:user";
+    private final String REDIS_KEY_PREFIX = "soo:user:token";
 
     @Override
     @Transactional
@@ -50,16 +52,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean validateToken(String token) {
-        return userTokenDao.selectOne(new LambdaQueryWrapper<UserTokenDO>()
-                .eq(UserTokenDO::getToken, token)) != null;
-    }
-
-    @Override
     public String refreshTokenByUserId(String userId) {
         String token = TokenUtils.createToken();
         // 更新或插入token
         userTokenDao.insertOrUpdateTokenByUserId(userId, token);
+        redisService.set(REDIS_KEY_PREFIX + ":" + token, "", 1, TimeUnit.HOURS);
         return token;
     }
 
@@ -81,16 +78,17 @@ public class UserServiceImpl implements UserService {
         return userTokenDao.getUserIdByToken(token);
     }
 
-    @Override
-    public UserInfoDTO getUserInfoByToken(String token){
-        return getUserInfoByUserId(getUserIdByToken(token));
-    }
 
     @Override
     public UserInfoDTO getUserInfoByUserId(String userId) {
         UserInfoDO userInfoDO = userInfoDao.selectOne(new LambdaQueryWrapper<UserInfoDO>()
                 .eq(UserInfoDO::getUserId, userId));
         return ConverterUtils.userInfoDO2DTO(userInfoDO);
+    }
+
+    @Override
+    public LocalDateTime getTokenUpdateTimeByUserId(String userId) {
+        return userTokenDao.getUpdateTimeByUserId(userId);
     }
 
     @Override
@@ -113,7 +111,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean deleteUserToken(String token) {
-        return userTokenDao.delete(new LambdaUpdateWrapper<UserTokenDO>()
-                .eq(UserTokenDO::getToken, token)) > 0;
+        redisService.delete(REDIS_KEY_PREFIX+ ":" + token);
+        return true;
     }
 }
