@@ -24,9 +24,6 @@ public class CommentController {
     public PageDTO<List<CommentVO>> query(@RequestParam("current") int current,
                                           @RequestParam("pageSize") int pageSize,
                                           @RequestParam("productId") String productId){
-        if (current <= 0) {
-            throw new IllegalArgumentException();
-        }
         PageDTO<List<CommentDTO>> pageDTO = commentService.listCommentsByProductId(current, pageSize, productId);
         List<CommentVO> commentVOs = new ArrayList<>(pageDTO.getList().size());
         for(CommentDTO commentDTO : pageDTO.getList()){

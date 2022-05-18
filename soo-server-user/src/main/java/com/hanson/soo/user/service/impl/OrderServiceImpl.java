@@ -84,6 +84,15 @@ public class OrderServiceImpl implements OrderService {
         return orderDTOs;
     }
 
+    @Override
+    @Transactional
+    public boolean delete(String orderId) {
+        return orderInfoService.remove(new LambdaUpdateWrapper<OrderInfoDO>()
+                .eq(OrderInfoDO::getOrderId, orderId)) &&
+                orderDetailService.remove(new LambdaUpdateWrapper<OrderDetailDO>()
+                        .eq(OrderDetailDO::getOrderId, orderId));
+    }
+
 
     @Override
     @Transactional

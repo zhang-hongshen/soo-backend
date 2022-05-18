@@ -23,7 +23,7 @@ public class RecommendServiceImpl implements RecommendService {
     private static Logger logger = LogManager.getLogger(RecommendService.class);
 
     // 请求url
-    private String url = "http://127.0.0.1:5000/predict";
+    private final String url = "http://127.0.0.1:5000/predict";
 
     public List<String> predict(String userId){
         MultiValueMap<String, Object> paramMap = new LinkedMultiValueMap<>();

@@ -30,29 +30,29 @@ public class TokenAuthorizationInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         logger.info("TokenAuthorizationInterceptor.preHandle");
         String token = request.getHeader("Authorization");
-        logger.info("token值为：" + token);
         // 前端token异常
         if (StringUtils.isBlank(token)) {
             throw new TokenAuthorizationException();
         }
+        String userId = userService.getUserIdByToken(token);
         // token还未过期
         if (redisService.exists(RedisKeyPrefix.USER_TOKEN.getPrefix() + token)) {
             logger.info("token验证成功");
-            return true;
+        } else {
+            // token异常
+            if (StringUtils.isBlank(userId)) {
+                logger.info("token不存在");
+                throw new TokenAuthorizationException();
+            }
+            // 用户超过2小时未操作登出
+            if (ChronoUnit.HOURS.between(userService.getTokenUpdateTimeByUserId(userId), LocalDateTime.now()) >= 2) {
+                logger.info("用户长时间未操作登出");
+                throw new TokenAuthorizationException();
+            }
+            // token续签
+            response.setHeader("Authorization", userService.refreshTokenByUserId(userId));
         }
-        String userId = userService.getUserIdByToken(token);
-        // token异常
-        if (StringUtils.isBlank(userId)) {
-            logger.info("token不存在");
-            throw new TokenAuthorizationException();
-        }
-        // 用户超过2小时未操作登出
-        if (ChronoUnit.MINUTES.between(userService.getTokenUpdateTimeByUserId(userId), LocalDateTime.now()) >= 120) {
-            logger.info("用户长时间位操作登出");
-            throw new TokenAuthorizationException();
-        }
-        // token续签
-        response.setHeader("Authorization", userService.refreshTokenByUserId(userId));
+        request.setAttribute("userId", userId);
         return true;
     }
 

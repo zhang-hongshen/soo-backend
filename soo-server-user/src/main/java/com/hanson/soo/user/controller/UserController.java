@@ -22,8 +22,8 @@ public class UserController {
     }
 
     @GetMapping("/info")
-    public UserInfoDTO getInfo(@RequestHeader("Authorization") String token){
-        return userService.getUserInfoByUserId(userService.getUserIdByToken(token));
+    public UserInfoDTO getInfo(@RequestAttribute("userId") String userId){
+        return userService.getUserInfoByUserId(userId);
     }
 
     @PostMapping("/register")
@@ -48,29 +48,29 @@ public class UserController {
         return "北京";
     }
 
-    @GetMapping("/basicinfo/{userId}")
-    public UserBasicInfoVO getBasicInfo(@PathVariable("userId")String userId){
+    @GetMapping("/basicinfo")
+    public UserBasicInfoVO getBasicInfo(@RequestAttribute("userId") String userId){
         UserInfoDTO userInfoDTO = userService.getUserInfoByUserId(userId);
         return ConverterUtils.userInfoDTO2BasicInfoVO(userInfoDTO);
     }
 
-    @PostMapping("/basicinfo/update/{userId}")
-    public boolean updateBasicInfoByUserId(@PathVariable("userId")String userId,
+    @PostMapping("/basicinfo/update")
+    public boolean updateBasicInfoByUserId(@RequestAttribute("userId") String userId,
                                   @RequestBody UserBasicInfoVO userBasicInfoVO){
         userService.updateBasicInfoByUserId(userId, ConverterUtils.userBasicInfoVO2InfoDTO(userBasicInfoVO));
         return true;
     }
 
-    @GetMapping("/password/validate/{userId}")
-    public boolean validatePasswordByUserId(@PathVariable("userId")String userId,
+    @GetMapping("/password/validate")
+    public boolean validatePasswordByUserId(@RequestAttribute("userId") String userId,
                                             @RequestBody String password){
         String realPassword = userService.getPasswordByUserId(userId);
         return realPassword.equals(password);
     }
 
 
-    @PostMapping("/password/update/{userId}")
-    public boolean changePassword(@PathVariable("userId")String userId,
+    @PostMapping("/password/update")
+    public boolean changePassword(@RequestAttribute("userId") String userId,
                                   @RequestBody String password){
         return userService.updatePasswordByUserId(userId, password);
     }

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/consignee")
@@ -17,15 +18,15 @@ public class ConsigneeController {
     private ConsigneeService consigneeService;
 
     @GetMapping("/info")
-    public List<ConsigneeVO> query(@RequestParam("userId")String userId){
+    public List<ConsigneeVO> query(@RequestAttribute("userId")String userId){
         List<ConsigneeDTO> consigneeDTOs = consigneeService.listConsigneesByUserId(userId);
-        List<ConsigneeVO> consigneeVOs = new ArrayList<>(consigneeDTOs.size());
-        consigneeDTOs.forEach(consigneeDTO -> consigneeVOs.add(ConverterUtils.consigneeDTO2VO(consigneeDTO)));
-        return consigneeVOs;
+        return consigneeDTOs.stream()
+                .map(ConverterUtils::consigneeDTO2VO)
+                .collect(Collectors.toList());
     }
 
     @PostMapping("/save")
-    public boolean save(@RequestParam("userId") String userId,
+    public boolean save(@RequestAttribute("userId") String userId,
                                  @RequestBody ConsigneeVO consigneeVO){
         ConsigneeDTO consigneeDTO = ConverterUtils.consigneeVO2DTO(consigneeVO);
         consigneeDTO.setUserId(userId);
