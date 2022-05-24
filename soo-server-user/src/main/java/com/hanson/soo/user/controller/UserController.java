@@ -37,7 +37,7 @@ public class UserController {
     }
 
     @GetMapping("/logout")
-    public boolean logout(@RequestHeader("token")String token){
+    public boolean logout(@RequestHeader("Authorization")String token){
         return userService.deleteUserToken(token);
     }
 

@@ -12,7 +12,7 @@ public class OrderDetailDTO {
     String productId;
     String productName;
     String departure;
-    LocalDate date;
+    LocalDate travelDate;
     BigDecimal price;
     Integer num;
     BigDecimal amount;

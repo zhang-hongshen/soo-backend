@@ -8,8 +8,6 @@ import com.hanson.soo.user.pojo.vo.ProductInfoVO;
 import com.hanson.soo.user.pojo.vo.ProductVO;
 import com.hanson.soo.user.service.ProductService;
 import com.hanson.soo.user.utils.ConverterUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

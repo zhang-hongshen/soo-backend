@@ -13,7 +13,7 @@ public class ProductVO {
     String productName;
     String destination;
     BigDecimal price;
-    String status;
+    String state;
     List<String> departures;
     List<String> imageUrls;
 }

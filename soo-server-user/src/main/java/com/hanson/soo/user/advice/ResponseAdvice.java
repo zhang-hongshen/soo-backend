@@ -1,8 +1,8 @@
 package com.hanson.soo.user.advice;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hanson.soo.common.response.ResponseCode;
 import com.hanson.soo.common.response.ResponseData;
-import com.hanson.soo.user.handler.MyExceptionHandler;
 import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,10 +34,13 @@ public class ResponseAdvice implements ResponseBodyAdvice<Object> {
     @SneakyThrows
     @Override
     public Object beforeBodyWrite(Object o, MethodParameter methodParameter, MediaType mediaType, Class<? extends HttpMessageConverter<?>> aClass, ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse) {
-        if (o instanceof MyExceptionHandler) {
-            logger.error("错误码："+ ((MyExceptionHandler) o).getResponseCode().getCode() + "，错误信息："+ ((MyExceptionHandler) o).getResponseCode().getMessage());
-            return ResponseData.fail(((MyExceptionHandler) o).getResponseCode());
-        } else if(o instanceof String) {
+        // 发生了异常
+        if (o instanceof ResponseCode) {
+            logger.error("错误码："+ ((ResponseCode) o).getCode() + "，错误信息："+ ((ResponseCode) o).getMessage());
+            return ResponseData.fail((ResponseCode) o);
+        }
+        // 正常返回
+        if(o instanceof String) {
             return objectMapper.writeValueAsString(ResponseData.success(o));
         }
         return ResponseData.success(o);

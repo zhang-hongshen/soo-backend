@@ -21,8 +21,7 @@ public class AdminController {
     }
 
     @GetMapping("/info")
-    public AdminVO login(@RequestHeader("Authorization")String token) {
-        String adminId = adminService.getAdminIdByToken(token);
+    public AdminVO login(@RequestAttribute("adminId")String adminId) {
         return ConverterUtils.adminDTO2VO(adminService.getAdminInfoByAdminId(adminId));
     }
 

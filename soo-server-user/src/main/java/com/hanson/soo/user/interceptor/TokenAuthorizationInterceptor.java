@@ -28,7 +28,7 @@ public class TokenAuthorizationInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        logger.info("TokenAuthorizationInterceptor.preHandle");
+        logger.info("请求接口：" + request.getRequestURI());
         String token = request.getHeader("Authorization");
         // 前端token异常
         if (StringUtils.isBlank(token)) {
@@ -50,7 +50,7 @@ public class TokenAuthorizationInterceptor implements HandlerInterceptor {
                 throw new TokenAuthorizationException();
             }
             // token续签
-            response.setHeader("Authorization", userService.refreshTokenByUserId(userId));
+            response.addHeader("Authorization", userService.refreshTokenByUserId(userId));
         }
         request.setAttribute("userId", userId);
         return true;
@@ -58,13 +58,11 @@ public class TokenAuthorizationInterceptor implements HandlerInterceptor {
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-        logger.info("TokenAuthorizationInterceptor.postHandle");
         HandlerInterceptor.super.postHandle(request, response, handler, modelAndView);
     }
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-        logger.info("TokenAuthorizationInterceptor.afterCompletion");
         HandlerInterceptor.super.afterCompletion(request, response, handler, ex);
     }
 }

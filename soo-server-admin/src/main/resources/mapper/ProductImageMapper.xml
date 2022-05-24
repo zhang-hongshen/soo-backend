@@ -10,10 +10,10 @@
             product_id = #{productId}
         </where>
     </select>
-    <select id="listImageUrlByProductIdAndStatus" resultType="string" >
+    <select id="listImageUrlByProductIdAndState" resultType="string" >
         select image_url from soo_product_image
         <where>
-            product_id = #{productId} and status = #{status}
+            product_id = #{productId} and state = #{state}
         </where>
     </select>
 </mapper>

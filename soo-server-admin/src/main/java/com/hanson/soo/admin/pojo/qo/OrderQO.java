@@ -6,5 +6,5 @@ import lombok.Data;
 public class OrderQO {
     String orderId;
     String userId;
-    String status;
+    String state;
 }

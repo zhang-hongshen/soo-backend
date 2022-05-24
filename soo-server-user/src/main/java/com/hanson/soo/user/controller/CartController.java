@@ -14,12 +14,14 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/chart")
+@RequestMapping("/api/cart")
 public class CartController {
     @Autowired
     private CartService cartService;
+
     @Autowired
     private ProductInfoService productInfoService;
 
@@ -28,19 +30,19 @@ public class CartController {
                               @RequestParam("pageSize") int pageSize,
                               @RequestAttribute("userId") String userId){
         PageDTO<List<CartDTO>> pageDTO = cartService.listCart(current, pageSize, userId);
-        List<CartVO> cartVOS = new ArrayList<>(pageDTO.getList().size());
-        pageDTO.getList().forEach(cartDTO -> {
-            CartVO cartVO = ConverterUtils.cartDTO2VO(cartDTO);
-            ProductInfoDTO productInfoDTO = productInfoService.getProductInfoByProductId(cartVO.getProductId());
-            BeanUtils.copyProperties(productInfoDTO, cartVO);
-            cartVOS.add(cartVO);
-        });
+        List<CartVO> cartVOS = pageDTO.getList().stream()
+                .map(cartDTO -> {
+                    CartVO cartVO = ConverterUtils.cartDTO2VO(cartDTO);
+                    ProductInfoDTO productInfoDTO = productInfoService.getProductInfoByProductId(cartDTO.getProductId());
+                    BeanUtils.copyProperties(productInfoDTO, cartVO);
+                    return cartVO;
+                }).collect(Collectors.toList());
         return new PageVO<>(cartVOS, pageDTO.getTotal());
     }
 
     @PostMapping("/add")
     public boolean add(@RequestAttribute("userId") String userId,
-                       @RequestBody CartVO cartVO){
+                       @RequestBody  CartVO cartVO){
         CartDTO cartDTO = ConverterUtils.cartVO2DTO(cartVO);
         cartDTO.setUserId(userId);
         return cartService.insertCart(cartDTO);

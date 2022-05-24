@@ -9,5 +9,5 @@ import java.util.List;
 @Mapper
 public interface ProductImageDao extends BaseMapper<ProductImageDO> {
     List<String> listImageUrlByProductId(String productId);
-    List<String> listImageUrlByProductIdAndStatus(String productId, Boolean status);
+    List<String> listImageUrlByProductIdAndState(String productId, Boolean state);
 }

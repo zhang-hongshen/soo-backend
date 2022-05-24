@@ -5,9 +5,10 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Data
 @TableName("soo_user_cart")
@@ -22,10 +23,8 @@ public class CartDO {
     String departure;
     @TableField("num")
     Integer num;
-    @TableField("date")
-    LocalDateTime date;
-    @TableField("status")
-    Boolean status;
+    @TableField("travel_date")
+    LocalDate travelDate;
     @TableField("create_time")
     LocalDateTime createTime;
     @TableField("update_time")

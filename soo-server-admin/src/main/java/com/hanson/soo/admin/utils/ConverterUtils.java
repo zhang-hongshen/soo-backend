@@ -45,14 +45,14 @@ public class ConverterUtils {
     public static ProductVO productDTO2VO(ProductDTO productDTO) {
         ProductVO productVO = new ProductVO();
         BeanUtils.copyProperties(productDTO, productVO);
-        productVO.setStatus(ProductState.getValueByState(productDTO.getStatus()));
+        productVO.setState(ProductState.getValueByState(productDTO.getState()));
         return  productVO;
     }
 
     public static ProductDTO productVO2DTO(ProductVO productVO) {
         ProductDTO productDTO = new ProductDTO();
         BeanUtils.copyProperties(productVO, productDTO);
-        productDTO.setStatus(ProductState.getStateByValue(productVO.getStatus()));
+        productDTO.setState(ProductState.getStateByValue(productVO.getState()));
         return  productDTO;
     }
 

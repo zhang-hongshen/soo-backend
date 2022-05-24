@@ -1,8 +1,8 @@
 package com.hanson.soo.admin.config;
 
 import com.hanson.soo.admin.interceptor.TokenAuthorizationInterceptor;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -16,7 +16,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Autowired
     private TokenAuthorizationInterceptor tokenAuthorizationInterceptor;
 
-    private static Logger logger = LogManager.getLogger(WebConfig.class);
+    private static Logger logger = LoggerFactory.getLogger(WebConfig.class);
     /**
      * token验证拦截器
      * @param registry

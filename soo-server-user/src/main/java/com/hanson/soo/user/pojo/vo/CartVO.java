@@ -2,6 +2,7 @@ package com.hanson.soo.user.pojo.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -15,5 +16,6 @@ public class CartVO {
     Integer num;
     BigDecimal price;
     @JsonFormat(pattern = "yyyy-MM-dd")
-    LocalDate date;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    LocalDate travelDate;
 }

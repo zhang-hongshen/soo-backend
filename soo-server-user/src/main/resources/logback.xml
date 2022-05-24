@@ -9,7 +9,7 @@
     <logger name="com.hanson.soo.user.dao">
         <level value="error"/>
     </logger>
-    <root level="error">
+    <root level="info">
         <appender-ref ref="stdout"/>
     </root>
 </configuration>

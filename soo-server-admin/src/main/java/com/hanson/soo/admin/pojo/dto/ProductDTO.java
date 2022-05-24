@@ -11,7 +11,7 @@ public class ProductDTO {
     String productName;
     String destination;
     BigDecimal price;
-    Integer status;
+    Integer state;
     List<String> departures;
     List<String> imageUrls;
 }

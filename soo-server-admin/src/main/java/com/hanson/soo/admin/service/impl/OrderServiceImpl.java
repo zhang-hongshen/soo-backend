@@ -35,7 +35,7 @@ public class OrderServiceImpl implements OrderService {
                 new LambdaQueryWrapper<OrderInfoDO>()
                         .like(StringUtils.isNotBlank(query.getOrderId()), OrderInfoDO::getOrderId, query.getOrderId())
                         .like(StringUtils.isNotBlank(query.getUserId()), OrderInfoDO::getUserId, query.getUserId())
-                        .eq(!query.getStatus().equals(OrderState.ALL.getValue()), OrderInfoDO::getState, OrderState.getStateByValue(query.getStatus())));
+                        .eq(!query.getState().equals(OrderState.ALL.getValue()), OrderInfoDO::getState, OrderState.getStateByValue(query.getState())));
         List<OrderInfoDTO> orderInfoDTOs = page.getRecords().stream()
                 .map(ConverterUtils::orderInfoDO2DTO)
                 .collect(Collectors.toList());

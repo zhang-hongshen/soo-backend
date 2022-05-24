@@ -25,10 +25,15 @@ public class WebConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         logger.info("添加token验证拦截器");
         registry.addInterceptor(tokenAuthorizationInterceptor)
-                .addPathPatterns("/api/**")
-                .excludePathPatterns("/api/user/login", "/api/user/register", "/api/user/phone/validate",
-                        "/api/product/info", "/api/product/detail",
-                        "/api/city");
+                .addPathPatterns("/api/user/info", "/api/user/basicinfo/**", "/api/user/logout",
+                                    "/api/user/password/**",
+                                    "/api/product/predict",
+                                    "/api/comment/**",
+                                    "/api/city/**",
+                                    "/api/order/**",
+                                    "/api/cart/**",
+                                    "/api/consignee/**")
+                .excludePathPatterns("/api/comment/query");
     }
 
 }

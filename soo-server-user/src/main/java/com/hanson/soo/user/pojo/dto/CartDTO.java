@@ -10,5 +10,5 @@ public class CartDTO {
     String userId;
     String departure;
     Integer num;
-    LocalDate date;
+    LocalDate travelDate;
 }

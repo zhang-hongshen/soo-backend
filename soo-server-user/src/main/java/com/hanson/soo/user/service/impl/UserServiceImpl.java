@@ -97,6 +97,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public String getUsernameByUserId(String userId) {
+        return userInfoDao.getUsernameByUserId(userId);
+    }
+    
+    @Override
     public boolean updateBasicInfoByUserId(String userId, UserInfoDTO userInfoDTO) {
        return userInfoDao.update(ConverterUtils.userInfoDTO2DO(userInfoDTO), new LambdaUpdateWrapper<UserInfoDO>()
                 .eq(UserInfoDO::getUserId, userId)) > 0;

@@ -11,4 +11,5 @@ public class ProductInfoDTO {
     String imageUrl;
     String destination;
     BigDecimal price;
+    Integer state;
 }

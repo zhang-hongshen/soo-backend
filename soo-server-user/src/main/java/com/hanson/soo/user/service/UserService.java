@@ -15,6 +15,9 @@ public interface UserService {
     LocalDateTime getTokenUpdateTimeByUserId(String userId);
 
     String getPasswordByUserId(String userId);
+
+    String getUsernameByUserId(String userId);
+
     boolean updateBasicInfoByUserId(String userId, UserInfoDTO userInfoDTO);
     boolean updatePasswordByUserId(String userId, String password);
     boolean deleteUserToken(String token);

@@ -50,8 +50,8 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public PageDTO<List<ProductInfoDTO>> listProductInfo(int current, int pageSize, ProductQO productQO) {
         List<ProductInfoDO> productInfoDOs = productInfoDao.selectList(new LambdaQueryWrapper<ProductInfoDO>()
-                .eq(!productQO.getStatus().equals(ProductState.ALL.getValue()),
-                        ProductInfoDO::getState, ProductState.getStateByValue(productQO.getStatus()))
+                .eq(!productQO.getState().equals(ProductState.ALL.getValue()),
+                        ProductInfoDO::getState, ProductState.getStateByValue(productQO.getState()))
                 .like(StringUtils.isNotBlank(productQO.getProductName()), ProductInfoDO::getProductName, productQO.getProductName())
                 .like(StringUtils.isNotBlank(productQO.getDestination()), ProductInfoDO::getDestination, productQO.getDestination()));
         Set<String> productIds = new HashSet<>();
@@ -105,7 +105,7 @@ public class ProductServiceImpl implements ProductService {
         ProductDTO productDTO = new ProductDTO();
         BeanUtils.copyProperties(productInfoDO, productDTO);
         productDTO.setDepartures(productDepartureDao.listDepartureByProductId(productId));
-        productDTO.setImageUrls(productImageDao.listImageUrlByProductIdAndStatus(productId, Boolean.TRUE));
+        productDTO.setImageUrls(productImageDao.listImageUrlByProductIdAndState(productId, Boolean.TRUE));
         return productDTO;
     }
 

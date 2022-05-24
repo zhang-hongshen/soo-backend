@@ -1,12 +1,14 @@
 package com.hanson.soo.common.pojo.entity;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Data
 @TableName("soo_order_detail")
@@ -21,8 +23,8 @@ public class OrderDetailDO {
     String productName;
     @TableField("departure")
     String departure;
-    @TableField("date")
-    LocalDateTime date;
+    @TableField("travel_date")
+    LocalDate travelDate;
     @TableField("price")
     BigDecimal price;
     @TableField("num")

@@ -1,11 +1,11 @@
 package com.hanson.soo.user.handler;
 
-import com.hanson.soo.user.exception.TokenAuthorizationException;
 import com.hanson.soo.common.response.ResponseCode;
+import com.hanson.soo.user.exception.TokenAuthorizationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import java.security.InvalidParameterException;
 
 /**
  * 全局异常处理
@@ -13,13 +13,24 @@ import java.security.InvalidParameterException;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(Exception.class)
-    public MyExceptionHandler exception(Exception e) {
-        if (e instanceof InvalidParameterException) {
-            return MyExceptionHandler.fail(ResponseCode.RC400);
-        } else if (e instanceof TokenAuthorizationException) {
-            return MyExceptionHandler.fail(ResponseCode.RC401);
-        }
-        return MyExceptionHandler.fail(ResponseCode.RC500);
+    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseCode invalidParameterException(IllegalArgumentException e) {
+        logger.error(e.getMessage());
+        return ResponseCode.RC400;
     }
+
+    @ExceptionHandler(TokenAuthorizationException.class)
+    public ResponseCode tokenAuthorizationException(TokenAuthorizationException e) {
+        logger.error(e.getMessage());
+        return ResponseCode.RC401;
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseCode exception(Exception e) {
+        logger.error(e.getMessage());
+        return ResponseCode.RC500;
+    }
+
 }
